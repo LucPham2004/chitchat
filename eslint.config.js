@@ -3,6 +3,9 @@ import globals from 'globals'
 import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import importPlugin from 'eslint-plugin-import'
+import unusedImports from 'eslint-plugin-unused-imports' 
+import prettier from 'eslint-plugin-prettier'
 
 export default [
   { ignores: ['dist'] },
@@ -22,6 +25,9 @@ export default [
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      import: importPlugin,
+      'unused-imports': unusedImports,
+      prettier,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -33,6 +39,16 @@ export default [
         'warn',
         { allowConstantExport: true },
       ],
+      'import/no-unresolved': 'error',
+      'import/named': 'error',
+      'import/default': 'error',
+      'import/namespace': 'error',
+      'import/no-duplicates': 'error',
+
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: true }],
+
+      'prettier/prettier': 'warn',
     },
   },
 ]

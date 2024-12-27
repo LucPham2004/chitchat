@@ -1,16 +1,31 @@
-import { useState } from 'react'
-import './App.css'
+import HomeView from './views/HomeView';
+import ErrorPage from './views/ErrorPage';
+import LoginView from './views/LoginView';
+import RegisterView from './views/RegisterView';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const router = createBrowserRouter([
+    {
+      path: '',
+      element: <HomeView />,
+	  errorElement: <ErrorPage />,
+    },
+    {
+      path: 'login',
+      element: <LoginView />,
+    },
+    {
+      path: 'register',
+      element: <RegisterView />,
+    },
+  ]);
 
   return (
     <>
-      <div className="flex justify-center items-center h-screen bg-blue-500 text-white text-3xl font-bold">
-        Hello World!
-    </div>
+      <RouterProvider router={router} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
