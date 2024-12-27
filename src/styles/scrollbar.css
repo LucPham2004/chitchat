@@ -1,0 +1,18 @@
+/* Tùy chỉnh thanh cuộn trong Webkit-based browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 8px; /* Độ rộng thanh cuộn */
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Màu nền của phần thanh cuộn */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #d3d3d3; /* Màu của thanh cuộn */
+    border-radius: 10px; /* Bo góc của thanh cuộn */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #bcbcbc; /* Màu của thanh cuộn khi hover */
+  }
+  
