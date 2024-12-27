@@ -1,15 +1,23 @@
+
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import HomeView from './views/HomeView';
 import ErrorPage from './views/ErrorPage';
 import LoginView from './views/LoginView';
 import RegisterView from './views/RegisterView';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Conversations from './components/homeview/Conversations';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '',
       element: <HomeView />,
-	  errorElement: <ErrorPage />,
+      errorElement: <ErrorPage />,
+      children: [
+        {
+          path: '',
+          element: <Conversations />
+        },
+      ]
     },
     {
       path: 'login',
