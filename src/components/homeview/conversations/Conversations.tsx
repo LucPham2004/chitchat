@@ -1,7 +1,7 @@
 import { BsPencilSquare } from "react-icons/bs";
-import SearchBar from "./SearchBar";
 import ConversationList from "./ConversationList";
-import '../../styles/scrollbar.css';
+import '../../../styles/scrollbar.css';
+import SearchBar from "./SearchBar";
 
 const Conversations = () => {
     

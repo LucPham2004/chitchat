@@ -1,4 +1,4 @@
-import { conversations } from "../../FakeData";
+import { conversations } from "../../../FakeData";
 
 
 const ConversationList: React.FC = () => {
