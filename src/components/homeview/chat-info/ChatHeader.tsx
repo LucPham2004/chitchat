@@ -2,9 +2,9 @@
 
 const ChatHeader = () => {
     return (
-        <div className="flex justify-between items-center w-full p-1 border-b border-gray-200">
+        <div className="flex justify-between items-center w-full p-0.5 border-b border-gray-200">
             <div className="flex flex-row items-center">
-                <div className="relative flex-1 flex items-center p-1 rounded-lg 
+                <div className="relative flex-1 flex items-center rounded-lg p-1
 				h-full w-max hover:bg-gray-100 cursor-pointer gap-1">
                     <div className="p-1 rounded-lg hover:bg-gray-200 cursor-pointer">
                         <img
