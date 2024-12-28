@@ -1,10 +1,15 @@
-import { FaUserCircle } from "react-icons/fa";
+import { FaLink, FaUserCircle } from "react-icons/fa";
 import { TiPin } from "react-icons/ti";
 import { FaBell, FaImage, FaPenNib } from "react-icons/fa6";
-import { IoSearch } from "react-icons/io5";
+import { IoImages, IoSearch } from "react-icons/io5";
 import { IoIosArrowDown } from 'react-icons/io';
 import { ReactNode, useState } from "react";
 import { PiTextAa } from "react-icons/pi";
+import ParticipantCard from "./ParticipantCard";
+import { FaFileAlt } from "react-icons/fa";
+import { BsFillBellFill, BsFillBellSlashFill } from "react-icons/bs";
+import { FiLogOut } from "react-icons/fi";
+import { ImBlocked } from "react-icons/im";
 
 
 interface AccordionItem {
@@ -79,18 +84,39 @@ const ConversationInfo = () => {
           title: 'Các thành viên trong đoạn chat',
           content: (
             <div>
-              
+              <ParticipantCard id={"1"} avatar={"https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-1/426557674_2024821517893555_8163706382522298168_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=gxJAQWu02SEQ7kNvgFtk5_Q&_nc_oc=AdgJUyZIoWTc55dBmIgR1kGpQUUHrfpas3VBIjam2Jy0x1o0F8cwbjjGVuo151G4qEjSAlu65JQlI6PFJJ1p_DNZ&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent.fhan20-1.fna&_nc_gid=AHlEaSB8HywVcln6T29bS7V&oh=00_AYCWr9OsAQ_mp2d9tO6WdCz4C44M_Nn2MIgamy1l6O2oVw&oe=67746D85"} name={"Tiến Lực"} />
             </div>
           ),
         },
         {
           title: 'File phương tiện, file và liên kết',
           content: (
-            <ul>
-              <li>Hình ảnh: 5</li>
-              <li>Video: 2</li>
-              <li>Tài liệu: 1</li>
-            </ul>
+            <div>
+              
+              <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    <div className="bg-gray-200 rounded-full p-2 text-lg">
+                        <IoImages />
+                    </div>
+                    <p>File phương tiện</p>
+                </button>
+                
+                <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    <div className="bg-gray-200 rounded-full p-2 text-lg">
+                        <FaFileAlt />
+                    </div>
+                    <p>File</p>
+                </button>
+                
+                <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    <div className="bg-gray-200 rounded-full p-2 text-lg">
+                        <FaLink />
+                    </div>
+                    <p>Liên kết</p>
+                </button>
+            </div>
           ),
         },
         {
@@ -98,6 +124,29 @@ const ConversationInfo = () => {
           content: (
             <div>
               
+              <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    <div className="bg-gray-200 rounded-full p-2 text-lg">
+                        <BsFillBellSlashFill />
+                    </div>
+                    <p>Tắt thông báo</p>
+                </button>
+                
+                <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    <div className="bg-gray-200 rounded-full p-2 text-lg">
+                        <ImBlocked />
+                    </div>
+                    <p>Chặn</p>
+                </button>
+                
+                <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    <div className="bg-gray-200 rounded-full p-2 text-xl">
+                        <FiLogOut />
+                    </div>
+                    <p>Rời nhóm</p>
+                </button>
             </div>
           ),
         }
@@ -105,7 +154,7 @@ const ConversationInfo = () => {
 
     return (
         <div className="flex flex-col gap-4 w-[33%] min-h-[96vh] max-h-[96vh] overflow-y-auto 
-            bg-white p-1 pb-0 rounded-xl shadow-sm">
+            bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm">
 
             <div className="flex flex-col items-center gap-2 p-2">
                 <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
@@ -123,7 +172,7 @@ const ConversationInfo = () => {
 
                 <div className="flex flex-col items-center w-[70px] text-center">
                     <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
-                        <FaBell />
+                        <BsFillBellFill />
                     </button>
                     <p className="text-sm">Tắt thông báo</p>
                 </div>
@@ -154,7 +203,7 @@ const ConversationInfo = () => {
                         </button>
                         <div
                             className={`overflow-hidden transition-[max-height] duration-300 ease-in-out 
-                                ${openIndices.includes(index) ? 'max-h-65' : 'max-h-0'
+                                ${openIndices.includes(index) ? 'max-h-60' : 'max-h-0'
                         }`}>
                             <div className="">{section.content}</div>
                         </div>

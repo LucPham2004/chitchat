@@ -55,7 +55,8 @@ const MainChat = () => {
     }, []);
 
     return (
-        <div className="w-[66%] min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm">
+        <div className="w-[66%] min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
+            rounded-xl border border-gray-200 shadow-sm">
             <ChatHeader />
             <ChatBody messages={messages} name={'john'} />
             <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />

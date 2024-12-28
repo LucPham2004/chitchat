@@ -3,7 +3,7 @@ import { Conversation } from "./types/Conversation";
 export const conversations: Conversation[] = [
 	{
 		id: '1',
-		name: 'Wellington Beef',
+		name: 'Beef Wellington',
 		avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Beef_Wellington_%285317710650%29.jpg/450px-Beef_Wellington_%285317710650%29.jpg',
 		lastMessage: 'Hey, will ya eat me?',
 		time: '2 phút',
