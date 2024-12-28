@@ -1,5 +1,5 @@
-import ConversationInfo from "./ConversationInfo";
-import MainChat from "./MainChat";
+import ConversationInfo from "./conversationInfo/ConversationInfo";
+import MainChat from "./mainchat/MainChat";
 
 const ChatAndInfo = () => {
 

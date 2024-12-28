@@ -1,5 +1,5 @@
 import { useRef, useEffect } from "react";
-import ChatMessage from "./ChatMessage"
+import ChatMessage from "./ChatMessage";
 
 
 export interface MessageObject {

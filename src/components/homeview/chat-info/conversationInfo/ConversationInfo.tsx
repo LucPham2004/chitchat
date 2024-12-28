@@ -5,11 +5,11 @@ import { IoImages, IoSearch } from "react-icons/io5";
 import { IoIosArrowDown } from 'react-icons/io';
 import { ReactNode, useState } from "react";
 import { PiTextAa } from "react-icons/pi";
-import ParticipantCard from "./ParticipantCard";
 import { FaFileAlt } from "react-icons/fa";
 import { BsFillBellFill, BsFillBellSlashFill } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { ImBlocked } from "react-icons/im";
+import ParticipantCard from "./ParticipantCard";
 
 
 interface AccordionItem {
