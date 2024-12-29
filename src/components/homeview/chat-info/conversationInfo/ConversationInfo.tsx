@@ -167,7 +167,7 @@ const ConversationInfo = () => {
             setTimeout(() => {
                 setActiveTab(tab);
                 setIsAnimating(false);
-            }, 300); // Thời gian chuyển đổi
+            }, 100); // Thời gian chuyển đổi
         }
     };
 
@@ -175,77 +175,83 @@ const ConversationInfo = () => {
     const renderTabContent = () => {
         switch (activeTab) {
             case 'media':
-                return <div>Danh sách file phương tiện</div>;
+                return <div>
+
+                </div>;
             case 'files':
-                return <div>Danh sách các file</div>;
+                return <div>
+                    
+                </div>;
             case 'links':
-                return <div>Danh sách các liên kết</div>;
+                return <div>
+                    
+                </div>;
+            default:
+                return (
+                    <div className={`flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
+                        bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
+                        ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}`}>
+
+                        <div className="flex flex-col items-center gap-2 p-2">
+                            <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
+                            <h3 className="text-xl font-semibold">Cristiano Ronaldo</h3>
+                            <p className="text-gray-500 text-xs">Đang hoạt động</p>
+                        </div>
+
+                        <div className="flex flex-row justify-center gap-4">
+                            <div className="flex flex-col items-center w-[70px] text-center">
+                                <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
+                                    <FaUserCircle />
+                                </button>
+                                <p className="text-sm">Trang cá nhân</p>
+                            </div>
+
+                            <div className="flex flex-col items-center w-[70px] text-center">
+                                <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
+                                    <BsFillBellFill />
+                                </button>
+                                <p className="text-sm">Tắt thông báo</p>
+                            </div>
+
+                            <div className="flex flex-col items-center w-[70px] text-center">
+                                <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
+                                    <IoSearch />
+                                </button>
+                                <p className="text-sm">Tìm kiếm</p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col p-2">
+                            {sections.map((section, index) => (
+                                <div key={index} className="">
+                                    <button
+                                        onClick={() => toggleAccordion(index)}
+                                        className="flex justify-between w-full p-2 py-3 text-left text-md font-medium 
+                                        text-gray-800 rounded-lg hover:bg-gray-100"
+                                    >
+                                        {section.title}
+                                        <span
+                                            className={`transform transition-transform duration-300 
+                                                ${openIndices.includes(index) ? 'rotate-180' : 'rotate-0'}`}>
+                                            <IoIosArrowDown />
+                                        </span>
+                                    </button>
+                                    <div
+                                        className={`overflow-hidden transition-[max-height] duration-300 ease-in-out 
+                                            ${openIndices.includes(index) ? 'max-h-60' : 'max-h-0'}`}>
+                                        <div className="">{section.content}</div>
+                                    </div>
+                                </div>
+                            ))}
+
+                        </div>
+                    </div>
+                );
         }
     };
 
     return (
-        <div className="flex flex-row max-w-full overflow-hidden">
-
-            <div className="flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
-            bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm">
-
-                <div className="flex flex-col items-center gap-2 p-2">
-                    <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
-                    <h3 className="text-xl font-semibold">Cristiano Ronaldo</h3>
-                    <p className="text-gray-500 text-xs">Đang hoạt động</p>
-                </div>
-
-                <div className="flex flex-row justify-center gap-4">
-                    <div className="flex flex-col items-center w-[70px] text-center">
-                        <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
-                            <FaUserCircle />
-                        </button>
-                        <p className="text-sm">Trang cá nhân</p>
-                    </div>
-
-                    <div className="flex flex-col items-center w-[70px] text-center">
-                        <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
-                            <BsFillBellFill />
-                        </button>
-                        <p className="text-sm">Tắt thông báo</p>
-                    </div>
-
-                    <div className="flex flex-col items-center w-[70px] text-center">
-                        <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
-                            <IoSearch />
-                        </button>
-                        <p className="text-sm">Tìm kiếm</p>
-                    </div>
-                </div>
-
-                <div className="flex flex-col p-2">
-                    {sections.map((section, index) => (
-                        <div key={index} className="">
-                            <button
-                                onClick={() => toggleAccordion(index)}
-                                className="flex justify-between w-full p-2 py-3 text-left text-md font-medium 
-                                text-gray-800 rounded-lg hover:bg-gray-100"
-                            >
-                                {section.title}
-                                <span
-                                    className={`transform transition-transform duration-300 
-                                    ${openIndices.includes(index) ? 'rotate-180' : 'rotate-0'
-                                        }`}>
-                                    <IoIosArrowDown />
-                                </span>
-                            </button>
-                            <div
-                                className={`overflow-hidden transition-[max-height] duration-300 ease-in-out 
-                                ${openIndices.includes(index) ? 'max-h-60' : 'max-h-0'
-                                    }`}>
-                                <div className="">{section.content}</div>
-                            </div>
-                        </div>
-                    ))}
-
-                </div>
-            </div>
-
+        activeTab !== 'default' ? (
             <div className={`flex flex-col gap-4 w-[33%] min-h-[96vh] max-h-[96vh] overflow-y-auto 
                 bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}`}
@@ -284,7 +290,12 @@ const ConversationInfo = () => {
                     {renderTabContent()}
                 </div>
             </div>
-        </div>
+        ) : (
+            <div className={`w-[33%] overflow-hidden bg-white
+                ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}`}>
+                {renderTabContent()}
+            </div>
+        )
     );
 }
 
