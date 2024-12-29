@@ -60,7 +60,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 					onChange={({ target: { value } }) => setMessage(value)}
 					onKeyPress={handleKeyPress}
 				/>
-				<div className='absolute right-1 top-1 text-xl text-blue-400 p-2 rounded-full 
+				<div className='absolute right-0 top-0.5 text-xl text-blue-400 p-2 rounded-full 
 					hover:bg-gray-200 cursor-pointer'
 					onClick={() => setShowEmojiPicker(prev => !prev)}>
 					<FaFaceGrinWide />
@@ -68,8 +68,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 			</div>
 			{/* Emoji Picker */}
 			{showEmojiPicker && (
-				<div className="absolute bottom-[60px] right-0">
-					<EmojiPicker width={420} height={340} onEmojiClick={handleEmojiClick} />
+				<div className="absolute bottom-16 right-28">
+					<EmojiPicker width={360} height={340} onEmojiClick={handleEmojiClick} />
 				</div>
 			)}
 
