@@ -183,7 +183,7 @@ const ConversationInfo = () => {
             case 'media':
                 return (
                     mediaList.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center text-center w-60 h-60">
+                        <div className="flex flex-col items-center justify-center text-center p-1 w-60 h-60">
                             <p className="text-md text-black font-semibold">Không có file phương tiện nào</p>
                             <p className="text-sm text-gray-500">Ảnh và video các bạn trao đổi với nhau sẽ hiện ở đây</p>
                         </div>

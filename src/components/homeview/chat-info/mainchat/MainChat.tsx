@@ -2,13 +2,11 @@ import { useState, useEffect } from "react"
 import ChatBody, { MessageObject } from "./ChatBody"
 import ChatHeader from "./ChatHeader"
 import ChatInput from "./ChatInput"
+import { ChangeWidthProps } from "../../../../views/HomeView"
 
 
-interface MainChatProps {
-    toggleFullScreen: () => void;
-}
 
-const MainChat: React.FC<MainChatProps> = ({ toggleFullScreen }) => {
+const MainChat: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
 
@@ -61,7 +59,7 @@ const MainChat: React.FC<MainChatProps> = ({ toggleFullScreen }) => {
     return (
         <div className="min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
             rounded-xl border border-gray-200 shadow-sm">
-            <ChatHeader toggleFullScreen={toggleFullScreen} />
+            <ChatHeader toggleChangeWidth={toggleChangeWidth} />
             <ChatBody messages={messages} name={'john'} />
             <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />
         </div>

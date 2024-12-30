@@ -6,7 +6,7 @@ import SearchBar from "./SearchBar";
 const Conversations = () => {
     
     return (
-        <div className="min-h-[96vh] max-h-[96vh] overflow-hidden min-w-[25%] flex flex-col items-center bg-white 
+        <div className="min-h-[96vh] max-h-[96vh] overflow-hidden min-w-full flex flex-col items-center bg-white 
             p-2 pb-0 rounded-xl border border-gray-200 shadow-sm">
 
             <div className="flex flex-row items-center p-2 py-0 self-start w-full">
