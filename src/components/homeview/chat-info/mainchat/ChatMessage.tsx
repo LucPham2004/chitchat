@@ -27,7 +27,7 @@ const ChatMessage :React.FC<MessageProps> = ({ message: { text, user }, name }) 
 		) : (
 			<div className="flex justify-start items-end my-1 gap-2">
 				<img src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"
-					className="border border-sky-600 rounded-[100%] h-8 w-8"
+					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="error"
 				/>
 				<div className="inline-block max-w-[80%] bg-[#F3F3F3] rounded-[20px] p-2 px-3">

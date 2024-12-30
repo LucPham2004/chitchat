@@ -1,7 +1,10 @@
 import { PiDotsThreeCircle } from "react-icons/pi"
 
+interface ChatHeaderProps {
+    toggleFullScreen: () => void;
+}
 
-const ChatHeader = () => {
+const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleFullScreen }) => {
     return (
         <div className="flex justify-between items-center w-full p-0.5 border-b border-gray-200">
             
@@ -22,7 +25,8 @@ const ChatHeader = () => {
             </div>
 
             <div className="flex me-2">
-                <button className="self-end rounded-full hover:bg-gray-200 p-2 text-center text-2xl font-semibold">
+                <button className="self-end rounded-full hover:bg-gray-200 p-2 text-center text-2xl font-semibold"
+                    onClick={toggleFullScreen}>
                     <PiDotsThreeCircle />
                 </button>
             </div>

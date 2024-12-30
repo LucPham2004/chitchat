@@ -302,7 +302,7 @@ const ConversationInfo = () => {
 
     return (
         activeTab !== 'default' ? (
-            <div className={`flex flex-col gap-4 w-[33%] min-h-[96vh] max-h-[96vh] overflow-y-auto 
+            <div className={`flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                 bg-white pt-1 px-3 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}`}
             >
@@ -344,7 +344,7 @@ const ConversationInfo = () => {
                 </div>
             </div>
         ) : (
-            <div className={`w-[33%] overflow-hidden bg-white
+            <div className={`w-full overflow-hidden bg-white
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}`}>
                 {renderTabContent()}
             </div>

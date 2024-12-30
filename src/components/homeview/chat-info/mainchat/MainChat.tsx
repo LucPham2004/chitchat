@@ -4,7 +4,11 @@ import ChatHeader from "./ChatHeader"
 import ChatInput from "./ChatInput"
 
 
-const MainChat = () => {
+interface MainChatProps {
+    toggleFullScreen: () => void;
+}
+
+const MainChat: React.FC<MainChatProps> = ({ toggleFullScreen }) => {
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
 
@@ -55,9 +59,9 @@ const MainChat = () => {
     }, []);
 
     return (
-        <div className="w-[66%] min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
+        <div className="min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
             rounded-xl border border-gray-200 shadow-sm">
-            <ChatHeader />
+            <ChatHeader toggleFullScreen={toggleFullScreen} />
             <ChatBody messages={messages} name={'john'} />
             <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />
         </div>
