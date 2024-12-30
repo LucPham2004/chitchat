@@ -142,3 +142,35 @@ export const conversations: Conversation[] = [
 		time: '7 giờ',
 	},
 ];
+
+
+export const linkUrls = [
+	'https://images.unsplash.com/photo-1601758003122-53c40e686a17',
+	'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0',
+	'https://images.unsplash.com/photo-1521747116042-5a810fda9664',
+	'https://images.unsplash.com/photo-1501594907352-04cda38ebc29',
+	'https://images.unsplash.com/photo-1517841905240-472988babdf9',
+	'https://images.unsplash.com/photo-1531251445707-1f000e1e87d0',
+	'https://images.unsplash.com/photo-1521336575822-7a5f1f1963d5',
+	'https://images.unsplash.com/photo-1552058544-f2b08422138a',
+	'https://images.unsplash.com/photo-1520719627573-5e2c1a6610f0',
+	'https://images.unsplash.com/photo-1524504388940-b1c1722653e1',
+	'https://images.unsplash.com/photo-1524275809401-f5e7b22c3a96',
+	'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab',
+	'https://images.unsplash.com/photo-1555685812-4b943f1cb0eb',
+	'https://images.unsplash.com/photo-1540202404-4ea44af5a6c0',
+	'https://images.unsplash.com/photo-1519337265831-281ec6cc8514',
+	'https://images.unsplash.com/photo-1517423440428-a5a00ad493e8',
+	'https://images.unsplash.com/photo-1523292562811-8fa7962a78c8',
+	'https://images.unsplash.com/photo-1531297484001-80022131f5a1',
+	'https://images.unsplash.com/photo-1516534775068-ba3e7458af70',
+	'https://images.unsplash.com/photo-1504826260979-242151ee45b7',
+  ];
+  
+
+
+
+
+
+
+

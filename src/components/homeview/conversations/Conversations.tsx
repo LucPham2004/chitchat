@@ -16,7 +16,7 @@ const Conversations = () => {
                         <BsPencilSquare />
                     </button>
                     <button className="rounded-full text-black">
-                        <img src="https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-1/426557674_2024821517893555_8163706382522298168_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=gxJAQWu02SEQ7kNvgFtk5_Q&_nc_oc=AdgJUyZIoWTc55dBmIgR1kGpQUUHrfpas3VBIjam2Jy0x1o0F8cwbjjGVuo151G4qEjSAlu65JQlI6PFJJ1p_DNZ&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent.fhan20-1.fna&_nc_gid=AHlEaSB8HywVcln6T29bS7V&oh=00_AYCWr9OsAQ_mp2d9tO6WdCz4C44M_Nn2MIgamy1l6O2oVw&oe=67746D85" className="w-8 h-8 rounded-full"/>
+                        <img src="/avatar.jpg" className="w-8 h-8 rounded-full"/>
                     </button>
                 </div>
             </div>

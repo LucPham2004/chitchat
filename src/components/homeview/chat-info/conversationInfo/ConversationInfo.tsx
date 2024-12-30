@@ -10,6 +10,8 @@ import { BsFillBellFill, BsFillBellSlashFill } from "react-icons/bs";
 import { FiLogOut } from "react-icons/fi";
 import { ImBlocked } from "react-icons/im";
 import ParticipantCard from "./ParticipantCard";
+import MediaGrid from "./MediaGrid";
+import { linkUrls } from "../../../../FakeData";
 
 
 interface AccordionItem {
@@ -19,7 +21,7 @@ interface AccordionItem {
 
 const ConversationInfo = () => {
 
-    const [openIndices, setOpenIndices] = useState<number[]>([]);
+    const [openIndices, setOpenIndices] = useState<number[]>([3]);
 
     const toggleAccordion = (index: number) => {
         setOpenIndices((prev) =>
@@ -84,7 +86,7 @@ const ConversationInfo = () => {
             title: 'Các thành viên trong đoạn chat',
             content: (
                 <div>
-                    <ParticipantCard id={"1"} avatar={"https://scontent.fhan20-1.fna.fbcdn.net/v/t39.30808-1/426557674_2024821517893555_8163706382522298168_n.jpg?stp=dst-jpg_s100x100_tt6&_nc_cat=102&ccb=1-7&_nc_sid=e99d92&_nc_ohc=gxJAQWu02SEQ7kNvgFtk5_Q&_nc_oc=AdgJUyZIoWTc55dBmIgR1kGpQUUHrfpas3VBIjam2Jy0x1o0F8cwbjjGVuo151G4qEjSAlu65JQlI6PFJJ1p_DNZ&_nc_ad=z-m&_nc_cid=0&_nc_zt=24&_nc_ht=scontent.fhan20-1.fna&_nc_gid=AHlEaSB8HywVcln6T29bS7V&oh=00_AYCWr9OsAQ_mp2d9tO6WdCz4C44M_Nn2MIgamy1l6O2oVw&oe=67746D85"} name={"Tiến Lực"} />
+                    <ParticipantCard id={"1"} avatar={"/avatar.jpg"} name={"Tiến Lực"} />
                 </div>
             ),
         },
@@ -171,21 +173,69 @@ const ConversationInfo = () => {
         }
     };
 
+    const mediaList:string[] = [];
+    const fileList:string[] = linkUrls;
+    const linkList:string[] = linkUrls;
+
     // Nội dung từng tab
     const renderTabContent = () => {
         switch (activeTab) {
             case 'media':
-                return <div>
-
-                </div>;
+                return (
+                    mediaList.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center text-center w-60 h-60">
+                            <p className="text-md text-black font-semibold">Không có file phương tiện nào</p>
+                            <p className="text-sm text-gray-500">Ảnh và video các bạn trao đổi với nhau sẽ hiện ở đây</p>
+                        </div>
+                    ) :
+                        <MediaGrid medias={mediaList} />
+                );
             case 'files':
-                return <div>
-                    
-                </div>;
+                return (
+                    fileList.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center text-center w-60 h-60">
+                            <p className="text-md text-black font-semibold">Không có file nào</p>
+                            <p className="text-sm text-gray-500">File các bạn trao đổi với nhau sẽ hiện ở đây</p>
+                        </div>
+                    ) :
+                        <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
+                            {fileList.map((file, index) => (
+                                <div>
+                                    <div key={index} className="flex items-center gap-2 p-2 pb-0 ps-0 mb-2 text-md font-medium 
+                                        text-gray-800">
+                                        <div className="text-lg px-4 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
+                                            <FaFileAlt />
+                                        </div>
+                                        <p>{file}</p>
+                                    </div>
+                                    <hr></hr>
+                                </div>
+                            ))}
+                        </div>
+                );
             case 'links':
-                return <div>
-                    
-                </div>;
+                return (
+                    linkList.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center text-center w-60 h-60">
+                            <p className="text-md text-black font-semibold">Không có liên kết nào</p>
+                            <p className="text-sm text-gray-500">Liên kết các bạn trao đổi với nhóm này sẽ hiện ở đây</p>
+                        </div>
+                    ) :
+                        <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
+                            {linkList.map((link, index) => (
+                                <div>
+                                    <div key={index} className="flex items-center gap-2 p-2 pb-0 ps-0 mb-2 text-md font-medium 
+                                        text-gray-800">
+                                        <div className="px-4 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
+                                            <FaLink />
+                                        </div>
+                                        <a href={link} target="blank">{link}</a>
+                                    </div>
+                                    <hr></hr>
+                                </div>
+                            ))}
+                        </div>
+                );
             default:
                 return (
                     <div className={`flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
@@ -253,7 +303,7 @@ const ConversationInfo = () => {
     return (
         activeTab !== 'default' ? (
             <div className={`flex flex-col gap-4 w-[33%] min-h-[96vh] max-h-[96vh] overflow-y-auto 
-                bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
+                bg-white pt-1 px-3 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}`}
             >
                 <div className="flex items-center gap-2 p-2">
@@ -265,28 +315,31 @@ const ConversationInfo = () => {
                     <p className="text-lg font-semibold">File phương tiện, file và liên kết</p>
                 </div>
 
-                <div className="flex justify-between border-b">
+                <div className="flex justify-between border border-gray-200 rounded-full">
                     <button
-                        className={`p-2 flex-1 text-center ${activeTab === 'media' ? 'font-semibold border-b-2 border-blue-500' : 'text-gray-500'}`}
+                        className={`rounded-full p-2 text-center font-semibold 
+                            ${activeTab === 'media' ? 'text-black bg-gray-200' : 'text-gray-500'}`}
                         onClick={() => setActiveTab('media')}
                     >
-                        Phương tiện
+                        File phương tiện
                     </button>
                     <button
-                        className={`p-2 flex-1 text-center ${activeTab === 'files' ? 'font-semibold border-b-2 border-blue-500' : 'text-gray-500'}`}
+                        className={`rounded-full p-2 flex-1 text-center font-semibold 
+                            ${activeTab === 'files' ? 'text-black bg-gray-200' : 'text-gray-500'}`}
                         onClick={() => setActiveTab('files')}
                     >
-                        Tệp
+                        File
                     </button>
                     <button
-                        className={`p-2 flex-1 text-center ${activeTab === 'links' ? 'font-semibold border-b-2 border-blue-500' : 'text-gray-500'}`}
+                        className={`rounded-full p-2 flex-1 text-center font-semibold 
+                            ${activeTab === 'links' ? 'text-black bg-gray-200' : 'text-gray-500'}`}
                         onClick={() => setActiveTab('links')}
                     >
                         Liên kết
                     </button>
                 </div>
 
-                <div className="p-4 overflow-y-auto">
+                <div className="p-2 flex justify-center">
                     {renderTabContent()}
                 </div>
             </div>
