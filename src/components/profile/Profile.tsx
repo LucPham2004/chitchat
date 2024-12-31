@@ -1,16 +1,69 @@
 import { BsPencilSquare } from "react-icons/bs";
 import { IoChatbubblesSharp, IoLogoYoutube, IoSettings } from "react-icons/io5";
-import { PiHandWavingFill } from "react-icons/pi";
+import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { FaFacebook, FaInstagramSquare, FaTiktok } from "react-icons/fa";
+import { FaArrowLeft, FaCameraRetro, FaEdit, FaFacebook, FaInstagramSquare, FaTiktok } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 
 const Profile = () => {
+    const [showMenu, setShowMenu] = useState(false);
+    const [inputUrl, setInputUrl] = useState("");
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const navigate = useNavigate();
+
+    const goBack = () => {
+        navigate(-1);
+    };
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            setSelectedFile(file);
+        }
+    };
+
+    const handleUpdate = async () => {
+        try {
+            // let newImageUrl = imageUrl;
+
+            // if (selectedFile) {
+            //     const uploadResult = await uploadGroupImage(selectedFile, groupId);
+            //     newImageUrl = uploadResult.secure_url;
+            // } else if (inputUrl.trim() !== "") {
+            //     newImageUrl = inputUrl;
+            // }
+
+            // const groupResponse = await editGroup({
+            //     groupId,
+            //     adminId,
+            //     name: group?.name,
+            //     imageUrl: newImageUrl,
+            //     privacy: GroupPrivacy.PUBLIC
+            // });
+            // console.log(groupResponse);
+
+            // // 3. Cập nhật giao diện
+            // setImageUrl(newImageUrl);
+            // setInputUrl("");
+            // setSelectedFile(null);
+            // setShowMenu(false);
+        } catch (error) {
+            console.error("Lỗi khi cập nhật nhóm:", error);
+        }
+    };
 
     return (
         <div className="min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex bg-white
             pb-0 rounded-xl border border-gray-200 shadow-sm overflow-y-auto">
-            <div className="flex flex-col w-full min-h-full">
+            <div className="relative flex flex-col w-full min-h-full">
+                <div className="absolute top-4 left-4 z-10">
+                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-white"
+                            onClick={goBack}>
+                        <FaArrowLeft />
+                    </button>
+                </div>
 
                 <div className="w-full h-[300px] relative self-start">
                     {/* Ảnh bìa */}
@@ -30,6 +83,57 @@ const Profile = () => {
                             className="w-40 h-40 rounded-full border-4 border-white object-cover"
                         />
                     </div>
+
+                    <div className="absolute right-2 bottom-2">
+                    {!showMenu ? (
+                        <button
+                            onClick={() => setShowMenu(true)}
+                            className="items-center text-xl bg-[#e4e6eba0] hover:bg-[#d8dadfcd] p-3 rounded-full"
+                        >
+                            <FaCameraRetro />
+                        </button>
+                    ) : (
+                        <div className="flex flex-col gap-2 text-sm bg-white w-64 shadow-md p-2 rounded-lg">
+                            {/* Tải ảnh lên */}
+                            <div className="w-full p-2 rounded-md hover:bg-gray-200 text-black cursor-pointer">
+                                <label className="flex flex-row gap-2 items-center cursor-pointer">
+                                    <PiUploadSimpleFill />
+                                    <span className="text-black font-semibold">Tải ảnh lên</span>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleFileChange}
+                                    />
+                                </label>
+                            </div>
+                            <div className="w-full p-2 rounded-md hover:bg-gray-200 text-black">
+                                <input
+                                    type="text"
+                                    placeholder="Nhập URL ảnh"
+                                    value={inputUrl}
+                                    onChange={(e) => setInputUrl(e.target.value)}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
+                            {/* Nhập URL ảnh */}
+                            <div className="flex flex-row gap-2">
+                                <button
+                                    onClick={handleUpdate}
+                                    className="bg-blue-100 text-blue-500 w-[70%] p-2 rounded-md hover:bg-blue-200"
+                                >
+                                    Cập nhật
+                                </button>
+                                <button
+                                    onClick={() => setShowMenu(false)}
+                                    className="bg-blue-100 text-blue-500 w-[30%] p-2 rounded-md hover:bg-blue-200"
+                                >
+                                    Huỷ
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
                 </div>
 
                 <div>
