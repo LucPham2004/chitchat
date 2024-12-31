@@ -25,7 +25,7 @@ const Conversations = () => {
                 <SearchBar />
             </div>
 
-            <div className="flex flex-col items-center w-full h-full p-2 py-1 overflow-y-auto">
+            <div className="flex flex-col items-center w-full h-full py-1 overflow-y-auto">
                 <ConversationList />
             </div>
         </div>
