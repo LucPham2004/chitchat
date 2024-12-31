@@ -200,7 +200,7 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-row justify-between px-8 py-2">
+                <div className="flex flex-row items-center justify-between gap-4 px-8 py-2">
 
                     <div className="flex flex-col items-start justify-between gap-2 max-w-[420px] p-2 rounded-xl 
                         bg-blue-50 border-2 border-blue-400">
@@ -238,9 +238,7 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-start justify-start gap-2 p-2 rounded-xl bg-blue-50 
-                        border-2 border-blue-400">
-                        <p className="font-semibold ps-2">Liên kết cá nhân</p>
+                    <div className="flex flex-col items-start justify-start gap-2 p-2 rounded-xl ">
                         <div className="flex flex-row gap-3 justify-evenly flex-wrap max-w-[300px]">
                             <div className="w-[60px] flex items-center justify-center">
                                 <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
