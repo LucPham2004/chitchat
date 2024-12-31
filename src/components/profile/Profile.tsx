@@ -3,7 +3,7 @@ import { IoChatbubblesSharp, IoLogoYoutube, IoSettings } from "react-icons/io5";
 import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaEdit, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 
@@ -76,7 +76,7 @@ const Profile = () => {
             pb-0 rounded-xl border border-gray-200 shadow-sm overflow-y-auto">
             <div className="relative flex flex-col w-full min-h-full">
                 <div className="absolute top-4 left-4 z-10">
-                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-white"
+                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-100"
                         onClick={goBack}>
                         <FaArrowLeft />
                     </button>
@@ -156,9 +156,9 @@ const Profile = () => {
                 <div>
                     <div className="flex flex-row justify-between p-8 pb-2">
                         <div className="flex flex-col items-start mt-12 max-w-[25%]">
-                            <h2 className="text-2xl font-bold text-gray-800 font-sans">Cristiano Ronaldo</h2>
-                            <p className="text-lg text-gray-600 font-serif">Sofware Developer</p>
-                            <p className="text-lg text-gray-600 font-serif">Hà Nội, Việt Nam</p>
+                            <h2 className="text-2xl font-bold text-gray-800">Cristiano Ronaldo</h2>
+                            <p className="text-lg text-gray-600">Sofware Developer</p>
+                            <p className="text-lg text-gray-600">Hà Nội, Việt Nam</p>
                         </div>
 
                         <div className="flex flex-row gap-4 items-center justify-center max-w-[30%] max-h-[136px]">
@@ -169,30 +169,30 @@ const Profile = () => {
 
                         <div className="flex flex-col items-end gap-2 pt-4">
                             {/* <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-blue-700 text-blue-700 bg-white 
+                               border-2 border-blue-700 text-blue-700 bg-white 
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
+                                rounded-full shadow-md transition duration-200">
                                 <IoChatbubblesSharp />
                                 <p className="font-semibold">Gửi tin nhắn</p>
                             </button>
                             <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-blue-700 text-blue-700 bg-white 
+                               border-2 border-blue-700 text-blue-700 bg-white 
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
+                                rounded-full shadow-md transition duration-200">
                                 <PiHandWavingFill />
                                 <p className="font-semibold px-0.5">Gửi kết bạn</p>
                             </button> */}
                             <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-black text-white bg-black 
+                               border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
-                                rounded-full shadow-md transition duration-300">
+                                rounded-full shadow-md transition duration-200">
                                 <BiSolidEditAlt />
                                 <p className="font-semibold">Chỉnh sửa</p>
                             </button>
                             <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-black text-black bg-white 
+                               border-2 border-black text-black bg-white 
                                 hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
+                                rounded-full shadow-md transition duration-200">
                                 <IoSettings />
                                 <p className="font-semibold px-0.5">Cài đặt</p>
                             </button>
@@ -204,7 +204,7 @@ const Profile = () => {
 
                     <div className="flex flex-col items-start justify-between gap-2 max-w-[420px] p-2 rounded-xl 
                         bg-blue-50 border-2 border-blue-400">
-                        <p className="font-semibold font-mono">Bạn có tổng cộng 953 người bạn</p>
+                        <p className="font-semibold">Bạn có tổng cộng 953 người bạn</p>
                         <div className="flex items-center -space-x-2">
                             {users.map((user) => (
                                 <div key={user.id} className="relative group">
@@ -225,94 +225,96 @@ const Profile = () => {
                         </div>
                         <div className="flex items-center gap-2">
                             <p>Lionel Messi, Neymar.JR, Benzema và 950 người khác</p>
-                            <button className="flex gap-2 items-center text-md min-w-fit h-12 border-2 
-                                border-blue-700 text-blue-700 bg-white 
-                                hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-300 py-2 px-3"
-                            >
-                                <p>Tất cả</p>
-                                <FaArrowRight />
-                            </button>
+                            <Link to={"/profile/friends"}>
+                                <button className="flex gap-2 items-center text-md min-w-max h-12 bordr-2 
+                                border-black text-black bg-white 
+                                hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
+                                rounded-full shadow-md transition duration-200 py-2 px-3"
+                                >
+                                    <p>Tất cả</p>
+                                    <FaArrowRight />
+                                </button>
+                            </Link>
                         </div>
                     </div>
 
                     <div className="flex flex-col items-start justify-start gap-2 p-2 rounded-xl bg-blue-50 
                         border-2 border-blue-400">
-                        <p className="font-semibold font-mono ps-2">Liên kết cá nhân</p>
-                    <div className="flex flex-row gap-2 justify-evenly flex-wrap max-w-[580px]">
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-blue-600 text-blue-600 bg-white 
-                                hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaFacebook />
-                                <p className="font-semibold">Facebook</p>
-                            </button>
+                        <p className="font-semibold ps-2">Liên kết cá nhân</p>
+                        <div className="flex flex-row gap-3 justify-evenly flex-wrap max-w-[300px]">
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-600 text-blue-600 bg-white 
+                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaFacebook />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-pink-600 text-pink-500 bg-white 
+                                    hover:bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaInstagramSquare />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-600 text-blue-600 bg-white 
+                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaLinkedin />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-black text-black bg-white 
+                                    hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaTiktok />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-600 text-blue-600 bg-white 
+                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaXTwitter />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-red-500 text-red-500 bg-white 
+                                    hover:bg-gradient-to-r from-red-500 to-red-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <IoLogoYoutube />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-700 text-blue-700 bg-white 
+                                    hover:bg-gradient-to-r from-blue-600 to-blue-700 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaDiscord />
+                                    
+                                </button>
+                            </div>
+                            <div className="w-[60px] flex items-center justify-center">
+                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-gray-700 text-gray-700 bg-white 
+                                    hover:bg-gradient-to-r from-gray-700 to-gray-800 hover:text-white 
+                                    rounded-full shadow-md transition duration-200">
+                                    <FaGithub />
+                                    
+                                </button>
+                            </div>
                         </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-pink-600 text-pink-500 bg-white 
-                                hover:bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaInstagramSquare />
-                                <p className="font-semibold">Instagram</p>
-                            </button>
-                        </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-blue-600 text-blue-600 bg-white 
-                                hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaLinkedin />
-                                <p className="font-semibold">LinkedIn</p>
-                            </button>
-                        </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-black text-black bg-white 
-                                hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaTiktok />
-                                <p className="font-semibold">TikTok</p>
-                            </button>
-                        </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-blue-600 text-blue-600 bg-white 
-                                hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaXTwitter />
-                                <p className="font-semibold">Twitter</p>
-                            </button>
-                        </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-red-500 text-red-500 bg-white 
-                                hover:bg-gradient-to-r from-red-500 to-red-600 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <IoLogoYoutube />
-                                <p className="font-semibold">Youtube</p>
-                            </button>
-                        </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-blue-700 text-blue-700 bg-white 
-                                hover:bg-gradient-to-r from-blue-600 to-blue-700 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaDiscord />
-                                <p className="font-semibold">Discord</p>
-                            </button>
-                        </div>
-                        <div className="w-[135px] flex items-center justify-center">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                                border-2 border-black text-black bg-white 
-                                hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                rounded-full shadow-md transition duration-300">
-                                <FaGithub />
-                                <p className="font-semibold">GitHub</p>
-                            </button>
-                        </div>
-                    </div>
                     </div>
                 </div>
             </div>

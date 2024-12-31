@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Conversations from "../components/homeview/conversations/Conversations";
 import Profile from "../components/profile/Profile";
+import { Outlet } from "react-router-dom";
 
 
 
@@ -13,7 +14,7 @@ const ProfileView = () => {
 				<Conversations />
 			</div>
 			<div className={`w-[74%]`}>
-				<Profile />
+				<Outlet />
 			</div>
 		</div>
 	);
