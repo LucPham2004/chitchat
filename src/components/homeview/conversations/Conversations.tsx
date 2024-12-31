@@ -35,7 +35,7 @@ const Conversations = () => {
                                     <Link to={"/profile"}>
                                         <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
                                             <img src="/avatar.jpg" className="w-8 h-8 rounded-full"/>
-                                            Hồ sơ
+                                            Cristiano Ronaldo
                                         </li>
                                     </Link>
                                     <hr></hr>
