@@ -183,7 +183,7 @@ const ConversationInfo = () => {
             case 'media':
                 return (
                     mediaList.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center text-center p-1 w-60 h-60">
+                        <div className="flex flex-col items-center justify-center text-center w-60 h-60">
                             <p className="text-md text-black font-semibold">Không có file phương tiện nào</p>
                             <p className="text-sm text-gray-500">Ảnh và video các bạn trao đổi với nhau sẽ hiện ở đây</p>
                         </div>
@@ -201,9 +201,9 @@ const ConversationInfo = () => {
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
                             {fileList.map((file, index) => (
                                 <div>
-                                    <div key={index} className="flex items-center gap-2 p-2 pb-0 ps-0 mb-2 text-md font-medium 
+                                    <div key={index} className="flex items-center gap-2 pt-2 mb-2 text-md font-medium 
                                         text-gray-800">
-                                        <div className="text-lg px-4 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
+                                        <div className="text-lg px-2 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
                                             <FaFileAlt />
                                         </div>
                                         <p>{file}</p>
@@ -224,12 +224,12 @@ const ConversationInfo = () => {
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
                             {linkList.map((link, index) => (
                                 <div>
-                                    <div key={index} className="flex items-center gap-2 p-2 pb-0 ps-0 mb-2 text-md font-medium 
+                                    <div key={index} className="flex items-center gap-2 pt-2 mb-2 text-md font-medium 
                                         text-gray-800">
-                                        <div className="px-4 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
+                                        <div className="px-2 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
                                             <FaLink />
                                         </div>
-                                        <a href={link} target="blank">{link}</a>
+                                        <a href={link} target="blank" className="ps-0.5">{link}</a>
                                     </div>
                                     <hr></hr>
                                 </div>
@@ -339,7 +339,7 @@ const ConversationInfo = () => {
                     </button>
                 </div>
 
-                <div className="p-2 flex justify-center">
+                <div className="p-2 pe-0 flex justify-center">
                     {renderTabContent()}
                 </div>
             </div>
