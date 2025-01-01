@@ -1,4 +1,5 @@
 import { Conversation } from "./types/Conversation";
+import { Friend } from "./types/Friend";
 
 export const conversations: Conversation[] = [
 	{
@@ -167,6 +168,68 @@ export const linkUrls = [
 	'https://images.unsplash.com/photo-1504826260979-242151ee45b7',
   ];
   
+  export const friendsData: Friend[] = [
+    {
+        id: "1",
+        name: "John Doe",
+        avatar: "https://randomuser.me/api/portraits/men/1.jpg",
+        mutualFriends: 5,
+    },
+    {
+        id: "2",
+        name: "Jane Smith",
+        avatar: "https://randomuser.me/api/portraits/women/2.jpg",
+        mutualFriends: 8,
+    },
+    {
+        id: "3",
+        name: "Michael Johnson",
+        avatar: "https://randomuser.me/api/portraits/men/3.jpg",
+        mutualFriends: 12,
+    },
+    {
+        id: "4",
+        name: "Emily Davis",
+        avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+        mutualFriends: 7,
+    },
+    {
+        id: "5",
+        name: "Chris Wilson",
+        avatar: "https://randomuser.me/api/portraits/men/5.jpg",
+        mutualFriends: 3,
+    },
+    {
+        id: "6",
+        name: "Olivia Brown",
+        avatar: "https://randomuser.me/api/portraits/women/6.jpg",
+        mutualFriends: 10,
+    },
+    {
+        id: "7",
+        name: "Daniel White",
+        avatar: "https://randomuser.me/api/portraits/men/7.jpg",
+        mutualFriends: 6,
+    },
+    {
+        id: "8",
+        name: "Sophia Martinez",
+        avatar: "https://randomuser.me/api/portraits/women/8.jpg",
+        mutualFriends: 4,
+    },
+    {
+        id: "9",
+        name: "James Taylor",
+        avatar: "https://randomuser.me/api/portraits/men/9.jpg",
+        mutualFriends: 9,
+    },
+    {
+        id: "10",
+        name: "Isabella Anderson",
+        avatar: "https://randomuser.me/api/portraits/women/10.jpg",
+        mutualFriends: 11,
+    },
+];
 
 
 

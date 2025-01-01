@@ -183,14 +183,14 @@ const Profile = () => {
                                 <p className="font-semibold px-0.5">Gửi kết bạn</p>
                             </button> */}
                             <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                               border-2 border-black text-white bg-black 
+                                border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
                                 rounded-full shadow-md transition duration-200">
                                 <BiSolidEditAlt />
                                 <p className="font-semibold">Chỉnh sửa</p>
                             </button>
                             <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                               border-2 border-black text-black bg-white 
+                                border-2 border-black text-black bg-white 
                                 hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
                                 rounded-full shadow-md transition duration-200">
                                 <IoSettings />
@@ -226,7 +226,7 @@ const Profile = () => {
                         <div className="flex items-center gap-2">
                             <p>Lionel Messi, Neymar.JR, Benzema và 950 người khác</p>
                             <Link to={"/profile/friends"}>
-                                <button className="flex gap-2 items-center text-md min-w-max h-12 bordr-2 
+                                <button className="flex gap-2 items-center text-md min-w-max h-12 border-2 
                                 border-black text-black bg-white 
                                 hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
                                 rounded-full shadow-md transition duration-200 py-2 px-3"
