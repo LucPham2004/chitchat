@@ -1,5 +1,6 @@
 import { Conversation } from "./types/Conversation";
 import { Friend } from "./types/Friend";
+import { PinnedMessage } from "./types/Message";
 
 export const conversations: Conversation[] = [
 	{
@@ -233,6 +234,41 @@ export const linkUrls = [
 
 
 
+export const pinnedMessagesData: PinnedMessage[] = [
+    {
+      id: '1',
+	  user: 'Alice',
+      name: 'Alice',
+	  avatar: 'https://randomuser.me/api/portraits/men/9.jpg',
+      message: 'Remember the meeting at 10 AM tomorrow.',
+      timestamp: '2024-01-01T10:00:00Z'
+    },
+    {
+      id: '2',
+	  user: 'Bob',
+      name: 'Bob',
+	  avatar: "https://randomuser.me/api/portraits/men/7.jpg",
+      message: 'Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.Deadline for project submission is next Friday.',
+      timestamp: '2024-01-02T15:30:00Z'
+    },
+    {
+      id: '3',
+	  user: 'Charlie',
+      name: 'Charlie',
+	  avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+      message: 'Happy New Year everyone!',
+      timestamp: '2024-01-01T00:00:00Z'
+    },
+	
+    {
+		id: '4',
+		user: 'Charlie',
+		name: 'Charlie',
+		avatar: "https://randomuser.me/api/portraits/women/4.jpg",
+		message: 'Happy New Year everyone!',
+		timestamp: '2024-01-01T00:00:00Z'
+	  }
+];
 
 
 

@@ -12,6 +12,7 @@ import { ImBlocked } from "react-icons/im";
 import ParticipantCard from "./ParticipantCard";
 import MediaGrid from "./MediaGrid";
 import { linkUrls } from "../../../../FakeData";
+import { PinnedMessageModalOpenProps } from "../ChatAndInfo";
 
 
 interface AccordionItem {
@@ -19,7 +20,7 @@ interface AccordionItem {
     content: ReactNode;
 }
 
-const ConversationInfo = () => {
+const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({ togglePinnedMessageModalOpen }) => {
 
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
 
@@ -36,7 +37,8 @@ const ConversationInfo = () => {
             title: 'Thông tin về đoạn chat',
             content: (
                 <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                text-gray-800 rounded-lg hover:bg-gray-100">
+                text-gray-800 rounded-lg hover:bg-gray-100"
+                    onClick={togglePinnedMessageModalOpen}>
                     <div className="bg-gray-200 rounded-full p-1 text-xl">
                         <TiPin />
                     </div>
