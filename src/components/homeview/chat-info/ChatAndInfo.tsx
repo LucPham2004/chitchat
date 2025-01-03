@@ -5,11 +5,13 @@ import { ChangeWidthProps } from "../../../views/HomeView";
 import Modal from "../../modals/Modal";
 import { pinnedMessagesData } from "../../../FakeData";
 import ChatMessage from "./mainchat/ChatMessage";
+import EmojiPicker from "emoji-picker-react";
 
 
 export interface PinnedMessageModalOpenProps {
     togglePinnedMessageModalOpen: () => void;
     toggleChangeConversationNameModalOpen: () => void;
+    toggleChangeConversationEmojiModalOpen: () => void;
 }
 
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
@@ -19,8 +21,13 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const [isChangeConversationNameModalOpen, setIsChangeConversationNameModalOpen] = useState(false);
     const toggleChangeConversationNameModalOpen = () => setIsChangeConversationNameModalOpen(!isChangeConversationNameModalOpen);
 
+    const [isChangeConversationEmojiModalOpen, setIsChangeConversationEmojiModalOpen] = useState(false);
+    const toggleChangeConversationEmojiModalOpen = () => setIsChangeConversationEmojiModalOpen(!isChangeConversationEmojiModalOpen);
+
     const [inputValue, setInputValue] = useState('');
     const [charCount, setCharCount] = useState<number>(0);
+
+
     const pinnedMessages = pinnedMessagesData;
 
     return (
@@ -32,7 +39,8 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
             <div className={`transition-all duration-100 ${isChangeWidth ? 'w-0' : 'w-[33%]'}`}>
                 <ConversationInfo 
                     togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
-                    toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}/>
+                    toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
+                    toggleChangeConversationEmojiModalOpen={toggleChangeConversationEmojiModalOpen}/>
             </div>
 
             {/* Pinned Messages Modal */}
@@ -83,6 +91,14 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                                   }
                             }}/>
                     </div>
+                </div>
+            </Modal>
+
+            {/* Change Chat Emoji Modal */}
+            <Modal isOpen={isChangeConversationEmojiModalOpen} onClose={() => setIsChangeConversationEmojiModalOpen(false)}>
+                <h2 className="text-lg font-bold mb-3">Biểu tượng cảm xúc</h2>
+                <div className="flex flex-col items-start justify-start w-full">
+                    <EmojiPicker width={420} height={420}/>
                 </div>
             </Modal>
 

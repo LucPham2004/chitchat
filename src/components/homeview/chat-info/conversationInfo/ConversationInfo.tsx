@@ -13,6 +13,7 @@ import ParticipantCard from "./ParticipantCard";
 import MediaGrid from "./MediaGrid";
 import { linkUrls } from "../../../../FakeData";
 import { PinnedMessageModalOpenProps } from "../ChatAndInfo";
+import { Link } from "react-router-dom";
 
 
 interface AccordionItem {
@@ -22,7 +23,8 @@ interface AccordionItem {
 
 const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({ 
     togglePinnedMessageModalOpen,
-    toggleChangeConversationNameModalOpen
+    toggleChangeConversationNameModalOpen,
+    toggleChangeConversationEmojiModalOpen
  }) => {
 
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
@@ -33,6 +35,11 @@ const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({
                 ? prev.filter((i) => i !== index)
                 : [...prev, index]
         );
+    };
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+    const toggleUserMenu = () => {
+        setIsUserMenuOpen(!isUserMenuOpen);
     };
 
     const sections: AccordionItem[] = [
@@ -71,7 +78,8 @@ const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({
                     </button>
 
                     <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    text-gray-800 rounded-lg hover:bg-gray-100"
+                        onClick={toggleChangeConversationEmojiModalOpen}>
                         <div className="bg-gray-200 rounded-full p-1.5 text-md">
                             🐧
                         </div>
@@ -91,8 +99,34 @@ const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({
         {
             title: 'Các thành viên trong đoạn chat',
             content: (
-                <div>
-                    <ParticipantCard id={"1"} avatar={"/avatar.jpg"} name={"Tiến Lực"} />
+                <div className="relative">
+                    <ParticipantCard id={"1"} avatar={"/avatar.jpg"} name={"Tiến Lực"} toggleUserMenu={toggleUserMenu}/>
+                    {isUserMenuOpen && (
+                            <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
+                                <ul className="text-gray-700 p-1">
+                                    <Link to={"/profile"}>
+                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                            <img src="/avatar.jpg" className="w-8 h-8 rounded-full"/>
+                                            Xem trang cá nhân
+                                        </li>
+                                    </Link>
+                                    <hr></hr>
+                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                        <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                            
+                                        </button>
+                                        Nhắn tin
+                                    </li>
+                                    <hr></hr>
+                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                        <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                            <FiLogOut />
+                                        </button>
+                                        Chặn
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
                 </div>
             ),
         },

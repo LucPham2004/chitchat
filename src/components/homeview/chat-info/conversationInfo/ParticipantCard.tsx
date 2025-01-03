@@ -4,9 +4,10 @@ export interface Participant {
     id: string;
     avatar: string;
     name: string;
+    toggleUserMenu?: () => void;
 }
 
-const ParticipantCard: React.FC<Participant> = ({ id, avatar, name }) => {
+const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMenu }) => {
     return (
         <div className="flex flex-row justify-between p-2">
             <div className="flex items-center gap-2">
@@ -16,7 +17,8 @@ const ParticipantCard: React.FC<Participant> = ({ id, avatar, name }) => {
                 </div>
             </div>
 
-            <button className="self-end rounded-full hover:bg-gray-200 p-1 text-center text-3xl font-semibold">
+            <button className="self-end rounded-full hover:bg-gray-200 p-1 text-center text-3xl font-semibold"
+                onClick={toggleUserMenu}>
                 <PiDotsThreeBold />
             </button>
         </div>
