@@ -20,7 +20,10 @@ interface AccordionItem {
     content: ReactNode;
 }
 
-const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({ togglePinnedMessageModalOpen }) => {
+const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({ 
+    togglePinnedMessageModalOpen,
+    toggleChangeConversationNameModalOpen
+ }) => {
 
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
 
@@ -51,7 +54,8 @@ const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({ togglePinnedM
             content: (
                 <div>
                     <button className="flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    text-gray-800 rounded-lg hover:bg-gray-100">
+                    text-gray-800 rounded-lg hover:bg-gray-100"
+                        onClick={toggleChangeConversationNameModalOpen}>
                         <div className="bg-gray-200 rounded-full p-2 text-lg">
                             <FaPenNib />
                         </div>
