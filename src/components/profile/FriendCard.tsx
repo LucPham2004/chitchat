@@ -1,9 +1,13 @@
 import { PiDotsThreeOutline } from "react-icons/pi";
 import { Friend } from "../../types/Friend";
 
+export interface FriendCardProps {
+    friend: Friend;
+    isOpen: boolean;
+    toggleFriendMenuOpen?: () => void;
+}
 
-
-const FriendCard = ({ friend }: { friend: Friend }) => {
+const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuOpen }) => {
     return (
         <div className="min-w-[480px] flex items-center justify-between gap-4 p-2 border border-gray-100 rounded-lg shadow-sm">
             <div className="flex items-center gap-4">
@@ -13,7 +17,8 @@ const FriendCard = ({ friend }: { friend: Friend }) => {
                     <p className="text-sm font-semibold">{friend.mutualFriends} bạn chung</p>
                 </div>
             </div>
-            <button className="rounded-full hover:bg-gray-200 p-2 text-center text-2xl font-semibold">
+            <button className={`rounded-full hover:bg-gray-200 p-2 text-center text-2xl font-semibold ${isOpen ? 'bg-gray-200' : ''}`}
+                onClick={toggleFriendMenuOpen}>
                 <PiDotsThreeOutline />
             </button>
         </div>
