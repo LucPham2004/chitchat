@@ -6,6 +6,11 @@ import Modal from "../../modals/Modal";
 import { pinnedMessagesData } from "../../../FakeData";
 import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
+import ParticipantCard from "./conversationInfo/ParticipantCard";
+import { Link } from "react-router-dom";
+import { FiLogOut } from "react-icons/fi";
+import { IoChatbubblesSharp } from "react-icons/io5";
+import { ImBlocked } from "react-icons/im";
 
 
 export interface PinnedMessageModalOpenProps {
@@ -24,9 +29,18 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const [isChangeConversationEmojiModalOpen, setIsChangeConversationEmojiModalOpen] = useState(false);
     const toggleChangeConversationEmojiModalOpen = () => setIsChangeConversationEmojiModalOpen(!isChangeConversationEmojiModalOpen);
 
+    const [isShowConversationMembersModalOpen, setIsShowConversationMembersModalOpen] = useState(false);
+    const toggleShowConversationMembersModalOpen = () => setIsShowConversationMembersModalOpen(!isShowConversationMembersModalOpen);
+
     const [inputValue, setInputValue] = useState('');
     const [charCount, setCharCount] = useState<number>(0);
 
+    
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+    const toggleUserMenu = () => {
+        setIsUserMenuOpen(!isUserMenuOpen);
+    };
 
     const pinnedMessages = pinnedMessagesData;
 
@@ -34,7 +48,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         <div className="min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center bg-gray-100
             pb-0">
             <div className={`transition-all duration-100 ${isChangeWidth ? 'w-full me-0' : 'w-[66%] me-4'}`}>
-                <MainChat toggleChangeWidth={toggleChangeWidth} isChangeWidth={isChangeWidth} />
+                <MainChat toggleChangeWidth={toggleChangeWidth} toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
             </div>
             <div className={`transition-all duration-100 ${isChangeWidth ? 'w-0' : 'w-[33%]'}`}>
                 <ConversationInfo 
@@ -102,6 +116,39 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 </div>
             </Modal>
 
+            {/* Show Conversation members Modal */}
+            <Modal isOpen={isShowConversationMembersModalOpen} onClose={() => setIsShowConversationMembersModalOpen(false)}>
+                <h2 className="text-lg font-bold mb-3">Thành viên</h2>
+                <div className="relative flex flex-col w-full">
+                    <ParticipantCard id={"1"} avatar={"/avatar.jpg"} name={"Tiến Lực"} toggleUserMenu={toggleUserMenu}/>
+                    {isUserMenuOpen && (
+                            <div className="absolute top-10 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
+                                <ul className="text-gray-700 p-1">
+                                    <Link to={"/profile"}>
+                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                            <img src="/avatar.jpg" className="w-8 h-8 rounded-full"/>
+                                            Xem trang cá nhân
+                                        </li>
+                                    </Link>
+                                    <hr></hr>
+                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                        <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                            <IoChatbubblesSharp />
+                                        </button>
+                                        Nhắn tin
+                                    </li>
+                                    <hr></hr>
+                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                        <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                            <ImBlocked />
+                                        </button>
+                                        Chặn
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
+                </div>
+            </Modal>
         </div>
     );
 }

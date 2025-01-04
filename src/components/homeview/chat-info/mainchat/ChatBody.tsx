@@ -19,7 +19,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, name }) => {
     // Cuộn đến cuối mỗi khi danh sách tin nhắn thay đổi
     useEffect(() => {
         // Cuộn đến cuối
-        chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        chatEndRef.current?.scrollIntoView({ behavior: 'instant' });
     }, [messages]);
     
     return (

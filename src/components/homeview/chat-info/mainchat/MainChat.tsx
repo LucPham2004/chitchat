@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
 import ChatBody, { MessageObject } from "./ChatBody"
-import ChatHeader from "./ChatHeader"
+import ChatHeader, { ChatHeaderProps } from "./ChatHeader"
 import ChatInput from "./ChatInput"
 import { ChangeWidthProps } from "../../../../views/HomeView"
 
 
 
-const MainChat: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
+const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConversationMembersModalOpen }) => {
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
 
@@ -59,7 +59,7 @@ const MainChat: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth
     return (
         <div className="min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
             rounded-xl border border-gray-200 shadow-sm">
-            <ChatHeader toggleChangeWidth={toggleChangeWidth} />
+            <ChatHeader toggleChangeWidth={toggleChangeWidth} toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
             <ChatBody messages={messages} name={'john'} />
             <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />
         </div>
