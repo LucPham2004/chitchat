@@ -9,7 +9,7 @@ export interface FriendCardProps {
 
 const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuOpen }) => {
     return (
-        <div className="min-w-[480px] flex items-center justify-between gap-4 p-2 border border-gray-100 rounded-lg shadow-sm">
+        <div className="min-w-[500px] flex items-center justify-between gap-4 p-2 border border-gray-100 rounded-lg shadow-sm">
             <div className="flex items-center gap-4">
                 <img src={friend.avatar} alt={friend.name} className="w-24 h-24 rounded-lg object-cover" />
                 <div className="flex flex-col items-start text-gray-600">

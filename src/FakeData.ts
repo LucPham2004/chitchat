@@ -55,7 +55,7 @@ export const conversations: Conversation[] = [
 	{
 		id: '8',
 		name: 'Cristiano Ronaldo',
-		lastMessage: 'See you then!',
+		lastMessage: 'World Cup will be minnneeee!',
 		avatar: 'https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA',
 		time: '7 giờ',
 	},
@@ -97,7 +97,7 @@ export const conversations: Conversation[] = [
 	{
 		id: '14',
 		name: 'Cristiano Ronaldo',
-		lastMessage: 'See you then!',
+		lastMessage: 'World Cup will be minnneeee!',
 		avatar: 'https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA',
 		time: '7 giờ',
 	},
@@ -139,7 +139,7 @@ export const conversations: Conversation[] = [
 	{
 		id: '20',
 		name: 'Cristiano Ronaldo',
-		lastMessage: 'See you then!',
+		lastMessage: 'World Cup will be minnneeee!',
 		avatar: 'https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA',
 		time: '7 giờ',
 	},
