@@ -168,7 +168,7 @@ const Profile = () => {
                         </div>
 
                         <div className="flex flex-col items-end gap-2 pt-4">
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
+                            {/* <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
                                border-2 border-blue-700 text-blue-700 bg-white 
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
                                 rounded-full shadow-md transition duration-200">
@@ -181,7 +181,7 @@ const Profile = () => {
                                 rounded-full shadow-md transition duration-200">
                                 <PiHandWavingFill />
                                 <p className="font-semibold px-0.5">Gửi kết bạn</p>
-                            </button>
+                            </button> */}
                             <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
                                 border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
