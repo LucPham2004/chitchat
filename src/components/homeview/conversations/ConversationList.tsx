@@ -6,7 +6,7 @@ const ConversationList: React.FC = () => {
 
     return (
         <div className="w-full bg-white rounded-lg">
-            <ul className="">
+            <ul className="w-full">
                 {conversations.map((conv) => (
                     <li
                         key={conv.id}
@@ -17,12 +17,14 @@ const ConversationList: React.FC = () => {
                             alt={conv.name}
                             className="w-12 h-12 rounded-full mr-4 object-cover"
                         />
-                        <div className="flex-1">
+                        <div className="flex-1 max-w-[90%]">
                             <h4 className="text-md font-semibold text-gray-800">{conv.name}</h4>
-                            <p className="text-md text-gray-500 truncate">
-                                {conv.lastMessage}
-                                <span className="text-sm"> • {conv.time}</span>
-                            </p>
+                            <div className="w-full flex items-center">
+                                <p className="text-sm text-gray-500 truncate max-w-[80%] overflow-hidden text-ellipsis whitespace-nowrap">
+                                    {conv.lastMessage}
+                                </p>
+                                <span className="text-sm text-gray-500 "> • {conv.time}</span>
+                            </div>
                         </div>
                     </li>
                 ))}

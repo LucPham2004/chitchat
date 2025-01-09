@@ -19,7 +19,7 @@ const Conversations = () => {
             p-2 pb-0 pe-1 rounded-xl border border-gray-200 shadow-sm">
 
             <div className="flex flex-row items-center p-2 py-0 pe-4 self-start w-full">
-                <h2 className="flex self-start text-2xl font-bold text-left text-gray-800 w-[35%]"> Đoạn chat </h2>
+                <h2 className="flex self-start text-2xl font-bold text-left text-gray-800 w-[40%]"> Đoạn chat </h2>
                 <div className="relative flex flex-row gap-4 items-center justify-end w-[65%]">
                     <button className="p-2 rounded-full text-black text-xl bg-gray-100 hover:bg-gray-200">
                         <BsPencilSquare />
@@ -62,7 +62,7 @@ const Conversations = () => {
                 <SearchBar />
             </div>
 
-            <div className="flex flex-col items-center w-full h-full py-1 pe-2 overflow-y-auto">
+            <div className="flex flex-col items-center w-full h-full py-1 pe-2 overflow-y-auto overflow-x-hidden">
                 <ConversationList />
             </div>
         </div>

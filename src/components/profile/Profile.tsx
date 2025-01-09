@@ -156,8 +156,12 @@ const Profile = () => {
                 </div>
 
                 <div className="mb-5">
-                    <div className="flex flex-row justify-between p-8 pb-2">
-                        <div className={`flex flex-col items-start mt-12 ${deviceType == 'PC' ? 'max-w-[25%]' : 'max-w-[60%]'} `}>
+                    <div className={`flex ${deviceType == 'Mobile' ? 'flex-col' : 'flex-row'} justify-between p-8 pb-2`}>
+                        <div className={`flex flex-col items-start mt-12 
+                            ${
+                                deviceType == 'PC' ? 'max-w-[25%]' : 
+                                deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
+                            } `}>
                             <h2 className="text-2xl font-bold text-gray-800">Cristiano Ronaldo</h2>
                             <p className="text-lg text-gray-600">Sofware Developer</p>
                             <p className="text-lg text-gray-600">Hà Nội, Việt Nam</p>
@@ -186,17 +190,19 @@ const Profile = () => {
                                 <PiHandWavingFill />
                                 <p className="font-semibold px-0.5">Gửi kết bạn</p>
                             </button> */}
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
+                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                                ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                 border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
-                                rounded-full shadow-md transition duration-200">
+                                 shadow-md transition duration-200`}>
                                 <BiSolidEditAlt />
                                 <p className="font-semibold">Chỉnh sửa</p>
                             </button>
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
+                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
+                                ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                 border-2 border-black text-black bg-white 
                                 hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                rounded-full shadow-md transition duration-200">
+                                rounded-full shadow-md transition duration-200`}>
                                 <IoSettings />
                                 <p className="font-semibold px-0.5">Cài đặt</p>
                             </button>
