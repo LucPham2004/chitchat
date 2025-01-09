@@ -13,9 +13,9 @@ import UserCard from "./UserCard";
 
 const Friends = () => {
     const [activeTab, setActiveTab] = useState('allFriends');
-    const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
+    const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
 
-    const toggleFriendMenuOpen = (id: string) => {
+    const toggleFriendMenuOpen = (id: number) => {
         setSelectedFriendId(prevId => (prevId === id ? null : id)); 
     };
     const navigate = useNavigate();
@@ -91,7 +91,7 @@ const Friends = () => {
                                         <Link to={"/profile"}>
                                             <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg 
                                                 font-bold hover:bg-gray-100 cursor-pointer">
-                                                <img src={friend.avatar} className="w-8 h-8 rounded-full"/>
+                                                <img src={friend.avatarUrl} className="w-8 h-8 rounded-full"/>
                                                 Xem trang cá nhân
                                             </li>
                                         </Link>
@@ -132,7 +132,7 @@ const Friends = () => {
                                         <Link to={"/profile"}>
                                             <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg 
                                                 font-bold hover:bg-gray-100 cursor-pointer">
-                                                <img src={friend.avatar} className="w-8 h-8 rounded-full"/>
+                                                <img src={friend.avatarUrl} className="w-8 h-8 rounded-full"/>
                                                 Xem trang cá nhân
                                             </li>
                                         </Link>
@@ -173,7 +173,7 @@ const Friends = () => {
                                         <Link to={"/profile"}>
                                             <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg 
                                                 font-bold hover:bg-gray-100 cursor-pointer">
-                                                <img src={friend.avatar} className="w-8 h-8 rounded-full"/>
+                                                <img src={friend.avatarUrl} className="w-8 h-8 rounded-full"/>
                                                 Xem trang cá nhân
                                             </li>
                                         </Link>
@@ -214,7 +214,7 @@ const Friends = () => {
                                         <Link to={"/profile"}>
                                             <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg 
                                                 font-bold hover:bg-gray-100 cursor-pointer">
-                                                <img src={friend.avatar} className="w-8 h-8 rounded-full"/>
+                                                <img src={friend.avatarUrl} className="w-8 h-8 rounded-full"/>
                                                 Xem trang cá nhân
                                             </li>
                                         </Link>

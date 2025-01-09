@@ -6,6 +6,7 @@ import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaEdit, FaFacebook
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
+import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
 
 interface User {
     id: number;
@@ -14,6 +15,7 @@ interface User {
 }
 
 const Profile = () => {
+	const deviceType = useDeviceTypeByWidth();
     const [showMenu, setShowMenu] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -153,19 +155,21 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div>
+                <div className="mb-5">
                     <div className="flex flex-row justify-between p-8 pb-2">
-                        <div className="flex flex-col items-start mt-12 max-w-[25%]">
+                        <div className={`flex flex-col items-start mt-12 ${deviceType == 'PC' ? 'max-w-[25%]' : 'max-w-[60%]'} `}>
                             <h2 className="text-2xl font-bold text-gray-800">Cristiano Ronaldo</h2>
                             <p className="text-lg text-gray-600">Sofware Developer</p>
                             <p className="text-lg text-gray-600">Hà Nội, Việt Nam</p>
                         </div>
 
+                        {deviceType == 'PC' &&
                         <div className="flex flex-row gap-4 items-center justify-center max-w-[30%] max-h-[136px]">
                             <p className="text-center text-xl font-satisfy">
                                 Money doesn't buy happiness, it buys CRAZY-ASS happiness!
                             </p>
                         </div>
+                        }
 
                         <div className="flex flex-col items-end gap-2 pt-4">
                             {/* <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
@@ -200,9 +204,18 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className="flex flex-row items-center justify-between gap-4 px-8 py-2">
+                <div className={`flex items-center justify-between gap-8 px-8 py-2
+                    ${deviceType !== 'PC' ? 'flex-col' : 'flex-row'} `}>
+                    
+                    {deviceType !== 'PC' &&
+                        <div className="flex flex-row gap-4 items-center justify-center max-w-[80%] max-h-[136px]">
+                            <p className="text-center text-xl font-satisfy">
+                                Money doesn't buy happiness, it buys CRAZY-ASS happiness!
+                            </p>
+                        </div>
+                    }
 
-                    <div className="flex flex-col items-start justify-between gap-2 max-w-[420px] p-2 rounded-xl 
+                    <div className="flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
                         bg-blue-50 border-2 border-blue-400">
                         <p className="font-semibold">Bạn có tổng cộng 953 người bạn</p>
                         <div className="flex items-center -space-x-2">
