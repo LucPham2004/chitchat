@@ -14,10 +14,11 @@ import { ImBlocked } from "react-icons/im";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 
 
-export interface PinnedMessageModalOpenProps {
+export interface ConversationInfoProps {
     togglePinnedMessageModalOpen: () => void;
     toggleChangeConversationNameModalOpen: () => void;
     toggleChangeConversationEmojiModalOpen: () => void;
+    toggleChangeWidth: () => void;
 }
 
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
@@ -70,7 +71,9 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 <ConversationInfo 
                     togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
                     toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
-                    toggleChangeConversationEmojiModalOpen={toggleChangeConversationEmojiModalOpen}/>
+                    toggleChangeConversationEmojiModalOpen={toggleChangeConversationEmojiModalOpen}
+                    toggleChangeWidth={toggleChangeWidth}
+                />
             </div>
 
             {/* Pinned Messages Modal */}

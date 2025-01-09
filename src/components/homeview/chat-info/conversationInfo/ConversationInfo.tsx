@@ -12,8 +12,9 @@ import { ImBlocked } from "react-icons/im";
 import ParticipantCard from "./ParticipantCard";
 import MediaGrid from "./MediaGrid";
 import { linkUrls } from "../../../../FakeData";
-import { PinnedMessageModalOpenProps } from "../ChatAndInfo";
+import { ConversationInfoProps } from "../ChatAndInfo";
 import { Link } from "react-router-dom";
+import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 
 
 interface AccordionItem {
@@ -21,12 +22,14 @@ interface AccordionItem {
     content: ReactNode;
 }
 
-const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({ 
+const ConversationInfo: React.FC<ConversationInfoProps> = ({ 
     togglePinnedMessageModalOpen,
     toggleChangeConversationNameModalOpen,
-    toggleChangeConversationEmojiModalOpen
+    toggleChangeConversationEmojiModalOpen,
+    toggleChangeWidth
  }) => {
 
+	const deviceType = useDeviceTypeByWidth();
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
 
     const toggleAccordion = (index: number) => {
@@ -278,9 +281,17 @@ const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({
                 );
             default:
                 return (
-                    <div className={`flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
+                    <div className={`relative flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                         bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
                         ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}`}>
+
+                        {deviceType !== 'PC' &&
+                            <button className="absolute w-fit p-2 top-4 left-4 text-left text-xl font-medium 
+                                text-gray-800 rounded-full hover:bg-gray-100"
+                                onClick={() => toggleChangeWidth()}>
+                                <FaArrowLeft />
+                            </button>
+                        }
 
                         <div className="flex flex-col items-center gap-2 p-2">
                             <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
@@ -384,7 +395,7 @@ const ConversationInfo: React.FC<PinnedMessageModalOpenProps> = ({
                 </div>
             </div>
         ) : (
-            <div className={`w-full overflow-hidden bg-white
+            <div className={`w-full overflow-hidden bg-white rounded-xl
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}`}>
                 {renderTabContent()}
             </div>
