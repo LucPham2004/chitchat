@@ -13,7 +13,7 @@ const ConversationList: React.FC = () => {
                         className="flex items-center self-start p-2.5 rounded-lg hover:bg-gray-100 cursor-pointer"
                     >
                         <img
-                            src={conv.avatar}
+                            src={conv.avatarUrl}
                             alt={conv.name}
                             className="w-12 h-12 rounded-full mr-4 object-cover"
                         />

@@ -1,8 +1,8 @@
 export interface PinnedMessage {
-    id: string;
+    id: number;
     user: string;
     name: string;
-    avatar: string;
+    avatarUrl: string;
     message: string;
     timestamp: string;
 }

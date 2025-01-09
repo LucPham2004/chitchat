@@ -25,11 +25,11 @@ export interface UserUpdateRequest {
 export interface UserDTO {
     id: number;
     firstName: string;
-    lastName: string;
-    location: string;
-    isFriend: boolean;
+    lastName?: string;
+    location?: string;
+    isFriend?: boolean;
     avatarUrl: string;
-    friendNum: number;
+    friendNum?: number;
     mutualFriendsNum?: number | null;
 }
 

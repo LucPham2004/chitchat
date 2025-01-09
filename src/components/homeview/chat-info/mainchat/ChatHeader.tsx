@@ -10,7 +10,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowCo
         <div className="flex justify-between items-center w-full p-0.5 border-b border-gray-200">
             
             <div className="relative flex-1 flex items-center rounded-lg p-1
-                h-full max-w-fit hover:bg-gray-100 cursor-pointer gap-1"
+                h-full min-w-0 max-w-fit hover:bg-gray-100 cursor-pointer gap-1"
                 onClick={toggleShowConversationMembersModalOpen}>
                 <div className="p-1 rounded-lg hover:bg-gray-200 cursor-pointer">
                     <img

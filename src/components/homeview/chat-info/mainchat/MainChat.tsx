@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import ChatBody, { MessageObject } from "./ChatBody"
 import ChatHeader, { ChatHeaderProps } from "./ChatHeader"
 import ChatInput from "./ChatInput"
-import { ChangeWidthProps } from "../../../../views/HomeView"
 
 
 
@@ -58,7 +57,7 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConv
 
     return (
         <div className="min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
-            rounded-xl border border-gray-200 shadow-sm">
+            rounded-xl border border-gray-200 shadow-sm overflow-hidden">
             <ChatHeader toggleChangeWidth={toggleChangeWidth} toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
             <ChatBody messages={messages} name={'john'} />
             <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />

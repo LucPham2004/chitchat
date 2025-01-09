@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { FiLogOut } from "react-icons/fi";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
+import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 
 
 export interface PinnedMessageModalOpenProps {
@@ -20,6 +21,8 @@ export interface PinnedMessageModalOpenProps {
 }
 
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
+	const deviceType = useDeviceTypeByWidth();
+    
     const [isPinnedMessageModalOpen, setIsPinnedMessageModalOpen] = useState(false);
     const togglePinnedMessageModalOpen = () => setIsPinnedMessageModalOpen(!isPinnedMessageModalOpen);
 
@@ -47,10 +50,23 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     return (
         <div className="min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center bg-gray-100
             pb-0">
-            <div className={`transition-all duration-100 ${isChangeWidth ? 'w-full me-0' : 'w-[66%] me-4'}`}>
-                <MainChat toggleChangeWidth={toggleChangeWidth} toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
+            <div className={`transition-all duration-100 
+                ${
+                    deviceType !== 'PC' 
+                    ? isChangeWidth ? 'w-0' : 'w-full' 
+                    : isChangeWidth ? 'w-full' : 'w-[66%] me-4'
+                }`}>
+                <MainChat 
+                    toggleChangeWidth={toggleChangeWidth} 
+                    toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} 
+                />
             </div>
-            <div className={`transition-all duration-100 ${isChangeWidth ? 'w-0' : 'w-[33%]'}`}>
+            <div className={`transition-all duration-100 
+                ${
+                    deviceType !== 'PC' 
+                    ? isChangeWidth ? 'w-full' : 'w-0' 
+                    : isChangeWidth ? 'w-0' : 'w-[33%]'
+                }`}>
                 <ConversationInfo 
                     togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
                     toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}

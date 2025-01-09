@@ -37,7 +37,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 	};
 
 	return (
-		<form className="flex items-center p-2 min-w-full" onSubmit={sendMessage}>
+		<form className="flex items-center p-2 w-full min-w-0" onSubmit={sendMessage}>
 			{/* File Upload Button */}
 			<label className="cursor-pointer text-xl text-gray-500 hover:text-gray-700 bg-white 
 				p-2 me-1 rounded-full hover:bg-gray-200">

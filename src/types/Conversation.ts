@@ -1,10 +1,10 @@
 
 
 export interface Conversation {
-	id: string;
+	id: number;
 	name: string;
 	lastMessage: string;
-	avatar: string;
+	avatarUrl: string;
 	time: string;
 }
 
