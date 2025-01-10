@@ -10,9 +10,8 @@ const LoginView = () => {
 
 	return (
 		<div className="min-h-screen flex gap-8 items-center justify-center bg-white">
-			<div className="bg-[url('/ChatSample.png')] w-[35%] h-[70vh] bg-cover bg-center shadow-xl">
-
-			</div>
+			<div className="bg-[url('/ChatSample.png')] w-[35%] h-[70vh] bg-cover bg-center shadow-xl"></div>
+			
 			<div className="p-8 rounded-lg w-full max-w-[544px]">
 				<p className="text-5xl font-bold text-start text-gray-800 mb-16
 					bg-gradient-to-br from-blue-500 to-pink-400 bg-clip-text text-transparent">
@@ -25,7 +24,7 @@ const LoginView = () => {
 					<div>
 						<input
 							type="email"
-							placeholder='Username hoặc email hoặc sđt'
+							placeholder='Username hoặc email hoặc số điện thoại'
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
 							required
@@ -56,7 +55,7 @@ const LoginView = () => {
 				</form>
 				<p className="mt-4 text-center text-gray-600">
 					Chưa có tài khoản?{' '}
-					<a href="#" className="text-blue-500 hover:underline">
+					<a href="/register" className="text-blue-500 hover:underline">
 						Đăng ký ngay!
 					</a>
 				</p>
