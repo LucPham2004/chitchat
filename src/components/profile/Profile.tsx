@@ -162,7 +162,7 @@ const Profile = () => {
                                 deviceType == 'PC' ? 'max-w-[25%]' : 
                                 deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
                             } `}>
-                            <h2 className="text-2xl font-bold text-gray-800">Cristiano Ronaldo</h2>
+                            <h2 className="text-2xl font-bold text-gray-800">Sasha Watkinson</h2>
                             <p className="text-lg text-gray-600">Sofware Developer</p>
                             <p className="text-lg text-gray-600">Hà Nội, Việt Nam</p>
                         </div>
