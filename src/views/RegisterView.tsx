@@ -3,6 +3,8 @@ import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
 
 const RegisterView = () => {
 	const deviceType = useDeviceTypeByWidth();
+	const [firstName, setFirstName] = useState('');
+	const [lastName, setLastName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
@@ -32,32 +34,32 @@ const RegisterView = () => {
 								<input
 									type="firstName"
 									placeholder='firstName'
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
+									value={firstName}
+									onChange={(e) => setFirstName(e.target.value)}
 									required
 									className="w-1/2 px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 								<input
 									type="lastName"
 									placeholder='lastName'
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
+									value={lastName}
+									onChange={(e) => setLastName(e.target.value)}
 									required
 									className="w-1/2 px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 							</div>
-							<div>
-								<label className='flex gap-2 rounded-xl'>
+							<div className='flex items-center justify-between '>
+								<label className='flex gap-2 rounded-lg border border-gray-200 py-2 px-8'>
 									<p>Nam</p>
 									<input type="radio" name="gender" value="male" />
 								</label>
 								<br />
-								<label className='flex gap-2 rounded-xl'>
+								<label className='flex gap-2 rounded-lg border border-gray-200 py-2 px-8'>
 									Nữ
 									<input type="radio" name="gender" value="female" />
 								</label>
 								<br />
-								<label className='flex gap-2 rounded-xl'>
+								<label className='flex gap-2 rounded-lg border border-gray-200 py-2 px-8'>
 									Khác
 									<input type="radio" name="gender" value="other" />
 								</label>
