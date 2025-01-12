@@ -108,15 +108,16 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     setCharCount(0);
                 }}>
                 <h2 className="text-lg font-bold mb-3">Đổi tên đoạn chat</h2>
-                <div className="flex flex-col items-start justify-start w-full">
-                    <p className="text-gray-600 text-sm mb-1">Mọi người đều biết khi đổi tên nhóm chat thay đổi.</p>
+                <div className="flex flex-col items-start justify-start gap-2 w-full">
+                    <p className={`text-sm mb-1 ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
+                        Mọi người đều biết khi đổi tên nhóm chat thay đổi.</p>
                     <div className="relative w-full">
                         <div className="absolute flex flex-row justify-between items-center w-full p-2">
                             <p className="text-blue-600 text-xs">Tên đoạn chat</p>
-                            <p className={`text-xs ${charCount > 255 ? 'text-red-500' : ''}`}>{charCount} / 255</p>
+                            <p className={`text-xs ${charCount > 255 ? 'text-red-500' : 'text-gray-800'}`}>{charCount} / 255</p>
                         </div>
-                        <input type="text" className="w-full p-2 pt-8 border border-gray-200 rounded-lg 
-                            focus:border-blue-500" placeholder="" 
+                        <input type="text" className={`w-full p-2 pt-8 border border-gray-200 rounded-lg 
+                            focus:border-blue-500 ${isDarkMode ? 'text-gray-800' : 'text-gray-600'}`} placeholder="" 
                             value={inputValue}
                             onChange={(e) => {
                                 const value = e.target.value;
@@ -125,6 +126,19 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                                     setCharCount(value.length);
                                   }
                             }}/>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 w-full">
+                        <button className={`flex items-center justify-center gap-2 w-full p-2 text-md font-medium rounded-lg 
+                            ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]' 
+                            : 'text-gray-800 hover:bg-gray-100'}`}>
+                        Huỷ
+                        </button>
+                        <button className={`flex items-center justify-center gap-2 w-full p-2 text-md font-medium rounded-lg 
+                            ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]' 
+                            : 'text-gray-800 hover:bg-gray-100'}
+                            ${charCount < 1 ? 'cursor-not-allowed' : ''}`}>
+                        Lưu
+                        </button>
                     </div>
                 </div>
             </Modal>

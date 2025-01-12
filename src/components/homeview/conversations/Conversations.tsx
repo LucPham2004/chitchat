@@ -52,7 +52,7 @@ const Conversations = () => {
                                         Cristiano Ronaldo
                                     </li>
                                 </Link>
-                                <hr></hr>
+                                <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
                                 <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
                                     ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
                                     onClick={() => {
@@ -66,7 +66,7 @@ const Conversations = () => {
                                     </button>
                                     Cài đặt
                                 </li>
-                                <hr></hr>
+                                <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
                                 <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
                                     ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                     <button className={`p-2 rounded-full text-xl
@@ -95,12 +95,12 @@ const Conversations = () => {
                 <h2 className="text-lg font-bold mb-3">Tuỳ chỉnh</h2>
                 <div className="flex flex-col items-start justify-start gap-4 w-full">
                     <div className="flex items-center justify-start gap-2">
-                        <div className="rounded-full p-2 bg-gray-100 text-xl">
+                        <div className={`rounded-full p-2 text-xl ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-100'}`}>
                             <FaMoon />
                         </div>
                         <div className="flex flex-col items-start justify-start">
                             <p className="text-md font-semibold">Chế độ tối</p>
-                            <p className="text-xs text-gray-800">
+                            <p className={`text-xs ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                 Điều chỉnh giao diện của ChitChat để giảm độ chói và cho đôi mắt được nghỉ ngơi.
                             </p>
                         </div>
@@ -109,7 +109,8 @@ const Conversations = () => {
                         <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'
                             onClick={() => toggleDarkMode}>
                             <p>Đang tắt</p>
-                            <div className="flex items-center rounded-full p-2 hover:bg-gray-100 cursor-pointer">
+                            <div className={`flex items-center rounded-full p-2 cursor-pointer
+                                ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}>
                                 <input type="radio" name="darkmode" value="on" className="w-6 h-6 cursor-pointer"
                                     checked={isDarkMode === false}
                                     onChange={() => toggleDarkMode()}/>
@@ -118,7 +119,8 @@ const Conversations = () => {
                         <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'
                             onClick={() => toggleDarkMode}>
                             <p>Đang bật</p>
-                            <div className="flex items-center rounded-full p-2 hover:bg-gray-100 cursor-pointer">
+                            <div className={`flex items-center rounded-full p-2 cursor-pointer
+                                ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'} `}>
                                 <input type="radio" name="darkmode" value="off" className="w-6 h-6 cursor-pointer"
                                     checked={isDarkMode === true}
                                     onChange={() => toggleDarkMode()}/>
