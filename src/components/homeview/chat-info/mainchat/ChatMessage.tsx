@@ -32,8 +32,9 @@ const ChatMessage :React.FC<MessageProps> = ({ message: { text, user }, name }) 
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="error"
 				/>
-				<div className="inline-block max-w-[80%] bg-[#F3F3F3] rounded-[20px] p-2 px-3">
-					<p className="text-[#353535] text-base break-words">{text}</p>
+				<div className={`inline-block max-w-[80%] rounded-[20px] p-2 px-3
+					${isDarkMode ? 'bg-[#4C4C4C]' : 'bg-[#F3F3F3]'}`}>
+					<p className={` text-base break-words ${isDarkMode ? 'text-gray-300' : 'text-[#353535]'}`}>{text}</p>
 				</div>
 			</div>
 		)

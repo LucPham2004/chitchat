@@ -18,6 +18,7 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         setIsDarkMode((prev) => {
             const newMode = !prev;
             localStorage.setItem('theme', newMode ? 'dark' : 'light');
+            document.documentElement.classList.toggle('dark', !isDarkMode);
             return newMode;
         });
     };

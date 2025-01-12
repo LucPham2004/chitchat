@@ -15,4 +15,17 @@
   ::-webkit-scrollbar-thumb:hover {
     background: #bcbcbc; /* Màu của thanh cuộn khi hover */
   }
-  
+
+
+/* Thanh cuộn Dark Mode */
+.dark ::-webkit-scrollbar-track {
+  background: #1F1F1F; /* Nền thanh cuộn (màu tối) */
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #3A3B3C; /* Màu của thanh cuộn (màu tối) */
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #5D5E5F; /* Màu khi hover trong chế độ tối */
+}
