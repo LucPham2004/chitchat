@@ -2,33 +2,41 @@ import { BsPencilSquare } from "react-icons/bs";
 import ConversationList from "./ConversationList";
 import '../../../styles/scrollbar.css';
 import SearchBar from "./SearchBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSettings } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import Modal from "../../modals/Modal";
 import { FaMoon } from "react-icons/fa";
+import { useTheme } from "../../../utilities/ThemeContext";
 
 const Conversations = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
     const toggleSettingModalOpen = () => setIsSettingModalOpen(!isSettingModalOpen);
+
+    const { isDarkMode, toggleDarkMode } = useTheme();
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
     return (
-        <div className="min-h-[96vh] max-h-[96vh] overflow-hidden min-w-full flex flex-col items-center bg-white 
-            p-2 pb-0 pe-1 rounded-xl border border-gray-200 shadow-sm">
+        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden min-w-full flex flex-col items-center 
+            p-2 pb-0 pe-1 rounded-xl border shadow-sm
+            ${isDarkMode ? 'bg-[#1F1F1F] text-gray-300 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
 
             <div className="flex flex-row items-center p-2 py-0 pe-4 self-start w-full">
-                <h2 className="flex self-start text-2xl font-bold text-left text-gray-800 w-[40%]"> Đoạn chat </h2>
+                <h2 className={`flex self-start text-2xl font-bold text-left w-[40%]
+                    ${isDarkMode ? 'text-white' : 'text-black'}`}> Đoạn chat </h2>
                 <div className="relative flex flex-row gap-4 items-center justify-end w-[65%]">
-                    <button className="p-2 rounded-full text-black text-xl bg-gray-100 hover:bg-gray-200">
+                    <button className={`p-2 rounded-full text-xl 
+                        ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                            : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                         <BsPencilSquare />
                     </button>
-                    <button className="rounded-full text-black"
+                    <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
                         onClick={toggleMenu}>
                         <img src="/avatar.jpg" className="w-8 h-8 rounded-full" />
                     </button>
@@ -90,16 +98,22 @@ const Conversations = () => {
                         </div>
                     </div>
                     <div className='flex flex-col items-center gap-2 w-full'>
-                        <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'>
+                        <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'
+                            onClick={() => toggleDarkMode}>
                             <p>Đang tắt</p>
                             <div className="flex items-center rounded-full p-2 hover:bg-gray-100 cursor-pointer">
-                                <input type="radio" name="darkmode" value="on" className="w-6 h-6 cursor-pointer"/>
+                                <input type="radio" name="darkmode" value="on" className="w-6 h-6 cursor-pointer"
+                                    checked={isDarkMode === false}
+                                    onChange={() => toggleDarkMode()}/>
                             </div>
                         </label>
-                        <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'>
+                        <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'
+                            onClick={() => toggleDarkMode}>
                             <p>Đang bật</p>
                             <div className="flex items-center rounded-full p-2 hover:bg-gray-100 cursor-pointer">
-                                <input type="radio" name="darkmode" value="off" className="w-6 h-6 cursor-pointer"/>
+                                <input type="radio" name="darkmode" value="off" className="w-6 h-6 cursor-pointer"
+                                    checked={isDarkMode === true}
+                                    onChange={() => toggleDarkMode()}/>
                             </div>
                         </label>
                     </div>
