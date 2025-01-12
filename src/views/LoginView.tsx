@@ -15,12 +15,12 @@ const LoginView = () => {
 			<div className="min-h-screen w-full max-w-[2048px] relative flex gap-8 items-center justify-center bg-white">
 				{deviceType == 'PC' && 
 					<div className='w-3/5 flex items-center justify-center relative'>
-						<div className="absolute -translate-y-1/4 translate-x-3/4 bg-[url('/ChatSample.png')] 
-							w-[380px] h-[360px] bg-cover bg-center shadow-xl rounded-xl"></div>
-						<div className="bg-[url('/profileImage.png')] w-[590px] h-[360px] bg-cover bg-center shadow-xl rounded-xl"></div>
+						<div className="absolute -translate-y-1/4 translate-x-2/3 bg-[url('/ChatSample.png')] 
+							w-[360px] h-[340px] bg-cover bg-center shadow-xl rounded-xl"></div>
+						<div className="bg-[url('/profileImage.png')] w-[480px] h-[290px] bg-cover bg-center shadow-xl rounded-xl"></div>
 					</div>
 				}
-				<div className={`${deviceType == 'PC' ? 'w-2/5' : 'w-full'}`}>
+				<div className={`${deviceType == 'PC' ? 'w-2/5' : 'w-full flex items-center justify-center'}`}>
 					<div className="p-8 rounded-lg w-full max-w-md">
 						<p className={`${deviceType == 'PC' ? 'text-5xl' : 'text-xl'} font-bold text-start text-gray-800 mb-16
 							bg-gradient-to-br from-blue-500 to-pink-400 bg-clip-text text-transparent`}>
