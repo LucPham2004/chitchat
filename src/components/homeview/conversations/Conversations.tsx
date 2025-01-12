@@ -42,28 +42,36 @@ const Conversations = () => {
                     </button>
 
                     {isMenuOpen && (
-                        <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
+                        <div className={`absolute top-8 right-0 mt-2 w-64 border rounded-lg shadow-lg z-10
+                            ${isDarkMode ? 'bg-[#2E2E2E] border-gray-900' : 'bg-white border-gray-200'}`}>
                             <ul className="text-gray-700 p-1">
                                 <Link to={"/profile"}>
-                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                    <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
+                                    ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                         <img src="/avatar.jpg" className="w-8 h-8 rounded-full" />
                                         Cristiano Ronaldo
                                     </li>
                                 </Link>
                                 <hr></hr>
-                                <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer"
+                                <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
+                                    ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
                                     onClick={() => {
                                         toggleSettingModalOpen();
                                         setIsMenuOpen(false);
                                     }}>
-                                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                    <button className={`p-2 rounded-full text-xl
+                                        ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]' 
+                                            : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
                                         <IoSettings />
                                     </button>
                                     Cài đặt
                                 </li>
                                 <hr></hr>
-                                <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
+                                    ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
+                                    <button className={`p-2 rounded-full text-xl
+                                        ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]' 
+                                            : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
                                         <FiLogOut />
                                     </button>
                                     Đăng xuất

@@ -1,3 +1,4 @@
+import { useTheme } from "../../../../utilities/ThemeContext";
 
 
 interface MessageProps {
@@ -9,6 +10,7 @@ interface MessageProps {
 }
 
 const ChatMessage :React.FC<MessageProps> = ({ message: { text, user }, name }) => {
+	const { isDarkMode, toggleDarkMode } = useTheme();
     let isSentByCurrentUser = false;
 
 	const trimmedName = name.trim().toLowerCase();

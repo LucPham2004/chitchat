@@ -2,10 +2,12 @@ import { useState, useEffect } from "react"
 import ChatBody, { MessageObject } from "./ChatBody"
 import ChatHeader, { ChatHeaderProps } from "./ChatHeader"
 import ChatInput from "./ChatInput"
+import { useTheme } from "../../../../utilities/ThemeContext"
 
 
 
 const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConversationMembersModalOpen }) => {
+    const { isDarkMode, toggleDarkMode } = useTheme();
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
 
@@ -56,8 +58,9 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConv
     }, []);
 
     return (
-        <div className="min-h-[96vh] flex flex-col items-center bg-white p-1 pb-0 
-            rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className={`min-h-[96vh] flex flex-col items-center p-1 pb-0 
+            rounded-xl border shadow-sm overflow-hidden
+            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
             <ChatHeader toggleChangeWidth={toggleChangeWidth} toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
             <ChatBody messages={messages} name={'john'} />
             <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />

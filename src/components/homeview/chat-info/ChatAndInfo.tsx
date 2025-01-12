@@ -12,6 +12,7 @@ import { FiLogOut } from "react-icons/fi";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../../../utilities/ThemeContext";
 
 
 export interface ConversationInfoProps {
@@ -23,6 +24,7 @@ export interface ConversationInfoProps {
 
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
 	const deviceType = useDeviceTypeByWidth();
+    const { isDarkMode, toggleDarkMode } = useTheme();
     
     const [isPinnedMessageModalOpen, setIsPinnedMessageModalOpen] = useState(false);
     const togglePinnedMessageModalOpen = () => setIsPinnedMessageModalOpen(!isPinnedMessageModalOpen);
@@ -49,8 +51,8 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const pinnedMessages = pinnedMessagesData;
 
     return (
-        <div className="min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center bg-gray-100
-            pb-0">
+        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center 
+            pb-0 ${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
             <div className={`transition-all duration-100 
                 ${
                     deviceType !== 'PC' 

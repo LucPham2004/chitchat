@@ -15,6 +15,7 @@ import { linkUrls } from "../../../../FakeData";
 import { ConversationInfoProps } from "../ChatAndInfo";
 import { Link } from "react-router-dom";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../../../../utilities/ThemeContext";
 
 
 interface AccordionItem {
@@ -30,6 +31,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
  }) => {
 
 	const deviceType = useDeviceTypeByWidth();
+    const { isDarkMode, toggleDarkMode } = useTheme();
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
 
     const toggleAccordion = (index: number) => {
@@ -282,12 +284,14 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             default:
                 return (
                     <div className={`relative flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
-                        bg-white p-1 pb-0 rounded-xl border border-gray-200 shadow-sm transition-transform duration-300 
-                        ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}`}>
+                        p-1 pb-0 rounded-xl border shadow-sm transition-transform duration-300 
+                        ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
+                        ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
 
                         {deviceType !== 'PC' &&
-                            <button className="absolute w-fit p-2 top-4 left-4 text-left text-xl font-medium 
-                                text-gray-800 rounded-full hover:bg-gray-100"
+                            <button className={`absolute w-fit p-2 top-4 left-4 text-left text-xl font-medium rounded-full 
+                                ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    : 'text-gray-800 hover:bg-gray-100'}`}
                                 onClick={() => toggleChangeWidth()}>
                                 <FaArrowLeft />
                             </button>
@@ -295,27 +299,33 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                         <div className="flex flex-col items-center gap-2 p-2">
                             <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
-                            <h3 className="text-xl font-semibold">Cristiano Ronaldo</h3>
-                            <p className="text-gray-500 text-xs">Đang hoạt động</p>
+                            <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Cristiano Ronaldo</h3>
+                            <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
 
-                        <div className="flex flex-row justify-center gap-4">
+                        <div className={`flex flex-row justify-center gap-4 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>
                             <div className="flex flex-col items-center w-[70px] text-center">
-                                <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
+                                <button className={`p-2 text-xl hover:opacity-80 rounded-full
+                                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <FaUserCircle />
                                 </button>
                                 <p className="text-sm">Trang cá nhân</p>
                             </div>
 
                             <div className="flex flex-col items-center w-[70px] text-center">
-                                <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
+                                <button className={`p-2 text-xl hover:opacity-80 rounded-full
+                                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <BsFillBellFill />
                                 </button>
                                 <p className="text-sm">Tắt thông báo</p>
                             </div>
 
                             <div className="flex flex-col items-center w-[70px] text-center">
-                                <button className="p-1.5 bg-gray-300 text-2xl hover:opacity-80 rounded-full">
+                                <button className={`p-2 text-xl hover:opacity-80 rounded-full
+                                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <IoSearch />
                                 </button>
                                 <p className="text-sm">Tìm kiếm</p>
@@ -395,8 +405,9 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 </div>
             </div>
         ) : (
-            <div className={`w-full overflow-hidden bg-white rounded-xl
-                ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}`}>
+            <div className={`w-full overflow-hidden  rounded-xl
+                ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}
+                ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
                 {renderTabContent()}
             </div>
         )

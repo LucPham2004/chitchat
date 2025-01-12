@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../../../../utilities/ThemeContext";
 
 
 export interface MessageObject {
@@ -14,6 +15,7 @@ interface MessagesProps {
 }
 
 const ChatBody: React.FC<MessagesProps> = ({ messages, name }) => {
+    const { isDarkMode, toggleDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
     const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -24,8 +26,9 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, name }) => {
     }, [messages]);
     
     return (
-        <div className={`w-full overflow-y-auto flex flex-col bg-white px-2 pb-4
-            ${ deviceType !== 'PC' ? 'max-h-[85vh] min-h-[85vh]' : 'max-h-[78vh] min-h-[78vh]'}`}>
+        <div className={`w-full overflow-y-auto flex flex-col  px-2 pb-4
+            ${ deviceType !== 'PC' ? 'max-h-[85vh] min-h-[85vh]' : 'max-h-[78vh] min-h-[78vh]'}
+            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
             {messages.map((message, i) => (
                 <div key={i} className="p-1">
                     <ChatMessage message={message} name={name} />
