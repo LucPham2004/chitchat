@@ -52,7 +52,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             title: 'Thông tin về đoạn chat',
             content: (
                 <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                     onClick={togglePinnedMessageModalOpen}>
                     <div className={`rounded-full p-1 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                         <TiPin />
@@ -66,7 +66,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             content: (
                 <div>
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={toggleChangeConversationNameModalOpen}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FaPenNib />
@@ -75,7 +75,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FaImage />
                         </div>
@@ -83,7 +83,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={toggleChangeConversationEmojiModalOpen}>
                         <div className={`rounded-full p-1.5 text- ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             🐧
@@ -92,7 +92,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <PiTextAa />
                         </div>
@@ -141,7 +141,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 <div>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={() => handleTabChange('media')}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <IoImages />
@@ -150,7 +150,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={() => handleTabChange('files')}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FaFileAlt />
@@ -159,7 +159,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={() => handleTabChange('links')}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FaLink />
@@ -175,7 +175,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 <div>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <BsFillBellSlashFill />
                         </div>
@@ -183,7 +183,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <ImBlocked />
                         </div>
@@ -191,7 +191,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FiLogOut />
                         </div>
@@ -229,8 +229,10 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 return (
                     mediaList.length === 0 ? (
                         <div className="flex flex-col items-center justify-center text-center w-60 h-60">
-                            <p className="text-md text-black font-semibold">Không có file phương tiện nào</p>
-                            <p className="text-sm text-gray-500">Ảnh và video các bạn trao đổi với nhau sẽ hiện ở đây</p>
+                            <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                                Không có file phương tiện nào</p>
+                            <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                                Ảnh và video các bạn trao đổi với nhau sẽ hiện ở đây</p>
                         </div>
                     ) :
                         <MediaGrid medias={mediaList} />
@@ -239,16 +241,19 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 return (
                     fileList.length === 0 ? (
                         <div className="flex flex-col items-center justify-center text-center w-60 h-60">
-                            <p className="text-md text-black font-semibold">Không có file nào</p>
-                            <p className="text-sm text-gray-500">File các bạn trao đổi với nhau sẽ hiện ở đây</p>
+                            <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                                Không có file nào</p>
+                            <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                                File các bạn trao đổi với nhau sẽ hiện ở đây</p>
                         </div>
                     ) :
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
                             {fileList.map((file, index) => (
                                 <div>
-                                    <div key={index} className="flex items-center gap-2 pt-2 mb-2 text-md font-medium 
-                                        text-gray-800">
-                                        <div className="text-lg px-2 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
+                                    <div key={index} className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
+                                        ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                                        <div className={`text-lg px-2 h-12 flex items-center justify-center rounded-lg
+                                            ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
                                             <FaFileAlt />
                                         </div>
                                         <p>{file}</p>
@@ -262,16 +267,19 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 return (
                     linkList.length === 0 ? (
                         <div className="flex flex-col items-center justify-center text-center w-60 h-60">
-                            <p className="text-md text-black font-semibold">Không có liên kết nào</p>
-                            <p className="text-sm text-gray-500">Liên kết các bạn trao đổi với nhóm này sẽ hiện ở đây</p>
+                            <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                                Không có liên kết nào</p>
+                            <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                            Liên kết các bạn trao đổi với nhóm này sẽ hiện ở đây</p>
                         </div>
                     ) :
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
                             {linkList.map((link, index) => (
                                 <div>
-                                    <div key={index} className="flex items-center gap-2 pt-2 mb-2 text-md font-medium 
-                                        text-gray-800">
-                                        <div className="px-2 h-12 flex items-center justify-center bg-gray-200 rounded-lg">
+                                    <div key={index} className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
+                                        ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                                        <div className={`text-lg px-2 h-12 flex items-center justify-center rounded-lg
+                                            ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
                                             <FaLink />
                                         </div>
                                         <a href={link} target="blank" className="ps-0.5">{link}</a>
@@ -290,7 +298,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                         {deviceType !== 'PC' &&
                             <button className={`absolute w-fit p-2 top-4 left-4 text-left text-xl font-medium rounded-full 
-                                ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
                                     : 'text-gray-800 hover:bg-gray-100'}`}
                                 onClick={() => toggleChangeWidth()}>
                                 <FaArrowLeft />
@@ -299,14 +307,14 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                         <div className="flex flex-col items-center gap-2 p-2">
                             <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
-                            <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>Cristiano Ronaldo</h3>
+                            <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>Cristiano Ronaldo</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
 
-                        <div className={`flex flex-row justify-center gap-4 ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>
+                        <div className={`flex flex-row justify-center gap-4 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
-                                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
                                     : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <FaUserCircle />
                                 </button>
@@ -315,7 +323,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
-                                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
                                     : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <BsFillBellFill />
                                 </button>
@@ -324,7 +332,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
-                                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
                                     : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <IoSearch />
                                 </button>
@@ -338,7 +346,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                     <button
                                         onClick={() => toggleAccordion(index)}
                                         className={`flex justify-between w-full p-2 py-3 text-left text-md font-medium rounded-lg 
-                                        ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' 
+                                        ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' 
                                             : 'text-gray-800 hover:bg-gray-100'}`}
                                     >
                                         {section.title}
@@ -367,36 +375,44 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             <div className={`flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                 pt-1 px-3 rounded-xl border shadow-sm transition-transform duration-300 
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
-                ${isDarkMode ? 'text-white bg-[#1F1F1F] border-gray-800' : 'text-black bg-white border-gray-200'}`}
+                ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-800' : 'text-black bg-white border-gray-200'}`}
             >
                 <div className="flex items-center gap-2 p-2">
                     <button className={`flex items-center gap-2 p-2 text-left text-lg font-medium 
                         rounded-full 
-                        ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                        ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
+                            : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={() => handleTabChange('default')}>
                         <FaArrowLeft />
                     </button>
                     <p className="text-lg font-semibold">File phương tiện, file và liên kết</p>
                 </div>
 
-                <div className="flex justify-between border border-gray-200 rounded-full">
+                <div className={`flex justify-between border rounded-full 
+                    ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
                     <button
                         className={`rounded-full p-2 text-center font-semibold 
-                            ${activeTab === 'media' ? 'text-black bg-gray-200' : 'text-gray-500'}`}
+                            ${activeTab === 'media' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-300' 
+                                : 'text-gray-500'}`}
                         onClick={() => setActiveTab('media')}
                     >
                         File phương tiện
                     </button>
                     <button
                         className={`rounded-full p-2 flex-1 text-center font-semibold 
-                            ${activeTab === 'files' ? 'text-black bg-gray-200' : 'text-gray-500'}`}
+                            ${activeTab === 'files' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-300' 
+                                : 'text-gray-500'}`}
                         onClick={() => setActiveTab('files')}
                     >
                         File
                     </button>
                     <button
                         className={`rounded-full p-2 flex-1 text-center font-semibold 
-                            ${activeTab === 'links' ? 'text-black bg-gray-200' : 'text-gray-500'}`}
+                            ${activeTab === 'links' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-300' 
+                                : 'text-gray-500'}`}
                         onClick={() => setActiveTab('links')}
                     >
                         Liên kết

@@ -33,7 +33,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowCo
 
             <div className="flex me-2">
                 <button className={`self-end rounded-full p-2 text-center text-2xl font-semibold
-                    ${isDarkMode ? 'text-gray-100 bg-[#474747] hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
+                    ${isDarkMode ? 'text-gray-100 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
                     onClick={toggleChangeWidth}>
                     <PiDotsThreeCircle />
                 </button>
