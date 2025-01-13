@@ -81,8 +81,9 @@ const Profile = () => {
             ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="relative flex flex-col w-full min-h-full">
                 <div className="absolute top-3 left-4 z-10">
-                    <button className="p-2 rounded-full text-black text-xl border border-gray-500
-                        bg-gray-200 hover:bg-gray-100"
+                <button className={`p-2 rounded-full text-xl
+                    ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]' 
+                        : 'text-black bg-gray-200 hover:bg-gray-100'}`}
                         onClick={goBack}>
                         <FaArrowLeft />
                     </button>

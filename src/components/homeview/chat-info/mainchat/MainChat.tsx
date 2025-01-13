@@ -53,21 +53,21 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConv
             { senderId: 4, text: "Thật ra, dù ai xuất sắc hơn thì họ cũng đã truyền cảm hứng cho hàng triệu người trên thế giới.", name: "alice" },
             { senderId: 5, text: "Đồng ý! Mình nghĩ sẽ rất khó có ai khác đạt đến đẳng cấp như họ trong tương lai.", name: "john" },
             { senderId: 4, text: "Đúng vậy! Cả hai đều là huyền thoại sống của bóng đá thế giới.", name: "alice" },
-            { senderId: 5, text: "xàm lìn vcl", name: "john" },
-            { senderId: 4, text: "khồng, có m xàm lìn ếi", name: "alice" },
-            { senderId: 5, text: "Anh 7 t là nhất, mecseg tuoiloz", name: "john" },
-            { senderId: 4, text: "coconcek WC anh m đâu?", name: "alice" },
-            { senderId: 5, text: "Sắp có rồi, 41 tuổi đỉnh cao đời người", name: "john" },
-            { senderId: 4, text: "xàm lồng ác", name: "alice" },
-            { senderId: 5, text: "cook ngay", name: "john" },
-            { senderId: 5, text: "dăm ba cái wc", name: "john" },
-            { senderId: 5, text: "sớm thôy", name: "john" },
-            { senderId: 5, text: "TẤT CẢ SẼ PHẢI HỐI HẬN VÌ ĐÃ TRÊU ANH 7 TAO", name: "john" },
-            { senderId: 4, text: "xàm lồng ác", name: "alice" },
-            { senderId: 4, text: "xàm lồng điên", name: "alice" },
-            { senderId: 4, text: "7 chọ tổn luoi", name: "alice" },
-            { senderId: 4, text: "phó GOAT thôi im lặng đê", name: "alice" },
-            { senderId: 4, text: "cho chức phó con may đấy", name: "alice" },
+            // { senderId: 5, text: "xàm lìn vcl", name: "john" },
+            // { senderId: 4, text: "khồng, có m xàm lìn ếi", name: "alice" },
+            // { senderId: 5, text: "Anh 7 t là nhất, mecseg tuoiloz", name: "john" },
+            // { senderId: 4, text: "coconcek WC anh m đâu?", name: "alice" },
+            // { senderId: 5, text: "Sắp có rồi, 41 tuổi đỉnh cao đời người", name: "john" },
+            // { senderId: 4, text: "xàm lồng ác", name: "alice" },
+            // { senderId: 5, text: "cook ngay", name: "john" },
+            // { senderId: 5, text: "dăm ba cái wc", name: "john" },
+            // { senderId: 5, text: "sớm thôy", name: "john" },
+            // { senderId: 5, text: "TẤT CẢ SẼ PHẢI HỐI HẬN VÌ ĐÃ TRÊU ANH 7 TAO", name: "john" },
+            // { senderId: 4, text: "xàm lồng ác", name: "alice" },
+            // { senderId: 4, text: "xàm lồng điên", name: "alice" },
+            // { senderId: 4, text: "7 chọ tổn luoi", name: "alice" },
+            // { senderId: 4, text: "phó GOAT thôi im lặng đê", name: "alice" },
+            // { senderId: 4, text: "cho chức phó con may đấy", name: "alice" },
         ]);
         
     }, []);
@@ -79,7 +79,7 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConv
             <ChatHeader 
                 toggleChangeWidth={toggleChangeWidth} 
                 toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
-            <div className="flex flex-col items-center justify-center max-h-[87vh] overflow-hidden">
+            <div className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden">
                 <ChatBody messages={messages} />
                 <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />
             </div>

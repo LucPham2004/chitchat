@@ -26,7 +26,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
     return (
         <div
             className={`w-full overflow-y-auto flex flex-col px-2 pb-4
-              ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[50vh]'}
+              ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[78vh]'}
               ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}
               bg-cover bg-center`}
             style={{

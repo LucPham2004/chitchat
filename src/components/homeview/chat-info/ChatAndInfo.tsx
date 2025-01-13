@@ -51,7 +51,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const pinnedMessages = pinnedMessagesData;
 
     return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center 
+        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center rounded-xl
             pb-0 ${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
             <div className={`transition-all duration-100 
                 ${
@@ -83,15 +83,25 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 <h2 className="text-lg font-bold mb-3">Tin nhắn đã ghim</h2>
                 {pinnedMessages.length > 0 ? (
                 <div className="flex flex-col items-start justify-start w-full overflow-y-auto">
-                    {pinnedMessages.map((message, index) => (
-                        <div key={index} className="flex flex-col p-1 items-start justify-start w-full">
+                    {pinnedMessages.map((message, i) => {
+                        const isSameSenderAsPrevious = i > 0 && pinnedMessages[i - 1].senderId === message.senderId;
+                        const isSameSenderAsNext = i < pinnedMessages.length - 1 && pinnedMessages[i + 1].senderId === message.senderId;
+                      
+                        const isFirstInGroup = !isSameSenderAsPrevious;
+                        const isLastInGroup = !isSameSenderAsNext;
+                        const isSingleMessage = !isSameSenderAsPrevious && !isSameSenderAsNext;
+
+                        return (
+                        <div key={i} className="flex flex-col p-1 items-start justify-start w-full">
                             <p className="text-xs flex self-end">{message.timestamp}</p>
-                            <div key={index} className="p-2 pt-0 mb-1 w-fit">
-                                <ChatMessage message={{ user: message.user, text: message.message }} name={message.name} />
+                            <div key={i} className="p-2 pt-0 mb-1 w-fit">
+                                <ChatMessage message={{ senderId: message.senderId, text: message.message, name: message.name }}
+                                isFirstInGroup={isFirstInGroup} isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage} />
                             </div>
                             <hr className="w-full"></hr>
                         </div>
-                    ))}
+                        )
+                        })}
                 </div>
                 ) :(
                 <div className="flex flex-col gap-2 items-center justify-center px-16 py-40 w-max">

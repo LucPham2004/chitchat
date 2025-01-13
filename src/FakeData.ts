@@ -167,117 +167,117 @@ export const linkUrls = [
 	'https://images.unsplash.com/photo-1531297484001-80022131f5a1',
 	'https://images.unsplash.com/photo-1516534775068-ba3e7458af70',
 	'https://images.unsplash.com/photo-1504826260979-242151ee45b7',
-  ];
-  
-  export const friendsData: UserDTO[] = [
-    {
-        id: 1,
-        firstName: "John Doe",
+];
+
+export const friendsData: UserDTO[] = [
+	{
+		id: 1,
+		firstName: "John Doe",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-        mutualFriendsNum: 5,
-    },
-    {
-        id: 2,
-        firstName: "Jane Smith",
+		avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+		mutualFriendsNum: 5,
+	},
+	{
+		id: 2,
+		firstName: "Jane Smith",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
-        mutualFriendsNum: 8,
-    },
-    {
-        id: 3,
-        firstName: "Michael Johnson",
+		avatarUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+		mutualFriendsNum: 8,
+	},
+	{
+		id: 3,
+		firstName: "Michael Johnson",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/men/3.jpg",
-        mutualFriendsNum: 12,
-    },
-    {
-        id: 4,
-        firstName: "Emily Davis",
+		avatarUrl: "https://randomuser.me/api/portraits/men/3.jpg",
+		mutualFriendsNum: 12,
+	},
+	{
+		id: 4,
+		firstName: "Emily Davis",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/women/4.jpg",
-        mutualFriendsNum: 7,
-    },
-    {
-        id: 5,
-        firstName: "Chris Wilson",
+		avatarUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+		mutualFriendsNum: 7,
+	},
+	{
+		id: 5,
+		firstName: "Chris Wilson",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/men/5.jpg",
-        mutualFriendsNum: 3,
-    },
-    {
-        id: 6,
-        firstName: "Olivia Brown",
+		avatarUrl: "https://randomuser.me/api/portraits/men/5.jpg",
+		mutualFriendsNum: 3,
+	},
+	{
+		id: 6,
+		firstName: "Olivia Brown",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/women/6.jpg",
-        mutualFriendsNum: 10,
-    },
-    {
-        id: 7,
-        firstName: "Daniel White",
+		avatarUrl: "https://randomuser.me/api/portraits/women/6.jpg",
+		mutualFriendsNum: 10,
+	},
+	{
+		id: 7,
+		firstName: "Daniel White",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/men/7.jpg",
-        mutualFriendsNum: 6,
-    },
-    {
-        id: 8,
-        firstName: "Sophia Martinez",
+		avatarUrl: "https://randomuser.me/api/portraits/men/7.jpg",
+		mutualFriendsNum: 6,
+	},
+	{
+		id: 8,
+		firstName: "Sophia Martinez",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/women/8.jpg",
-        mutualFriendsNum: 4,
-    },
-    {
-        id: 9,
-        firstName: "James Taylor",
+		avatarUrl: "https://randomuser.me/api/portraits/women/8.jpg",
+		mutualFriendsNum: 4,
+	},
+	{
+		id: 9,
+		firstName: "James Taylor",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/men/9.jpg",
-        mutualFriendsNum: 9,
-    },
-    {
-        id: 10,
-        firstName: "Isabella Anderson",
+		avatarUrl: "https://randomuser.me/api/portraits/men/9.jpg",
+		mutualFriendsNum: 9,
+	},
+	{
+		id: 10,
+		firstName: "Isabella Anderson",
 		lastName: '',
-        avatarUrl: "https://randomuser.me/api/portraits/women/10.jpg",
-        mutualFriendsNum: 11,
-    },
+		avatarUrl: "https://randomuser.me/api/portraits/women/10.jpg",
+		mutualFriendsNum: 11,
+	},
 ];
 
 
 
 export const pinnedMessagesData: PinnedMessage[] = [
-    {
-      id: 1,
-	  user: 'Alice',
-      name: 'Alice',
-	  avatarUrl: 'https://randomuser.me/api/portraits/men/9.jpg',
-      message: 'Remember the meeting at 10 AM tomorrow.',
-      timestamp: '2024-01-01T10:00:00Z'
-    },
-    {
-      id: 2,
-	  user: 'Bob',
-      name: 'Bob',
-	  avatarUrl: "https://randomuser.me/api/portraits/men/7.jpg",
-      message: 'Deadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next Friday',
-      timestamp: '2024-01-02T15:30:00Z'
-    },
-    {
-      id: 3,
-	  user: 'Charlie',
-      name: 'Charlie',
-	  avatarUrl: "https://randomuser.me/api/portraits/women/4.jpg",
-      message: 'Happy New Year everyone!',
-      timestamp: '2024-01-01T00:00:00Z'
-    },
-	
-    {
-		id: 4,
+	{
+		senderId: 1,
+		user: 'Alice',
+		name: 'Alice',
+		avatarUrl: 'https://randomuser.me/api/portraits/men/9.jpg',
+		message: 'Remember the meeting at 10 AM tomorrow.',
+		timestamp: '2024-01-01T10:00:00Z'
+	},
+	{
+		senderId: 2,
+		user: 'Bob',
+		name: 'Bob',
+		avatarUrl: "https://randomuser.me/api/portraits/men/7.jpg",
+		message: 'Deadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next FridayDeadline for project submission is next Friday',
+		timestamp: '2024-01-02T15:30:00Z'
+	},
+	{
+		senderId: 3,
 		user: 'Charlie',
 		name: 'Charlie',
 		avatarUrl: "https://randomuser.me/api/portraits/women/4.jpg",
 		message: 'Happy New Year everyone!',
 		timestamp: '2024-01-01T00:00:00Z'
-	  }
+	},
+
+	{
+		senderId: 4,
+		user: 'Charlie',
+		name: 'Charlie',
+		avatarUrl: "https://randomuser.me/api/portraits/women/4.jpg",
+		message: 'Happy New Year everyone!',
+		timestamp: '2024-01-01T00:00:00Z'
+	}
 ];
 
 
