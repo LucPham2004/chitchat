@@ -4,7 +4,7 @@ import { useTheme } from "../../../utilities/ThemeContext";
 
 
 const ConversationList: React.FC = () => {
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
 
 
     return (

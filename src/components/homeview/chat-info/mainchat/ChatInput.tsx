@@ -12,7 +12,7 @@ interface ChatInputProps {
 }
 
 const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message }) => {
-	const { isDarkMode, toggleDarkMode } = useTheme();
+	const { isDarkMode  } = useTheme();
 	const [selectedFile, setSelectedFile] = useState<File | null>(null);
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 

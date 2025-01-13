@@ -12,7 +12,7 @@ export interface ChangeWidthProps {
 
 const HomeView = () => {
 	const deviceType = useDeviceTypeByWidth();
-	const { isDarkMode, toggleDarkMode } = useTheme();
+	const { isDarkMode } = useTheme();
 	const [isChangeWidth, setChangeWidth] = useState(false);
 
     const toggleChangeWidth = () => setChangeWidth(!isChangeWidth);

@@ -7,7 +7,7 @@ import { useTheme } from "../../../../utilities/ThemeContext"
 
 
 const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConversationMembersModalOpen }) => {
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
 

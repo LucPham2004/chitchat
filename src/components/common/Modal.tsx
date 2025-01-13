@@ -9,7 +9,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-	const { isDarkMode, toggleDarkMode } = useTheme();
+	const { isDarkMode  } = useTheme();
 	if (!isOpen) return null;
 
 	return (

@@ -16,7 +16,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 	message: { senderId, text, name },
 	isFirstInGroup, isLastInGroup, isSingleMessage }) => {
 
-	const { isDarkMode, toggleDarkMode } = useTheme();
+	const { isDarkMode  } = useTheme();
 	const currentUser = {
 		id: 5,
 

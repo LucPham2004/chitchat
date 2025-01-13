@@ -31,7 +31,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
  }) => {
 
 	const deviceType = useDeviceTypeByWidth();
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
 
     const toggleAccordion = (index: number) => {
@@ -393,7 +393,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     <button
                         className={`rounded-full p-2 text-center font-semibold 
                             ${activeTab === 'media' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
-                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-300' 
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400' 
                                 : 'text-gray-500'}`}
                         onClick={() => setActiveTab('media')}
                     >
@@ -402,7 +402,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     <button
                         className={`rounded-full p-2 flex-1 text-center font-semibold 
                             ${activeTab === 'files' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
-                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-300' 
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400' 
                                 : 'text-gray-500'}`}
                         onClick={() => setActiveTab('files')}
                     >
@@ -411,7 +411,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     <button
                         className={`rounded-full p-2 flex-1 text-center font-semibold 
                             ${activeTab === 'links' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
-                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-300' 
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400' 
                                 : 'text-gray-500'}`}
                         onClick={() => setActiveTab('links')}
                     >

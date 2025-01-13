@@ -7,6 +7,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../../utilities/ThemeContext";
+import SocialLinkButton from "../common/SocialLinkButton";
 
 interface User {
     id: number;
@@ -15,7 +17,8 @@ interface User {
 }
 
 const Profile = () => {
-	const deviceType = useDeviceTypeByWidth();
+    const deviceType = useDeviceTypeByWidth();
+    const { isDarkMode } = useTheme();
     const [showMenu, setShowMenu] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -74,11 +77,13 @@ const Profile = () => {
     };
 
     return (
-        <div className="min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex bg-white
-            pb-0 rounded-xl border border-gray-200 shadow-sm overflow-y-auto">
+        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex
+            pb-0 rounded-xl border shadow-sm overflow-y-auto
+            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="relative flex flex-col w-full min-h-full">
                 <div className="absolute top-3 left-4 z-10">
-                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-100"
+                    <button className="p-2 rounded-full text-black text-xl border border-gray-500
+                        bg-gray-200 hover:bg-gray-100"
                         onClick={goBack}>
                         <FaArrowLeft />
                     </button>
@@ -99,7 +104,8 @@ const Profile = () => {
                         <img
                             src="https://images.unsplash.com/photo-1516534775068-ba3e7458af70"
                             alt="Profile"
-                            className="w-40 h-40 rounded-full border-4 border-white object-cover"
+                            className={`w-40 h-40 rounded-full border-4 object-cover
+                                ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}
                         />
                     </div>
 
@@ -158,40 +164,44 @@ const Profile = () => {
                 <div className="mb-5">
                     <div className={`flex ${deviceType == 'Mobile' ? 'flex-col' : 'flex-row'} justify-between p-8 pb-2`}>
                         <div className={`flex flex-col items-start mt-12 
-                            ${
-                                deviceType == 'PC' ? 'max-w-[25%]' : 
+                            ${deviceType == 'PC' ? 'max-w-[25%]' :
                                 deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
                             } `}>
-                            <h2 className="text-2xl font-bold text-gray-800">Sasha Watkinson</h2>
-                            <p className="text-lg text-gray-600">Sofware Developer</p>
-                            <p className="text-lg text-gray-600">Hà Nội, Việt Nam</p>
+                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-2xl font-bold`}>Sasha Watkinson</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>Sofware Developer</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>Hà Nội, Việt Nam</p>
                         </div>
 
                         {deviceType == 'PC' &&
-                        <div className="flex flex-row gap-4 items-center justify-center max-w-[30%] max-h-[136px]">
-                            <p className="text-center text-xl font-satisfy">
-                                Money doesn't buy happiness, it buys CRAZY-ASS happiness!
-                            </p>
-                        </div>
+                            <div className="flex flex-row gap-4 items-center justify-center max-w-[30%] max-h-[136px]">
+                                <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
+                                    Money doesn't buy happiness, it buys CRAZY-ASS happiness!
+                                </p>
+                            </div>
                         }
 
                         <div className="flex flex-col items-end gap-2 pt-4">
-                            {/* <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                               border-2 border-blue-700 text-blue-700 bg-white 
+                            {/* <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                                ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400' 
+                                    : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-200">
+                                rounded-full shadow-md transition duration-200`}>
                                 <IoChatbubblesSharp />
                                 <p className="font-semibold">Gửi tin nhắn</p>
                             </button>
-                            <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit 
-                               border-2 border-blue-700 text-blue-700 bg-white 
+                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                                ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400' 
+                                    : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-200">
+                                rounded-full shadow-md transition duration-200`}>
                                 <PiHandWavingFill />
                                 <p className="font-semibold px-0.5">Gửi kết bạn</p>
                             </button> */}
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                ${isDarkMode ? 'border-white' : 'border-black'}
                                 border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
                                  shadow-md transition duration-200`}>
@@ -200,6 +210,7 @@ const Profile = () => {
                             </button>
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                ${isDarkMode ? 'border-white' : 'border-black'}
                                 border-2 border-black text-black bg-white 
                                 hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
                                 rounded-full shadow-md transition duration-200`}>
@@ -212,17 +223,18 @@ const Profile = () => {
 
                 <div className={`flex items-center justify-between gap-8 px-8 py-2
                     ${deviceType !== 'PC' ? 'flex-col' : 'flex-row'} `}>
-                    
+
                     {deviceType !== 'PC' &&
                         <div className="flex flex-row gap-4 items-center justify-center max-w-[80%] max-h-[136px]">
-                            <p className="text-center text-xl font-satisfy">
+                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
                                 Money doesn't buy happiness, it buys CRAZY-ASS happiness!
                             </p>
                         </div>
                     }
 
-                    <div className="flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
-                        bg-blue-50 border-2 border-blue-400">
+                    <div className={`flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
+                         border-2 
+                        ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
                         <p className="font-semibold">Bạn có tổng cộng 953 người bạn</p>
                         <div className="flex items-center -space-x-2">
                             {users.map((user) => (
@@ -245,11 +257,12 @@ const Profile = () => {
                         <div className="flex items-center gap-2">
                             <p>Lionel Messi, Neymar.JR, Benzema và 950 người khác</p>
                             <Link to={"/profile/friends"}>
-                                <button className="flex gap-2 items-center text-md min-w-max h-12 border-2 
-                                border-black text-black bg-white 
-                                hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                rounded-full shadow-md transition duration-200 py-2 px-3"
-                                >
+                                <button className={`flex gap-2 items-center text-md min-w-max h-12 border-2 
+                                rounded-full shadow-md transition duration-200 py-2 px-3
+                                ${isDarkMode
+                                        ? 'border-white text-black bg-white hover:bg-gradient-to-r from-blue-500 to-blue-400 hover:text-white'
+                                        : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
+                                    }`}>
                                     <p>Tất cả</p>
                                     <FaArrowRight />
                                 </button>
@@ -259,78 +272,69 @@ const Profile = () => {
 
                     <div className="flex flex-col items-start justify-start gap-2 p-2 rounded-xl ">
                         <div className="flex flex-row gap-3 justify-evenly flex-wrap max-w-[300px]">
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-blue-600 text-blue-600 bg-white 
-                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaFacebook />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-pink-600 text-pink-500 bg-white 
-                                    hover:bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaInstagramSquare />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-blue-600 text-blue-600 bg-white 
-                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaLinkedin />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-black text-black bg-white 
-                                    hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaTiktok />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-blue-600 text-blue-600 bg-white 
-                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaXTwitter />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-red-500 text-red-500 bg-white 
-                                    hover:bg-gradient-to-r from-red-500 to-red-600 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <IoLogoYoutube />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-blue-700 text-blue-700 bg-white 
-                                    hover:bg-gradient-to-r from-blue-600 to-blue-700 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaDiscord />
-                                    
-                                </button>
-                            </div>
-                            <div className="w-[60px] flex items-center justify-center">
-                                <button className="flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
-                                    border-2 border-gray-700 text-gray-700 bg-white 
-                                    hover:bg-gradient-to-r from-gray-700 to-gray-800 hover:text-white 
-                                    rounded-full shadow-md transition duration-200">
-                                    <FaGithub />
-                                    
-                                </button>
-                            </div>
+                            <SocialLinkButton
+                                icon={<FaFacebook />}
+                                textColor="blue-600"
+                                borderColor="blue-600"
+                                bgColorFrom="blue-500"
+                                bgColorTo="blue-600"
+                            />
+
+                            <SocialLinkButton
+                                icon={<FaInstagramSquare />}
+                                textColor="pink-500"
+                                borderColor="pink-600"
+                                bgColorFrom="pink-500"
+                                bgColorTo="yellow-500"
+                            />
+
+                            <SocialLinkButton
+                                icon={<FaLinkedin />}
+                                textColor="blue-600"
+                                borderColor="blue-600"
+                                bgColorFrom="blue-500"
+                                bgColorTo="blue-600"
+                            />
+
+                            <SocialLinkButton
+                                icon={<FaTiktok />}
+                                textColor="gray-400"
+                                borderColor="gray-400"
+                                bgColorFrom="black"
+                                bgColorTo="gray-800"
+                            />
+
+                            <SocialLinkButton
+                                icon={<FaXTwitter />}
+                                textColor="blue-600"
+                                borderColor="blue-600"
+                                bgColorFrom="blue-500"
+                                bgColorTo="blue-600"
+                            />
+
+                            <SocialLinkButton
+                                icon={<IoLogoYoutube />}
+                                textColor="red-500"
+                                borderColor="red-500"
+                                bgColorFrom="red-500"
+                                bgColorTo="red-600"
+                            />
+
+                            <SocialLinkButton
+                                icon={<FaDiscord />}
+                                textColor="blue-700"
+                                borderColor="blue-700"
+                                bgColorFrom="blue-600"
+                                bgColorTo="blue-700"
+                            />
+
+                            <SocialLinkButton
+                                icon={<FaGithub />}
+                                textColor="gray-400"
+                                borderColor="gray-400"
+                                bgColorFrom="gray-700"
+                                bgColorTo="gray-800"
+                            />
                         </div>
                     </div>
                 </div>

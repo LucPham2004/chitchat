@@ -2,7 +2,7 @@ import { useState } from "react";
 import ConversationInfo from "./conversationInfo/ConversationInfo";
 import MainChat from "./mainchat/MainChat";
 import { ChangeWidthProps } from "../../../views/HomeView";
-import Modal from "../../modals/Modal";
+import Modal from "../../common/Modal";
 import { pinnedMessagesData } from "../../../FakeData";
 import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
@@ -24,7 +24,7 @@ export interface ConversationInfoProps {
 
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
 	const deviceType = useDeviceTypeByWidth();
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
     
     const [isPinnedMessageModalOpen, setIsPinnedMessageModalOpen] = useState(false);
     const togglePinnedMessageModalOpen = () => setIsPinnedMessageModalOpen(!isPinnedMessageModalOpen);

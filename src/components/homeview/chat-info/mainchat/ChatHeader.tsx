@@ -7,7 +7,7 @@ export interface ChatHeaderProps {
 }
 
 const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConversationMembersModalOpen }) => {
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
     
     return (
         <div className={`flex justify-between items-center w-full p-0.5 border-b 

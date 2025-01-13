@@ -1,12 +1,12 @@
 import { BsPencilSquare } from "react-icons/bs";
 import ConversationList from "./ConversationList";
 import '../../../styles/scrollbar.css';
-import SearchBar from "./SearchBar";
+import SearchBar from "../../common/SearchBar";
 import { useState } from "react";
 import { IoSettings } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import Modal from "../../modals/Modal";
+import Modal from "../../common/Modal";
 import { FaMoon } from "react-icons/fa";
 import { useTheme } from "../../../utilities/ThemeContext";
 
@@ -44,16 +44,16 @@ const Conversations = () => {
                     {isMenuOpen && (
                         <div className={`absolute top-8 right-0 mt-2 w-64 border rounded-lg shadow-lg z-10
                             ${isDarkMode ? 'bg-[#2E2E2E] border-gray-900' : 'bg-white border-gray-200'}`}>
-                            <ul className="text-gray-700 p-1">
+                            <ul className="text-gray-700 px-1">
                                 <Link to={"/profile"}>
-                                    <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
+                                    <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                     ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                         <img src="/avatar.jpg" className="w-8 h-8 rounded-full" />
                                         Cristiano Ronaldo
                                     </li>
                                 </Link>
                                 <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
-                                <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
+                                <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                     ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
                                     onClick={() => {
                                         toggleSettingModalOpen();
@@ -67,7 +67,7 @@ const Conversations = () => {
                                     Cài đặt
                                 </li>
                                 <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
-                                <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer
+                                <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                     ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                     <button className={`p-2 rounded-full text-xl
                                         ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]' 

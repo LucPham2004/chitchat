@@ -15,7 +15,7 @@ interface MessagesProps {
 }
 
 const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
     const deviceType = useDeviceTypeByWidth();
     const chatEndRef = useRef<HTMLDivElement>(null);
 

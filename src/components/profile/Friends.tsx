@@ -2,7 +2,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { friendsData } from "../../FakeData";
 import FriendCard from "./FriendCard";
-import SearchBar from "../homeview/conversations/SearchBar";
+import SearchBar from "../common/SearchBar";
 import { ImBlocked } from "react-icons/im";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { useState } from "react";

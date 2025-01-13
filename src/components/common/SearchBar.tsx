@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { IoIosSearch } from "react-icons/io";
-import { useTheme } from '../../../utilities/ThemeContext';
+import { useTheme } from '../../utilities/ThemeContext';
 
 const SearchBar: React.FC = () => {
 	const [search, setSearch] = useState<string>('');
-	const { isDarkMode, toggleDarkMode } = useTheme();
+	const { isDarkMode  } = useTheme();
 
 	const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();

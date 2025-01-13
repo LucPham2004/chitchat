@@ -9,7 +9,7 @@ export interface Participant {
 }
 
 const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMenu }) => {
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const { isDarkMode  } = useTheme();
     
     return (
         <div className="flex flex-row justify-between p-2">

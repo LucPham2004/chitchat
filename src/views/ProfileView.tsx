@@ -3,18 +3,21 @@ import Conversations from "../components/homeview/conversations/Conversations";
 import Profile from "../components/profile/Profile";
 import { Outlet } from "react-router-dom";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../utilities/ThemeContext";
 
 
 
 const ProfileView = () => {
 	const deviceType = useDeviceTypeByWidth();
+	const { isDarkMode } = useTheme();
 	const [isChangeWidth, setChangeWidth] = useState(false);
 
     const toggleChangeWidth = () => setChangeWidth(!isChangeWidth);
 
 	return (
-		<div className={`min-h-screen w-full flex flex-row items-center justify-start bg-gray-100 px-4 py-2
-				${deviceType == 'Mobile' ? '' : 'gap-4'} `}>
+		<div className={`min-h-screen w-full flex flex-row items-center justify-start px-4 py-2
+				${deviceType == 'Mobile' ? '' : 'gap-4'}
+				${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
 			<div className={`${  
 					deviceType == 'Mobile' ? 'w-[0%]' :
 					deviceType == 'Tablet' ? 'w-[40%]' : 'w-[25%]'
