@@ -1,8 +1,7 @@
-import { BsPencilSquare } from "react-icons/bs";
-import { IoChatbubblesSharp, IoLogoYoutube, IoSettings } from "react-icons/io5";
-import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
+import { IoLogoYoutube, IoSettings } from "react-icons/io5";
+import { PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaEdit, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
@@ -260,7 +259,7 @@ const Profile = () => {
                                 <button className={`flex gap-2 items-center text-md min-w-max h-12 border-2 
                                 rounded-full shadow-md transition duration-200 py-2 px-3
                                 ${isDarkMode
-                                        ? 'border-white text-black bg-white hover:bg-gradient-to-r from-blue-500 to-blue-400 hover:text-white'
+                                        ? 'border-white text-gray-300 bg-[#1F1F1F] hover:bg-gradient-to-r from-[#474747] to-[#5A5A5A] hover:text-white'
                                         : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
                                     }`}>
                                     <p>Tất cả</p>
@@ -270,71 +269,86 @@ const Profile = () => {
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-start justify-start gap-2 p-2 rounded-xl ">
-                        <div className="flex flex-row gap-3 justify-evenly flex-wrap max-w-[300px]">
-                            <SocialLinkButton
-                                icon={<FaFacebook />}
-                                textColor="blue-600"
-                                borderColor="blue-600"
-                                bgColorFrom="blue-500"
-                                bgColorTo="blue-600"
-                            />
+                    <div className="flex flex-row gap-3 justify-evenly flex-wrap max-w-[300px]">
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-600 text-blue-600 
+                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                <FaFacebook />
 
-                            <SocialLinkButton
-                                icon={<FaInstagramSquare />}
-                                textColor="pink-500"
-                                borderColor="pink-600"
-                                bgColorFrom="pink-500"
-                                bgColorTo="yellow-500"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-pink-600 text-pink-500 
+                                    hover:bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                <FaInstagramSquare />
 
-                            <SocialLinkButton
-                                icon={<FaLinkedin />}
-                                textColor="blue-600"
-                                borderColor="blue-600"
-                                bgColorFrom="blue-500"
-                                bgColorTo="blue-600"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-600 text-blue-600 
+                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                <FaLinkedin />
 
-                            <SocialLinkButton
-                                icon={<FaTiktok />}
-                                textColor="gray-400"
-                                borderColor="gray-400"
-                                bgColorFrom="black"
-                                bgColorTo="gray-800"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl border-2
+                                    hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300' 
+                                    : 'bg-white text-gray-700 border-gray-700'}`}>
+                                <FaTiktok />
 
-                            <SocialLinkButton
-                                icon={<FaXTwitter />}
-                                textColor="blue-600"
-                                borderColor="blue-600"
-                                bgColorFrom="blue-500"
-                                bgColorTo="blue-600"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-600 text-blue-600 
+                                    hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                <FaXTwitter />
 
-                            <SocialLinkButton
-                                icon={<IoLogoYoutube />}
-                                textColor="red-500"
-                                borderColor="red-500"
-                                bgColorFrom="red-500"
-                                bgColorTo="red-600"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-red-500 text-red-500 
+                                    hover:bg-gradient-to-r from-red-500 to-red-600 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                <IoLogoYoutube />
 
-                            <SocialLinkButton
-                                icon={<FaDiscord />}
-                                textColor="blue-700"
-                                borderColor="blue-700"
-                                bgColorFrom="blue-600"
-                                bgColorTo="blue-700"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
+                                    border-2 border-blue-700 text-blue-700 
+                                    hover:bg-gradient-to-r from-blue-600 to-blue-700 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                <FaDiscord />
 
-                            <SocialLinkButton
-                                icon={<FaGithub />}
-                                textColor="gray-400"
-                                borderColor="gray-400"
-                                bgColorFrom="gray-700"
-                                bgColorTo="gray-800"
-                            />
+                            </button>
+                        </div>
+                        <div className="w-[60px] flex items-center justify-center">
+                            <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl border-2 
+                                    hover:bg-gradient-to-r from-gray-700 to-gray-800 hover:text-white 
+                                    rounded-full shadow-md transition duration-200
+                                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300' 
+                                    : 'bg-white text-gray-700 border-gray-700'}`}>
+                                <FaGithub />
+
+                            </button>
                         </div>
                     </div>
                 </div>
