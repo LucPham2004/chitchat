@@ -5,6 +5,7 @@
   
   ::-webkit-scrollbar-track {
     background: #ffffff; /* Màu nền của phần thanh cuộn */
+    border-radius: 10px;
   }
   
   ::-webkit-scrollbar-thumb {
@@ -20,6 +21,7 @@
 /* Thanh cuộn Dark Mode */
 .dark ::-webkit-scrollbar-track {
   background: #1F1F1F; /* Nền thanh cuộn (màu tối) */
+  border-radius: 10px;
 }
 
 .dark ::-webkit-scrollbar-thumb {

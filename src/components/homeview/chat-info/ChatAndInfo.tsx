@@ -127,13 +127,14 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                                   }
                             }}/>
                     </div>
-                    <div className="flex items-center justify-between gap-2 w-full">
-                        <button className={`flex items-center justify-center gap-2 w-full p-2 text-md font-medium rounded-lg 
+                    <div className="flex items-center justify-between gap-2 mt-2 w-full">
+                        <button className={`flex items-center justify-center gap-2 w-full p-1 text-md font-medium rounded-lg 
                             ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]' 
-                            : 'text-gray-800 hover:bg-gray-100'}`}>
+                            : 'text-gray-800 hover:bg-gray-100'}`}
+                            onClick={() => setIsChangeConversationNameModalOpen(false)}>
                         Huỷ
                         </button>
-                        <button className={`flex items-center justify-center gap-2 w-full p-2 text-md font-medium rounded-lg 
+                        <button className={`flex items-center justify-center gap-2 w-full p-1 text-md font-medium rounded-lg 
                             ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]' 
                             : 'text-gray-800 hover:bg-gray-100'}
                             ${charCount < 1 ? 'cursor-not-allowed' : ''}`}>

@@ -1,4 +1,3 @@
-import { Outlet } from "react-router-dom";
 import Conversations from "../components/homeview/conversations/Conversations";
 import ChatAndInfo from "../components/homeview/chat-info/ChatAndInfo";
 import { useState } from "react";

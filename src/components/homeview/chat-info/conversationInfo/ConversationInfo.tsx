@@ -291,7 +291,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 );
             default:
                 return (
-                    <div className={`relative flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
+                    <div className={`relative flex flex-col gap-2 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                         p-1 pb-0 rounded-xl border shadow-sm transition-transform duration-300 
                         ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
                         ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
@@ -305,13 +305,13 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             </button>
                         }
 
-                        <div className="flex flex-col items-center gap-2 p-2">
+                        <div className="flex flex-col items-center gap-1 p-2">
                             <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
                             <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>Cristiano Ronaldo</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
 
-                        <div className={`flex flex-row justify-center gap-4 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                        <div className={`flex flex-row justify-center gap-4 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
                                     ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 

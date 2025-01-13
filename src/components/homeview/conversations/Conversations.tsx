@@ -2,7 +2,7 @@ import { BsPencilSquare } from "react-icons/bs";
 import ConversationList from "./ConversationList";
 import '../../../styles/scrollbar.css';
 import SearchBar from "./SearchBar";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IoSettings } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
 import { Link } from "react-router-dom";

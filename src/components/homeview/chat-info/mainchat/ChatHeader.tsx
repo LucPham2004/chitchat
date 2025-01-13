@@ -11,7 +11,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowCo
     
     return (
         <div className={`flex justify-between items-center w-full p-0.5 border-b 
-            ${isDarkMode ? 'border-gray-900' : 'border-gray-200'}`}>
+            ${isDarkMode ? 'border-gray-900' : 'border-gray-400'}`}>
             
             <div className={`relative flex-1 flex items-center rounded-lg p-1
                 h-full min-w-0 max-w-fit  cursor-pointer gap-1

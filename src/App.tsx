@@ -7,11 +7,16 @@ import RegisterView from './views/RegisterView';
 import ProfileView from './views/ProfileView';
 import Friends from './components/profile/Friends';
 import Profile from './components/profile/Profile';
+import RedirectToConversation from './views/RedirectToConversations';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '',
+      element: <RedirectToConversation />
+    },
+    {
+      path: 'conversations',
       element: <HomeView />,
       errorElement: <ErrorPage />
     },
@@ -37,12 +42,14 @@ function App() {
       path: 'register',
       element: <RegisterView />,
     },
+    {
+      path: '*',
+      element: <ErrorPage />
+    },
   ]);
 
   return (
-    <>
-      <RouterProvider router={router} />
-    </>
+    <RouterProvider router={router} />
   );
 }
 

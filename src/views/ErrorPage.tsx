@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const ErrorPage = () => {
 	return (
 		<div className="min-h-screen bg-[url('/blurBg.png')] bg-cover bg-center flex justify-center items-center">
-			<div className="absolute inset-0 bg-black/50 backdrop-blur-lg"></div>
+			<div className="absolute inset-0"></div>
 			<div className="relative z-10 h-fit w-fit flex flex-col justify-center items-center bg-gray-200 p-10 rounded-3xl">
 				<div className="flex items-center">
 					<h1 className="text-9xl font-extrabold font-satisfy bg-gradient-to-br from-red-500 to-yellow-400 bg-clip-text text-transparent tracking-widest">4</h1>

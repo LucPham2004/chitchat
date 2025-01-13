@@ -5,37 +5,52 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 
 
 export interface MessageObject {
-	text: string;
-	user: string;
+    senderId: number;
+    text: string;
+    name: string;
 }
 
 interface MessagesProps {
-	messages: MessageObject[];
-	name: string;
+    messages: MessageObject[];
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, name }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
     const { isDarkMode, toggleDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
     const chatEndRef = useRef<HTMLDivElement>(null);
 
-    // Cuộn đến cuối mỗi khi danh sách tin nhắn thay đổi
     useEffect(() => {
-        // Cuộn đến cuối
         chatEndRef.current?.scrollIntoView({ behavior: 'instant' });
     }, [messages]);
-    
+
     return (
-        <div className={`w-full overflow-y-auto flex flex-col  px-2 pb-4
-            ${ deviceType !== 'PC' ? 'max-h-[85vh] min-h-[85vh]' : 'max-h-[78vh] min-h-[78vh]'}
-            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
-            {messages.map((message, i) => (
-                <div key={i} className="p-1">
-                    <ChatMessage message={message} name={name} />
-                </div>
-            ))}
+        <div
+            className={`w-full overflow-y-auto flex flex-col px-2 pb-4
+              ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[50vh]'}
+              ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}
+              bg-cover bg-center`}
+            style={{
+                backgroundImage: `url(${isDarkMode ? 'convBgDark.jpg' : 'convBg.jpg'})`,
+            }}
+        >
+            {messages.map((message, i) => {
+                const isSameSenderAsPrevious = i > 0 && messages[i - 1].senderId === message.senderId;
+                const isSameSenderAsNext = i < messages.length - 1 && messages[i + 1].senderId === message.senderId;
+              
+                const isFirstInGroup = !isSameSenderAsPrevious;
+                const isLastInGroup = !isSameSenderAsNext;
+                const isSingleMessage = !isSameSenderAsPrevious && !isSameSenderAsNext;
+                
+                return (
+                    <div key={i} className={`${isSameSenderAsNext ? 'mb-[2px]' : 'mb-2'}`}>
+                        <ChatMessage message={message} isFirstInGroup={isFirstInGroup} 
+                            isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}/>
+                    </div>
+                )
+            })}
             <div ref={chatEndRef} />
         </div>
+
     )
 }
 
