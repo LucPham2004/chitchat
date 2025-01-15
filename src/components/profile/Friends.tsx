@@ -96,6 +96,11 @@ const Friends = () => {
             </div>
             <div className="min-h-[86vh] max-h-[90vh] overflow-y-auto">
                 <div className="w-full flex items-center justify-center gap-4 flex-wrap p-4">
+                    <div className="w-full">
+                        <div className="flex justify-end">
+                            <SearchBar />
+                        </div>
+                    </div>
 
                     {/* All friends */}
                     {activeTab == 'allFriends' && friends.map((friend, index) => (
