@@ -27,7 +27,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			className={`flex items-end ${senderId === currentUser.id ? 'justify-end' : 'justify-start gap-2'
 				}`}
 		>
-			{/* Hiển thị ảnh đại diện nếu là tin nhắn đầu tiên của nhóm */}
+			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{senderId !== currentUser.id && isLastInGroup && (
 				<img
 					src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"
@@ -36,14 +36,13 @@ const ChatMessage: React.FC<MessageProps> = ({
 				/>
 			)}
 
-			{/* <div className="flex flex-col items-center"></div>
-			<div className={`${isDarkMode ? 'text-gray-400' : 'text-black'}`}>{name}</div> */}
+			
 			<div
-				className={`inline-block max-w-[70%] p-1 px-3 ${senderId === currentUser.id
+				className={`relative inline-block max-w-[70%] p-1 px-3 ${senderId === currentUser.id
 						? 'bg-[#0199FC] text-white'
 						: `${isDarkMode ? 'bg-[#4C4C4C] text-gray-300' : 'bg-[#F3F3F3]'} text-[#353535]`
 					} ${isSingleMessage // Nếu là tin nhắn đơn
-						? 'rounded-[20px]'
+						? senderId === currentUser.id ? 'rounded-[20px]' : 'rounded-[20px] mt-6'
 						: isFirstInGroup // Nếu là tin nhắn đầu trong chuỗi tin nhắn
 							? senderId === currentUser.id
 								? 'rounded-t-[20px] rounded-bl-[20px] rounded-br-[4px]' // Người dùng hiện tại
@@ -58,6 +57,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 					}`}
 			>
 				<p className="text-[16px] break-words">{text}</p>
+				{ isFirstInGroup && senderId !== currentUser.id &&
+					<div className={`absolute -top-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{name}</div>
+				}
 			</div>
 		</div>
 	);
