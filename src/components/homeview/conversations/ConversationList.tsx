@@ -24,12 +24,13 @@ const ConversationList: React.FC = () => {
                         />
                         <div className="flex-1 max-w-[90%]">
                             <h4 className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>{conv.name}</h4>
-                            <div className="w-full flex items-center">
+                            <div className="w-full flex items-center justify-between">
                                 <p className={`text-sm truncate max-w-[80%] overflow-hidden text-ellipsis whitespace-nowrap
                                     ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                     {conv.lastMessage}
                                 </p>
-                                <span className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}> • {conv.time}</span>
+                                <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}> 
+                                    {conv.time}</p>
                             </div>
                         </div>
                     </li>

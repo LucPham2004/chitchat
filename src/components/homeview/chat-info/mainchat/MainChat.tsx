@@ -6,7 +6,7 @@ import { useTheme } from "../../../../utilities/ThemeContext"
 
 
 
-const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConversationMembersModalOpen }) => {
+const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidth, toggleShowConversationMembersModalOpen }) => {
     const { isDarkMode  } = useTheme();
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
@@ -57,7 +57,7 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConv
             // { senderId: 4, text: "khồng, có m xàm lìn ếi", name: "alice" },
             // { senderId: 5, text: "Anh 7 t là nhất, mecseg tuoiloz", name: "john" },
             // { senderId: 4, text: "coconcek WC anh m đâu?", name: "alice" },
-            // { senderId: 5, text: "Sắp có rồi, 41 tuổi đỉnh cao đời người", name: "john" },
+            // { senderId: 5, text: "Sắp có rồi, 41 tuổi đỉnh cao đời người", name: "john" },  
             // { senderId: 4, text: "xàm lồng ác", name: "alice" },
             // { senderId: 5, text: "cook ngay", name: "john" },
             // { senderId: 5, text: "dăm ba cái wc", name: "john" },
@@ -78,6 +78,7 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConv
             ${isDarkMode ? 'bg-black border-gray-900' : 'bg-[#FF9E3B] border-gray-200'}`}> 
             <ChatHeader 
                 toggleChangeWidth={toggleChangeWidth} 
+                isChangeWidth={isChangeWidth}
                 toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
             <div className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden">
                 <ChatBody messages={messages} />

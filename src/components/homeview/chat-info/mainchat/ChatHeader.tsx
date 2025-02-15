@@ -1,12 +1,14 @@
 import { PiDotsThreeCircle } from "react-icons/pi"
 import { useTheme } from "../../../../utilities/ThemeContext";
+import { VscLayoutSidebarRight, VscLayoutSidebarRightOff } from "react-icons/vsc";
 
 export interface ChatHeaderProps {
     toggleChangeWidth: () => void;
     toggleShowConversationMembersModalOpen?: () => void;
+    isChangeWidth: boolean;
 }
 
-const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowConversationMembersModalOpen }) => {
+const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidth, toggleShowConversationMembersModalOpen }) => {
     const { isDarkMode  } = useTheme();
     
     return (
@@ -33,9 +35,9 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, toggleShowCo
 
             <div className="flex me-2">
                 <button className={`self-end rounded-full p-2 text-center text-2xl font-semibold
-                    ${isDarkMode ? 'text-gray-100 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
+                    ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-700 hover:bg-gray-200'}`}
                     onClick={toggleChangeWidth}>
-                    <PiDotsThreeCircle />
+                    {isChangeWidth ? <VscLayoutSidebarRightOff /> : <VscLayoutSidebarRight />}
                 </button>
             </div>
 

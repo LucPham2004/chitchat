@@ -132,7 +132,7 @@ const Friends = () => {
                                             Nhắn tin
                                         </li>
                                         <hr></hr>
-                                        <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg 
+                                        <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg
                                             font-bold cursor-pointer
                                             ${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-100'}`}>
                                             <button className={`p-2 rounded-full text-black text-xl

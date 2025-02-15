@@ -106,7 +106,8 @@ const Conversations = () => {
                         </div>
                     </div>
                     <div className='flex flex-col items-center gap-2 w-full'>
-                        <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'
+                        <label className={`flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between 
+                            ${isDarkMode ? 'hover:bg-[#474747]' : 'hover:bg-gray-200'} cursor-pointer`}
                             onClick={() => toggleDarkMode}>
                             <p>Đang tắt</p>
                             <div className={`flex items-center rounded-full p-2 cursor-pointer
@@ -116,7 +117,8 @@ const Conversations = () => {
                                     onChange={() => toggleDarkMode()}/>
                             </div>
                         </label>
-                        <label className='flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between'
+                        <label className={`flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between 
+                            ${isDarkMode ? 'hover:bg-[#474747]' : 'hover:bg-gray-200'} cursor-pointer`}
                             onClick={() => toggleDarkMode}>
                             <p>Đang bật</p>
                             <div className={`flex items-center rounded-full p-2 cursor-pointer

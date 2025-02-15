@@ -61,6 +61,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 }`}>
                 <MainChat 
                     toggleChangeWidth={toggleChangeWidth} 
+                    isChangeWidth={isChangeWidth}
                     toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} 
                 />
             </div>
