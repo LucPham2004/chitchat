@@ -26,7 +26,7 @@ const HomeView = () => {
 					${  
 						deviceType == 'Mobile' ? 'w-[100%]' :
 						deviceType == 'Tablet' ? 'w-[40%]' :
-						isChangeWidth ? 'w-[33%]' : 'w-[25%]'
+						isChangeWidth ? 'w-[33%]' : 'w-[27%]'
 					}`}>
 					<Conversations />
 				</div>
@@ -34,7 +34,7 @@ const HomeView = () => {
 					${
 						deviceType == 'Mobile' ? 'w-[0%]' :
 						deviceType == 'Tablet' ? 'w-[60%]' :
-						isChangeWidth ? 'w-[66%]' : 'w-[74%]'
+						isChangeWidth ? 'w-[66%]' : 'w-[72%]'
 					}`}>
 					<ChatAndInfo toggleChangeWidth={toggleChangeWidth} isChangeWidth={isChangeWidth}/>
 				</div>

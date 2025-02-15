@@ -22,7 +22,7 @@ const UserCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuO
 
     return (
         <div className={` flex items-center justify-between gap-4 p-2 border border-gray-100 rounded-lg shadow-sm
-            ${deviceType == 'PC' ? 'min-w-[520px]' : 'w-full'}
+            ${deviceType == 'PC' ? '' : 'w-full'}
             ${isDarkMode ? 'border-gray-600' : 'border-gray-100'}
         `}>
             <div className="flex items-center gap-4">
@@ -42,9 +42,9 @@ const UserCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuO
                     <FaUserPlus />
                     <p className="text-sm font-semibold">Kết bạn</p>
                 </button>
-                <button className={`rounded-full p-2 text-center text-2xl font-semibold 
-                    ${isOpen ? 'bg-gray-400' : ''}
-                    ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]'
+                <button className={`rounded-full p-2 text-center text-2xl font-semibold border
+                    ${isOpen ? 'bg-[#474747]' : ''}
+                    ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]'
                         : 'text-black bg-gray-100 hover:bg-gray-200'}`}
                     onClick={toggleFriendMenuOpen}>
                     <PiDotsThreeOutline />

@@ -18,13 +18,13 @@ const ProfileView = () => {
 					${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
 				<div className={`${  
 						deviceType == 'Mobile' ? 'w-[0%]' :
-						deviceType == 'Tablet' ? 'w-[40%]' : 'w-[25%]'
+						deviceType == 'Tablet' ? 'w-[40%]' : 'w-[27%]'
 					}`}>
 					<Conversations />
 				</div>
 				<div className={`${  
 						deviceType == 'Mobile' ? 'w-[100%]' :
-						deviceType == 'Tablet' ? 'w-[60%]' : 'w-[74%]'
+						deviceType == 'Tablet' ? 'w-[60%]' : 'w-[72%]'
 					}`}>
 					<Outlet />
 				</div>

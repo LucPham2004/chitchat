@@ -104,7 +104,7 @@ const Friends = () => {
 
                     {/* All friends */}
                     {activeTab == 'allFriends' && friends.map((friend, index) => (
-                        <div className="relative w-full max-w-[520px]" key={friend.id}>
+                        <div className="relative w-full max-w-[500px]" key={friend.id}>
                             <FriendCard key={friend.id} friend={friend}
                                 isOpen={selectedFriendId === friend.id}
                                 toggleFriendMenuOpen={() => toggleFriendMenuOpen(friend.id)} />
@@ -149,7 +149,7 @@ const Friends = () => {
 
                     {/* Friend requests */}
                     {activeTab == 'friendRequests' && friends.map((friend, index) => (
-                        <div className="relative w-full max-w-[520px]" key={friend.id}>
+                        <div className="relative w-full max-w-[500px]" key={friend.id}>
                             <FriendRequestCard key={friend.id} friend={friend}
                                 isOpen={selectedFriendId === friend.id}
                                 toggleFriendMenuOpen={() => toggleFriendMenuOpen(friend.id)} />
@@ -194,7 +194,7 @@ const Friends = () => {
 
                     {/* Find friends */}
                     {activeTab == 'findFriends' && friends.map((friend, index) => (
-                        <div className="relative w-full max-w-[520px]" key={friend.id}>
+                        <div className="relative w-full max-w-[500px]" key={friend.id}>
                             <UserCard key={friend.id} friend={friend}
                                 isOpen={selectedFriendId === friend.id}
                                 toggleFriendMenuOpen={() => toggleFriendMenuOpen(friend.id)} />
