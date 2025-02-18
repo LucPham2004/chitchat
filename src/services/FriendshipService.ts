@@ -4,20 +4,20 @@ import { ApiResponse } from '../types/backend';
 
 // Get Friendship Status
 export const getFriendStatus = async (requesterId: number, receiverId: number) => {
-    return (await instance.get<ApiResponse<FriendshipResponse>>(`/api/friendships/${requesterId}/${receiverId}`)).data;
+    return (await instance.get<ApiResponse<FriendshipResponse>>(`/user-service/friendships/${requesterId}/${receiverId}`)).data;
 };
 
 // Send Friend Request
 export const sendFriendRequest = async (requesterId: number, receiverId: number) => {
-    return (await instance.post<ApiResponse<FriendshipResponse>>(`/api/friendships/${requesterId}/${receiverId}`, null)).data;
+    return (await instance.post<ApiResponse<FriendshipResponse>>(`/user-service/friendships/${requesterId}/${receiverId}`, null)).data;
 };
 
 // Delete Friendship
 export const deleteFriendship = async (id: number) => {
-    await instance.delete<ApiResponse<void>>(`/api/friendships/${id}`);
+    await instance.delete<ApiResponse<void>>(`/user-service/friendships/${id}`);
 };
 
 // Edit Friendship Status
 export const editFriendshipStatus = async (id: number, status: string) => {
-    return (await instance.put<ApiResponse<FriendshipResponse>>(`/api/friendships/${id}/${status}`, null)).data;
+    return (await instance.put<ApiResponse<FriendshipResponse>>(`/user-service/friendships/${id}/${status}`, null)).data;
 };
