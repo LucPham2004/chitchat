@@ -38,7 +38,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 			
 			<div
-				className={`relative inline-block max-w-[70%] p-1 px-3 ${senderId === currentUser.id
+				className={`relative inline-block max-w-[70%] pt-1 pb-1.5 px-3 ${senderId === currentUser.id
 						? 'bg-[#0199FC] text-white'
 						: `${isDarkMode ? 'bg-[#4C4C4C] text-gray-300' : 'bg-[#F3F3F3]'} text-[#353535]`
 					} ${isSingleMessage // Nếu là tin nhắn đơn

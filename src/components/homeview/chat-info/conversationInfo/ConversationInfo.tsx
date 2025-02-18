@@ -291,7 +291,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 );
             default:
                 return (
-                    <div className={`relative flex flex-col gap-2 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
+                    <div className={`relative flex flex-col gap-2 min-w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                         p-1 pb-0 rounded-xl border shadow-sm transition-transform duration-300 
                         ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
                         ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
