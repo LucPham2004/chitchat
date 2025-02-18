@@ -12,7 +12,7 @@ interface AccessTokenResponse {
  */
 
 const instance = axiosClient.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: 'http://localhost:8888',
     withCredentials: true
 });
 
@@ -22,16 +22,22 @@ const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null | undefined> => {
      return await mutex.runExclusive(async () => {
-          const res = await instance.get<ApiResponse<AccessTokenResponse>>('/api/auth/refresh');
+          const res = await instance.get<ApiResponse<AccessTokenResponse>>('/auth-service/auth/refresh');
           if (res && res.data) return res.data?.result?.access_token;
           else return null;
      });
 };
 
 instance.interceptors.request.use(function (config) {
-    if (typeof window !== "undefined" && window.localStorage.getItem('access_token')) {
+    const excludedEndpoints = ['/auth-service/auth/login', '/auth-service/auth/logout'];
+    const shouldExcludeToken = excludedEndpoints.some(endpoint =>
+        config.url?.endsWith(endpoint)
+    );
+
+    if (!shouldExcludeToken && typeof window !== "undefined" && window.localStorage.getItem('access_token')) {
         config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
     }
+    
     if (!config.headers.Accept && config.headers["Content-Type"]) {
         config.headers.Accept = "application/json";
         config.headers["Content-Type"] = "application/json; charset=utf-8";
@@ -48,7 +54,7 @@ instance.interceptors.response.use(
      async (error) => {
          if (error.config && error.response
              && +error.response.status === 401
-             && error.config.url !== '/api/auth/login'
+             && error.config.url !== '/auth-service/auth/login'
              && !error.config.headers[NO_RETRY_HEADER]
          ) {
              const access_token = await handleRefreshToken();
@@ -63,7 +69,7 @@ instance.interceptors.response.use(
          if (
              error.config && error.response
              && +error.response.status === 400
-             && error.config.url === '/api/auth/refresh'
+             && error.config.url === '/auth-service/auth/refresh'
              && location.pathname.startsWith("/admin")
          ) {
              const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";

@@ -44,10 +44,12 @@ export interface Account {
           email: string;
           username: string;
           firstName: string;
-          lastName: string;
-          role: {
+          lastName?: string;
+          location?: string;
+          bio?: string;
+          authorities: {
                id: string;
-               name: string;
+               authority: string;
           }
      }
 }

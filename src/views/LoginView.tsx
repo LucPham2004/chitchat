@@ -1,13 +1,32 @@
 import { useState } from 'react';
 import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
+import { callLogin } from '../services/AuthService';
+import { Account } from '../types/backend';
+import { useAuth } from '../utilities/AuthContext';
 
 const LoginView = () => {
 	const deviceType = useDeviceTypeByWidth();
-	const [email, setEmail] = useState('');
+	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 
-	const handleSubmit = (e: any) => {
+	const { login } = useAuth();
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		try {
+			const response = await callLogin(username, password);
+			console.log('Login response:', response.data);
+			if (response.data.code === 1000 && response.data.result) {
+				const account: Account = response.data.result;
+				login(account);
+				alert('Đăng nhập thành công!');
+			} else {
+				alert('Đăng nhập thất bại: ' + response.data.message);
+			}
+		} catch (error) {
+			console.error('Login error:', error);
+			alert('Đã xảy ra lỗi. Vui lòng thử lại!');
+		}
 	};
 
 	return (
@@ -32,10 +51,10 @@ const LoginView = () => {
 						<form onSubmit={handleSubmit} className="space-y-2">
 							<div>
 								<input
-									type="email"
+									type="username"
 									placeholder='Username hoặc email hoặc số điện thoại'
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
+									value={username}
+									onChange={(e) => setUsername(e.target.value)}
 									required
 									className="w-3/4 px-4 py-2 mt-2 border rounded-xl bg-gray-100 
 										focus:outline-none focus:ring-2 focus:ring-blue-500"
