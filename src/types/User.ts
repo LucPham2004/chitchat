@@ -1,4 +1,4 @@
-enum Gender {
+export enum Gender {
     MALE = 'Male',
     FEMALE = 'Female',
     OTHER = 'Other'
@@ -7,7 +7,10 @@ enum Gender {
 export interface UserCreationRequest {
     username: string;
     password: string;
-    email: string;
+    email?: string | null;
+    firstName?: string;
+    lastName?: string;
+    dob?: string;
     gender?: Gender;
 }
 

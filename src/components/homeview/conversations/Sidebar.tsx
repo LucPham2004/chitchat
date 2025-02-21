@@ -17,7 +17,7 @@ const Sidebar = () => {
             py-2 items-center justify-between rounded-xl
             ${isDarkMode ? 'bg-[#1A1A1A] text-gray-300' : 'bg-gray-100 text-black'}`}>
             
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-2">
                 <Link to={"/profile"}>
                     <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
                         >
@@ -39,8 +39,10 @@ const Sidebar = () => {
                 </button>
                 </Link>
             </div>
+
+            <p className="font-satisfy text-xl">Chit Chat</p>
             
-            <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col items-center gap-2">
                 <button className={` rounded-lg 
                     ${isDarkMode ? 'text-yellow-300 text-xl p-3 hover:bg-[#5A5A5A]' 
                         : 'text-orange-400 text-2xl p-2.5 bg-gray-100 hover:bg-gray-200'}`}

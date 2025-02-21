@@ -73,9 +73,9 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidth,
     }, []);
     // [#1F1F1F] / white
     return (
-        <div className={`min-h-[96vh] flex flex-col items-center p-1 pb-0 
-            rounded-xl border shadow-sm overflow-hidden
-            ${isDarkMode ? 'bg-black border-gray-900' : 'bg-[#FF9E3B] border-gray-200'}`}> 
+        <div className={`min-h-[96vh] flex flex-col items-center pe-1 pt-1 pb-0 
+            rounded-xl shadow-sm overflow-hidden
+            ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}> 
             <ChatHeader 
                 toggleChangeWidth={toggleChangeWidth} 
                 isChangeWidth={isChangeWidth}

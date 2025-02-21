@@ -1,17 +1,48 @@
 import { useState } from 'react';
 import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
+import { callRegister } from '../services/AuthService';
+import { Gender } from '../types/User';
 
 const RegisterView = () => {
 	const deviceType = useDeviceTypeByWidth();
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
-	const [email, setEmail] = useState('');
+	const [gender, setGender] = useState<Gender>();
+	const [dob, setDob] = useState('');
+	const [username, setUsername] = useState('');
+	const [email, setEmail] = useState(null);
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
-	const handleSubmit = (e: any) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+	
+		if (password !== confirmPassword) {
+			alert("Mật khẩu nhập lại không khớp!");
+			return;
+		}
+	
+		try {
+			const response = await callRegister({
+				username,
+				password,
+				email,
+				firstName,
+				lastName,
+				dob,
+				gender,
+			});
+
+			if(response.data.code === 1000 && response.data.result) {
+				
+				alert("Đăng ký thành công!");
+			}
+			console.log(response.data);
+		} catch (error: any) {
+			alert("Đăng ký thất bại: " + (error.response?.data?.message || "Lỗi không xác định"));
+		}
 	};
+	
 
 	return (
 		<div className='flex items-center justify-center'>
@@ -25,7 +56,7 @@ const RegisterView = () => {
 			}
 			<div className={`${deviceType == 'PC' ? 'w-2/5' : 'w-full flex items-center justify-center'}`}>
 					<div className="p-8 rounded-lg w-full max-w-md">
-						<p className="text-5xl font-bold text-start text-gray-800 mb-8
+						<p className="text-5xl font-bold text-start text-gray-800 mb-6
 							bg-gradient-to-br from-pink-500 to-blue-400 bg-clip-text text-transparent">
 							Nơi tuyệt vời để kết nối năm châu bốn bể
 						</p>
@@ -33,46 +64,62 @@ const RegisterView = () => {
 							<div className='flex items-center gap-4'>
 								<input
 									type="firstName"
-									placeholder='firstName'
+									placeholder='Họ đệm'
 									value={firstName}
 									onChange={(e) => setFirstName(e.target.value)}
 									required
-									className="w-1/2 px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-1/2 ps-4 pe-2 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 								<input
 									type="lastName"
-									placeholder='lastName'
+									placeholder='Tên'
 									value={lastName}
 									onChange={(e) => setLastName(e.target.value)}
 									required
-									className="w-1/2 px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-1/2 ps-4 pe-2 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 							</div>
-							<div className='flex items-center justify-between '>
-								<label className='flex gap-2 rounded-lg border border-gray-200 py-2 px-8'>
+							<div className='flex justify-between '>
+								<label className='flex gap-10 rounded-lg border border-gray-200 py-2 ps-4 pe-6'>
 									<p>Nam</p>
-									<input type="radio" name="gender" value="male" />
+									<input type="radio" name="gender" value={Gender.MALE} className='w-4 h-4' 
+										checked={gender === Gender.MALE}
+										onChange={() => setGender(Gender.MALE)}/>
 								</label>
 								<br />
-								<label className='flex gap-2 rounded-lg border border-gray-200 py-2 px-8'>
+								<label className='flex gap-10 rounded-lg border border-gray-200 py-2 ps-4 pe-6'>
 									Nữ
-									<input type="radio" name="gender" value="female" />
+									<input type="radio" name="gender" value={Gender.FEMALE} className='w-4 h-4' 
+										checked={gender === Gender.FEMALE}
+										onChange={() => setGender(Gender.FEMALE)}/>
 								</label>
 								<br />
-								<label className='flex gap-2 rounded-lg border border-gray-200 py-2 px-8'>
+								<label className='flex gap-10 rounded-lg border border-gray-200 py-2 ps-4 pe-6'>
 									Khác
-									<input type="radio" name="gender" value="other" />
+									<input type="radio" name="gender" value={Gender.OTHER} className='w-4 h-4' 
+										checked={gender === Gender.OTHER}
+										onChange={() => setGender(Gender.OTHER)}/>
 								</label>
 								<br />
 							</div>
 							<div>
 								<input
-									type="email"
-									placeholder='Username hoặc email hoặc số điện thoại'
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
+									type="date"
+									placeholder='Ngày sinh'
+									value={dob}
+									onChange={(e) => setDob(e.target.value)}
 									required
-									className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-full ps-4 pe-2 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+								/>
+							</div>
+							<div>
+								<input
+									type="text"
+									placeholder='Username hoặc email hoặc số điện thoại'
+									value={username}
+									onChange={(e) => setUsername(e.target.value)}
+									required
+									className="w-full ps-4 pe-2 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 							</div>
 							<div>
@@ -82,7 +129,7 @@ const RegisterView = () => {
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									required
-									className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-full ps-4 pe-2 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 							</div>
 							<div>
@@ -92,7 +139,7 @@ const RegisterView = () => {
 									value={confirmPassword}
 									onChange={(e) => setConfirmPassword(e.target.value)}
 									required
-									className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+									className="w-full ps-4 pe-2 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								/>
 							</div>
 							<div>
@@ -105,7 +152,7 @@ const RegisterView = () => {
 								</button>
 							</div>
 						</form>
-						<p className="mt-4 text-center text-gray-600">
+						<p className="mt-4 text-start text-gray-600">
 							Đã có tài khoản rồi?{' '}
 							<a href="/login" className="text-blue-500 hover:underline">
 								Đăng nhập ngay!

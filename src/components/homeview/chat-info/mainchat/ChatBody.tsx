@@ -25,10 +25,9 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
 
     return (
         <div
-            className={`w-full overflow-y-auto flex flex-col px-2 pb-4
-              ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[78vh]'}
-              ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}
-              bg-cover bg-center`}
+            className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-4
+                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[78vh]'}
+                bg-cover bg-center`}
             style={{
                 backgroundImage: `url(${isDarkMode ? 'convBgDark.jpg' : 'convBg.jpg'})`,
             }}
@@ -42,7 +41,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
                 const isSingleMessage = !isSameSenderAsPrevious && !isSameSenderAsNext;
                 
                 return (
-                    <div key={i} className={`${isSameSenderAsNext ? 'mb-[2px]' : 'mb-2'}`}>
+                    <div key={i} className={`${isSameSenderAsNext ? 'mb-[1px]' : 'mb-2'}`}>
                         <ChatMessage message={message} isFirstInGroup={isFirstInGroup} 
                             isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}/>
                     </div>

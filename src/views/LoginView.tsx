@@ -19,7 +19,7 @@ const LoginView = () => {
 			if (response.data.code === 1000 && response.data.result) {
 				const account: Account = response.data.result;
 				login(account);
-				alert('Đăng nhập thành công!');
+				window.location.href = '/';
 			} else {
 				alert('Đăng nhập thất bại: ' + response.data.message);
 			}
@@ -81,7 +81,7 @@ const LoginView = () => {
 								</button>
 							</div>
 						</form>
-						<p className="mt-4 text-center text-gray-600">
+						<p className="mt-4 text-start text-gray-600">
 							Chưa có tài khoản?{' '}
 							<a href="/register" className="text-blue-500 hover:underline">
 								Đăng ký ngay!
