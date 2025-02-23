@@ -1,11 +1,11 @@
-import { ApiResponse } from "../types/backend";
+import { ApiResponse, Page } from "../types/backend";
 import { ConversationShortResponse, ConversationResponse, ConversationRequest } from "../types/Conversation";
 import instance from "./Axios-customize";
 
 
 // Get Conversations by Owner ID
 export const getConversationsByOwnerId = async (userId: number, pageNum: number) => {
-    return (await instance.get<ApiResponse<ConversationShortResponse[]>>(
+    return (await instance.get<ApiResponse<Page<ConversationShortResponse>>>(
         `/chat-service/conversations/get/owner`,
         { params: { userId, pageNum } }
     )).data;

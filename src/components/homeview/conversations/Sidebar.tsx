@@ -3,16 +3,29 @@ import { useTheme } from "../../../utilities/ThemeContext";
 import { IoMdSunny } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
 import { BsChatDots } from "react-icons/bs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { IoSettings } from "react-icons/io5";
 import { GrSettingsOption } from "react-icons/gr";
 import { useAuth } from "../../../utilities/AuthContext";
+import { callLogout } from "../../../services/AuthService";
 
 
 const Sidebar = () => {
-    const {user} = useAuth();
-
+    const {user, setUser} = useAuth();
+    const navigate = useNavigate();
     const { isDarkMode, toggleDarkMode } = useTheme();
+
+    const handleLogout = async () => {
+        try {
+            await callLogout();
+            localStorage.removeItem("user_account");
+            localStorage.removeItem("user");
+            setUser(null);
+            navigate("/login");
+        } catch (error) {
+            console.error("Lỗi khi logout:", error);
+        }
+    };
     
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden min-w-[10%] flex flex-col gap-4 
@@ -34,11 +47,11 @@ const Sidebar = () => {
                 </button> */}
                 
                 <Link to="/profile/friends">
-                <button className={`p-3 rounded-lg text-xl 
-                    ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
-                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
-                    <FaUserFriends />
-                </button>
+                    <button className={`p-3 rounded-lg text-xl 
+                        ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
+                            : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                        <FaUserFriends />
+                    </button>
                 </Link>
             </div>
 
@@ -60,7 +73,8 @@ const Sidebar = () => {
 
                 <button className={`p-3 rounded-lg text-xl
                     ${isDarkMode ? 'text-white hover:bg-[#545454]' 
-                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}
+                        onClick={handleLogout} >
                     <FiLogOut />
                 </button>
             </div>

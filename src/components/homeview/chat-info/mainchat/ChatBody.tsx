@@ -15,9 +15,13 @@ interface MessagesProps {
 }
 
 const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
-    const { isDarkMode  } = useTheme();
+    const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
     const chatEndRef = useRef<HTMLDivElement>(null);
+    const currentUser = {
+        id: 5,
+
+    };
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'instant' });
@@ -35,15 +39,24 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
             {messages.map((message, i) => {
                 const isSameSenderAsPrevious = i > 0 && messages[i - 1].senderId === message.senderId;
                 const isSameSenderAsNext = i < messages.length - 1 && messages[i + 1].senderId === message.senderId;
-              
+
                 const isFirstInGroup = !isSameSenderAsPrevious;
                 const isLastInGroup = !isSameSenderAsNext;
                 const isSingleMessage = !isSameSenderAsPrevious && !isSameSenderAsNext;
-                
+
+                // Kiểm tra tin nhắn cuối của user hiện tại trong list
+                const lastMessageByCurrentUserIndex = messages
+                    .map((msg) => msg.senderId)
+                    .lastIndexOf(currentUser.id);
+
+                // Kiểm tra xem tin nhắn hiện tại có phải là tin cuối của user này không
+                const isLastMessageByCurrentUser = i === lastMessageByCurrentUserIndex;
+
                 return (
                     <div key={i} className={`${isSameSenderAsNext ? 'mb-[1px]' : 'mb-2'}`}>
-                        <ChatMessage message={message} isFirstInGroup={isFirstInGroup} 
-                            isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}/>
+                        <ChatMessage message={message} isFirstInGroup={isFirstInGroup}
+                            isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}
+                            isLastMessageByCurrentUser={isLastMessageByCurrentUser} />
                     </div>
                 )
             })}

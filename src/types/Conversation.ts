@@ -11,6 +11,7 @@ export interface Conversation {
 export interface ConversationResponse {
 	id: number;
 	name: string;
+	avatarUrl?: string;
 	description?: string;
 	color?: string;
 	emoji?: string;
@@ -35,6 +36,7 @@ export interface ConversationResponse {
 export interface ConversationShortResponse {
 	id: number;
 	name: string;
+	avatarUrl?: string;
 	lastMessage: string;
 	ownerId: number;
 	participantIds?: number[];
@@ -45,6 +47,7 @@ export interface ConversationShortResponse {
 export interface ConversationRequest {
 	id: number;
 	name: string;
+	avatarUrl?: string;
 	description?: string;
 	color?: string;
 	emoji?: string;

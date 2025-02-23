@@ -7,11 +7,13 @@ export interface ApiResponse<T> {
 }
 
 export interface Page<T> {
-     content: T[]; 
-     totalElements: number;
-     totalPages: number;
-     number: number;
-     size: number;
+     content: T[];
+     page: {
+          totalElements: number;
+          totalPages: number;
+          number: number;
+          size: number;
+     }
 }
 
 export interface User {

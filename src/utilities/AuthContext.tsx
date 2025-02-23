@@ -4,6 +4,7 @@ import { UserResponse } from '../types/User';
 
 interface AuthContextType {
   user: Account | null;
+  setUser: (user: Account | null) => void;
   userAccount: UserResponse | null;
   login: (account: Account) => void;
   logout: () => void;
@@ -33,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, userAccount, login, logout }}>
+    <AuthContext.Provider value={{ user, setUser, userAccount, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

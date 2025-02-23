@@ -10,11 +10,12 @@ interface MessageProps {
 	isFirstInGroup: boolean;
 	isLastInGroup: boolean;
 	isSingleMessage: boolean;
+	isLastMessageByCurrentUser: boolean;
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
 	message: { senderId, text, name },
-	isFirstInGroup, isLastInGroup, isSingleMessage }) => {
+	isFirstInGroup, isLastInGroup, isSingleMessage, isLastMessageByCurrentUser }) => {
 
 	const { isDarkMode  } = useTheme();
 	const currentUser = {
@@ -59,6 +60,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 				<p className="text-[16px] break-words">{text}</p>
 				{ isFirstInGroup && senderId !== currentUser.id &&
 					<div className={`absolute -top-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{name}</div>
+				}
+				{ isLastMessageByCurrentUser &&
+					<div className={`absolute -bottom-6 right-1 ${isDarkMode ? 'text-gray-200' : 'text-gray-600'} text-xs`}>Đã gửi</div>
 				}
 			</div>
 		</div>
