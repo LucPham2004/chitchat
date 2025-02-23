@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
-import { callRegister } from '../services/AuthService';
+import { callLogin, callRegister } from '../services/AuthService';
 import { Gender } from '../types/User';
+import { Account } from '../types/backend';
+import { useAuth } from '../utilities/AuthContext';
 
 const RegisterView = () => {
 	const deviceType = useDeviceTypeByWidth();
@@ -13,6 +15,7 @@ const RegisterView = () => {
 	const [email, setEmail] = useState(null);
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
+	const { login } = useAuth();
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -36,6 +39,15 @@ const RegisterView = () => {
 			if(response.data.code === 1000 && response.data.result) {
 				
 				alert("Đăng ký thành công!");
+				const response = await callLogin(username, password);
+				console.log('Login response:', response.data);
+				if (response.data.code === 1000 && response.data.result) {
+					const account: Account = response.data.result;
+					login(account);
+					window.location.href = '/profile';
+				} else {
+					alert('Đăng nhập thất bại: ' + response.data.message);
+				}
 			}
 			console.log(response.data);
 		} catch (error: any) {
@@ -113,9 +125,10 @@ const RegisterView = () => {
 								/>
 							</div>
 							<div>
+								{/* <p className='text-sm text-red-600'>Username hoặc email đã tồn tại</p> */}
 								<input
 									type="text"
-									placeholder='Username hoặc email hoặc số điện thoại'
+									placeholder='Username hoặc email'
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									required
@@ -133,6 +146,7 @@ const RegisterView = () => {
 								/>
 							</div>
 							<div>
+								{/* <p className='text-sm text-red-600'>Mật khẩu nhập lại không đúng</p> */}
 								<input
 									type="password"
 									placeholder='Nhập lại mật khẩu'

@@ -1,8 +1,10 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import { Account } from '../types/backend';
+import { UserResponse } from '../types/User';
 
 interface AuthContextType {
   user: Account | null;
+  userAccount: UserResponse | null;
   login: (account: Account) => void;
   logout: () => void;
 }
@@ -12,6 +14,11 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<Account | null>(() => {
     const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const [userAccount, setUserAccount] = useState<UserResponse | null>(() => {
+    const storedUser = localStorage.getItem('user_account');
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
@@ -26,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, userAccount, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

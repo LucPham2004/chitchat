@@ -10,8 +10,10 @@ import Modal from "../../common/Modal";
 import { FaMoon } from "react-icons/fa";
 import { useTheme } from "../../../utilities/ThemeContext";
 import Sidebar from "./Sidebar";
+import { useAuth } from "../../../utilities/AuthContext";
 
 const Conversations = () => {
+    const {user} = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
@@ -42,7 +44,7 @@ const Conversations = () => {
                         </button>
                         <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
                             onClick={toggleMenu}>
-                            <img src="/avatar.jpg" className="w-8 h-8 rounded-full" />
+                            <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
                         </button>
 
                         {isMenuOpen && (
@@ -52,8 +54,8 @@ const Conversations = () => {
                                     <Link to={"/profile"}>
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                         ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
-                                            <img src="/avatar.jpg" className="w-8 h-8 rounded-full" />
-                                            Cristiano Ronaldo
+                                            <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
+                                                {user?.user.firstName + " " + user?.user.lastName}
                                         </li>
                                     </Link>
                                     <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>

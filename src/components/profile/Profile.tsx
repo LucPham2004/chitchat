@@ -3,11 +3,17 @@ import { PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../utilities/ThemeContext";
 import SocialLinkButton from "../common/SocialLinkButton";
+import { useAuth } from "../../utilities/AuthContext";
+import { Account, GetAccount } from "../../types/backend";
+import { AxiosError } from "axios";
+import { callFetchAccount } from "../../services/AuthService";
+import { getUserById } from "../../services/UserService";
+import { UserResponse } from "../../types/User";
 
 interface User {
     id: number;
@@ -15,13 +21,73 @@ interface User {
     avatar: string;
 }
 
+const LOCAL_STORAGE_KEY = 'user_account';
+
 const Profile = () => {
+    const {user} = useAuth();
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
+    
     const [showMenu, setShowMenu] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const navigate = useNavigate();
+
+    const [userAccount, setUser] = useState<UserResponse | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
+
+    const isMountedRef = useRef(true);
+
+    useEffect(() => {
+        isMountedRef.current = true; // Đánh dấu là component đang mounted
+
+        const fetchData = async () => {
+            const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
+            if (storedUser && storedUser !== "undefined") {
+                setUser(JSON.parse(storedUser));
+                setLoading(false);
+            } else {
+                await fetchUser();
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            isMountedRef.current = false; // Cleanup khi component unmount
+        };
+    }, []);
+
+    const fetchUser = async () => {
+        try {
+            if (user?.user.id) {
+                const response = await getUserById(parseInt(user.user.id));
+                console.log(response);
+                if (response.result) {
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
+                    setUser(response.result);
+                } else {
+                    throw new Error("User response result is undefined");
+                }
+
+                if (!isMountedRef.current) return;
+            } else {
+                throw new Error("User ID is undefined");
+            }
+        } catch (error) {
+            const axiosError = error as AxiosError;
+            if (!isMountedRef.current) return;
+            // setError(axiosError.response?.data?.message || "Lỗi khi tải dữ liệu");
+        } finally {
+            if (!isMountedRef.current) return;
+            setLoading(false);
+        }
+    };
+
+    if (loading) return <p>Đang tải...</p>;
+    if (error) return <p>Lỗi: {error}</p>;
+
 
     const goBack = () => {
         navigate(-1);
@@ -102,7 +168,7 @@ const Profile = () => {
                     {/* Ảnh đại diện */}
                     <div className="absolute bottom-0 left-8 transform translate-y-1/2">
                         <img
-                            src="https://images.unsplash.com/photo-1516534775068-ba3e7458af70"
+                            src={userAccount?.avatarUrl || '/user_default.avif'}
                             alt="Profile"
                             className={`w-40 h-40 rounded-full border-4 object-cover
                                 ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}
@@ -167,15 +233,15 @@ const Profile = () => {
                             ${deviceType == 'PC' ? 'max-w-[25%]' :
                                 deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
                             } `}>
-                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-2xl font-bold`}>Sasha Watkinson</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>Sofware Developer</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>Hà Nội, Việt Nam</p>
+                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-2xl font-bold`}>{userAccount?.firstName + " " + userAccount?.lastName}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userAccount?.job ? userAccount?.job : userAccount?.friendNum + " bạn bè"}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userAccount?.location || userAccount?.dob}</p>
                         </div>
 
                         {deviceType == 'PC' &&
                             <div className="flex flex-row gap-4 items-center justify-center max-w-[30%] max-h-[136px]">
                                 <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
-                                    Money doesn't buy happiness, it buys CRAZY-ASS happiness!
+                                    {userAccount?.bio}
                                 </p>
                             </div>
                         }
@@ -227,7 +293,7 @@ const Profile = () => {
                     {deviceType !== 'PC' &&
                         <div className="flex flex-row gap-4 items-center justify-center max-w-[80%] max-h-[136px]">
                             <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
-                                Money doesn't buy happiness, it buys CRAZY-ASS happiness!
+                                {userAccount?.bio}
                             </p>
                         </div>
                     }
@@ -235,7 +301,7 @@ const Profile = () => {
                     <div className={`flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
                          border-2 
                         ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
-                        <p className="font-semibold">Bạn có tổng cộng 953 người bạn</p>
+                        <p className="font-semibold">Bạn có tổng cộng {userAccount?.friendNum} người bạn</p>
                         <div className="flex items-center -space-x-2">
                             {users.map((user) => (
                                 <div key={user.id} className="relative group">

@@ -29,7 +29,7 @@ const handleRefreshToken = async (): Promise<string | null | undefined> => {
 };
 
 instance.interceptors.request.use(function (config) {
-    const excludedEndpoints = ['/auth-service/auth/login', '/auth-service/auth/register', '/auth-service/auth/logout'];
+    const excludedEndpoints = ['/auth-service/auth/login', '/auth-service/auth/register', '/auth-service/auth/logout', '/auth-service/auth/account'];
     const shouldExcludeToken = excludedEndpoints.some(endpoint =>
         config.url?.endsWith(endpoint)
     );

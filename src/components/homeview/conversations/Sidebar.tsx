@@ -6,9 +6,11 @@ import { BsChatDots } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import { IoSettings } from "react-icons/io5";
 import { GrSettingsOption } from "react-icons/gr";
+import { useAuth } from "../../../utilities/AuthContext";
 
 
 const Sidebar = () => {
+    const {user} = useAuth();
 
     const { isDarkMode, toggleDarkMode } = useTheme();
     
@@ -21,7 +23,7 @@ const Sidebar = () => {
                 <Link to={"/profile"}>
                     <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
                         >
-                        <img src="/avatar.jpg" className="w-10 h-10 rounded-full" />
+                        <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-10 h-10 rounded-full" />
                     </button>
                 </Link>
 {/*                 

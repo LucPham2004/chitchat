@@ -1,3 +1,5 @@
+import { Gender } from "./User";
+
 export interface ApiResponse<T> {
      code: number;
      message: string;
@@ -48,9 +50,17 @@ export interface Account {
           avatarUrl?: string;
           location?: string;
           bio?: string;
+          job?: string;
           authorities: {
                id: string;
                authority: string;
-          }
+          };
+          phone?: string;
+          dob?: string;
+          createdAt?: string;
+          updatedAt?: string;
+          gender?: Gender;
+          friendNum?: number;
+          mutualFriendsNum?: number;
      }
 }

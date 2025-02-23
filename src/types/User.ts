@@ -44,11 +44,17 @@ export interface UserResponse {
     firstName: string;
     lastName: string;
     phone: string;
-    dob: Date;
+    location?: string;
+    bio?: string;
+    job?: string;
+    authorities: {
+         id: string;
+         authority: string;
+    };
+    dob: string;
     createdAt: Date;
     updatedAt: Date;
     gender?: Gender;
-    groupNum: number;
     friendNum: number;
     mutualFriendsNum?: number | null;
 }
