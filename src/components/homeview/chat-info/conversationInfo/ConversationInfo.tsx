@@ -1,21 +1,14 @@
 import { FaArrowLeft, FaLink, FaUserCircle } from "react-icons/fa";
-import { TiPin } from "react-icons/ti";
-import { FaBell, FaImage, FaPenNib } from "react-icons/fa6";
-import { IoImages, IoSearch } from "react-icons/io5";
-import { IoIosArrowDown } from 'react-icons/io';
-import { ReactNode, useState } from "react";
-import { PiTextAa } from "react-icons/pi";
+import { IoSearch } from "react-icons/io5";
+import { useState } from "react";
 import { FaFileAlt } from "react-icons/fa";
-import { BsFillBellFill, BsFillBellSlashFill } from "react-icons/bs";
-import { FiLogOut } from "react-icons/fi";
-import { ImBlocked } from "react-icons/im";
-import ParticipantCard from "./ParticipantCard";
+import { BsFillBellFill } from "react-icons/bs";
 import MediaGrid from "./MediaGrid";
 import { linkUrls } from "../../../../FakeData";
-import { Link } from "react-router-dom";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { ConversationResponse } from "../../../../types/Conversation";
+import Accordion from "./Accordion";
 
 
 export interface ConversationInfoProps {
@@ -24,11 +17,6 @@ export interface ConversationInfoProps {
     toggleChangeConversationEmojiModalOpen: () => void;
     toggleChangeWidth: () => void;
     conversationResponse?: ConversationResponse;
-}
-
-interface AccordionItem {
-    title: string;
-    content: ReactNode;
 }
 
 const ConversationInfo: React.FC<ConversationInfoProps> = ({ 
@@ -41,175 +29,13 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
 	const deviceType = useDeviceTypeByWidth();
     const { isDarkMode  } = useTheme();
-    const [openIndices, setOpenIndices] = useState<number[]>([3]);
-
-    const toggleAccordion = (index: number) => {
-        setOpenIndices((prev) =>
-            prev.includes(index)
-                ? prev.filter((i) => i !== index)
-                : [...prev, index]
-        );
-    };
+    
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
     const toggleUserMenu = () => {
         setIsUserMenuOpen(!isUserMenuOpen);
     };
 
-    const sections: AccordionItem[] = [
-        {
-            title: 'Thông tin về đoạn chat',
-            content: (
-                <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                    onClick={togglePinnedMessageModalOpen}>
-                    <div className={`rounded-full p-1 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                        <TiPin />
-                    </div>
-                    <p>Xem tin nhắn đã ghim</p>
-                </button>
-            ),
-        },
-        {
-            title: 'Tuỳ chỉnh đoạn chat',
-            content: (
-                <div>
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                        onClick={toggleChangeConversationNameModalOpen}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <FaPenNib />
-                        </div>
-                        <p>Đổi tên đoạn chat</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <FaImage />
-                        </div>
-                        <p>Thay đổi ảnh</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                        onClick={toggleChangeConversationEmojiModalOpen}>
-                        <div className={`rounded-full p-1.5 text- ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            🐧
-                        </div>
-                        <p>Thay đổi biểu tượng cảm xúc</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <PiTextAa />
-                        </div>
-                        <p>Chỉnh sửa biệt danh</p>
-                    </button>
-                </div>
-            ),
-        },
-        {
-            title: 'Các thành viên trong đoạn chat',
-            content: (
-                <div className="relative">
-                    <ParticipantCard id={"1"} avatar={"/avatar.jpg"} name={"Tiến Lực"} toggleUserMenu={toggleUserMenu}/>
-                    {isUserMenuOpen && (
-                            <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-10">
-                                <ul className="text-gray-700 p-1">
-                                    <Link to={"/profile"}>
-                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                            <img src="/avatar.jpg" className="w-8 h-8 rounded-full"/>
-                                            Xem trang cá nhân
-                                        </li>
-                                    </Link>
-                                    <hr></hr>
-                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                        <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-                                            
-                                        </button>
-                                        Nhắn tin
-                                    </li>
-                                    <hr></hr>
-                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                        <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-                                            <FiLogOut />
-                                        </button>
-                                        Chặn
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                </div>
-            ),
-        },
-        {
-            title: 'File phương tiện, file và liên kết',
-            content: (
-                <div>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                        onClick={() => handleTabChange('media')}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <IoImages />
-                        </div>
-                        <p>File phương tiện</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                        onClick={() => handleTabChange('files')}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <FaFileAlt />
-                        </div>
-                        <p>File</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                        onClick={() => handleTabChange('links')}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <FaLink />
-                        </div>
-                        <p>Liên kết</p>
-                    </button>
-                </div>
-            ),
-        },
-        {
-            title: 'Quyền riêng tư và hỗ trợ',
-            content: (
-                <div>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <BsFillBellSlashFill />
-                        </div>
-                        <p>Tắt thông báo</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
-                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <ImBlocked />
-                        </div>
-                        <p>Chặn</p>
-                    </button>
-
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
-                        <div className={`rounded-full p-2 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            <FiLogOut />
-                        </div>
-                        <p>Rời nhóm</p>
-                    </button>
-                </div>
-            ),
-        }
-    ];
 
     const [activeTab, setActiveTab] = useState('default'); // Tab mặc định
     const [isAnimating, setIsAnimating] = useState(false);
@@ -350,28 +176,15 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         </div>
 
                         <div className="flex flex-col p-2">
-                            {sections.map((section, index) => (
-                                <div key={index} className="">
-                                    <button
-                                        onClick={() => toggleAccordion(index)}
-                                        className={`flex justify-between w-full p-2 py-3 text-left text-md font-medium rounded-lg 
-                                        ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' 
-                                            : 'text-gray-800 hover:bg-gray-100'}`}
-                                    >
-                                        {section.title}
-                                        <span
-                                            className={`transform transition-transform duration-300 
-                                                ${openIndices.includes(index) ? 'rotate-180' : 'rotate-0'}`}>
-                                            <IoIosArrowDown />
-                                        </span>
-                                    </button>
-                                    <div
-                                        className={`overflow-hidden transition-[max-height] duration-300 ease-in-out 
-                                            ${openIndices.includes(index) ? 'max-h-60' : 'max-h-0'}`}>
-                                        <div className="">{section.content}</div>
-                                    </div>
-                                </div>
-                            ))}
+                            <Accordion 
+                                toggleChangeConversationEmojiModalOpen={toggleChangeConversationEmojiModalOpen}
+                                toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
+                                togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
+                                handleTabChange={handleTabChange}
+                                isUserMenuOpen={isUserMenuOpen}
+                                toggleUserMenu={toggleUserMenu}
+                                isGroup={conversationResponse?.isGroup}
+                            ></Accordion>
 
                         </div>
                     </div>
@@ -433,7 +246,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 </div>
             </div>
         ) : (
-            <div className={`min-w-full overflow-hidden  rounded-xl
+            <div className={`min-w-full overflow-hidden rounded-xl
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}
                 ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
                 {renderTabContent()}
