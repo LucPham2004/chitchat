@@ -2,7 +2,7 @@ import { IoLogoYoutube, IoSettings } from "react-icons/io5";
 import { PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
 import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
@@ -25,6 +25,7 @@ const LOCAL_STORAGE_KEY = 'user_account';
 
 const Profile = () => {
     const {user} = useAuth();
+    const { user_id } = useParams();
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
     
@@ -61,11 +62,13 @@ const Profile = () => {
 
     const fetchUser = async () => {
         try {
-            if (user?.user.id) {
-                const response = await getUserById(parseInt(user.user.id));
+            if (user_id) {
+                const response = await getUserById(parseInt(user_id));
                 console.log(response);
                 if (response.result) {
-                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
+                    if(user_id == user?.user.id) {
+                        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
+                    }
                     setUser(response.result);
                 } else {
                     throw new Error("User response result is undefined");

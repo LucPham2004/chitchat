@@ -26,6 +26,24 @@ const Friends = () => {
         navigate(-1);
     };
 
+    
+    // let conversations = [];
+
+    // for (let i = 1; i <= 50; i++) {
+    //     conversations.push({
+    //         name: `Lão Hạc ${i}`,
+    //         description: "Ông lão khốn khổ",
+    //         color: "blue",
+    //         ownerId: 3,
+    //         participantIds: [2, 3],
+    //         lastMessage: "Cậu Vàng đi rồi ông giáo ạ :(((",
+    //         isGroup: false
+    //     });
+    // }
+
+    // console.log(JSON.stringify(conversations, null, 2));
+
+
     const otherUser = false;
 
     const friends = friendsData;

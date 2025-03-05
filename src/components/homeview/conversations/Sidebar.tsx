@@ -2,9 +2,7 @@ import { FaMoon, FaUserFriends } from "react-icons/fa";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { IoMdSunny } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
-import { BsChatDots } from "react-icons/bs";
 import { Link, useNavigate } from "react-router-dom";
-import { IoSettings } from "react-icons/io5";
 import { GrSettingsOption } from "react-icons/gr";
 import { useAuth } from "../../../utilities/AuthContext";
 import { callLogout } from "../../../services/AuthService";
@@ -33,7 +31,7 @@ const Sidebar = () => {
             ${isDarkMode ? 'bg-[#1A1A1A] text-gray-300' : 'bg-gray-100 text-black'}`}>
             
             <div className="flex flex-col items-center gap-2">
-                <Link to={"/profile"}>
+                <Link to={`/profile/${user?.user.id}`}>
                     <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
                         >
                         <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-10 h-10 rounded-full" />
@@ -46,7 +44,7 @@ const Sidebar = () => {
                     <BsChatDots />
                 </button> */}
                 
-                <Link to="/profile/friends">
+                <Link to={`/profile/${user?.user.id}/friends`}>
                     <button className={`p-3 rounded-lg text-xl 
                         ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
                             : 'text-black bg-gray-100 hover:bg-gray-200'}`}>

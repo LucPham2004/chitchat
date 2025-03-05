@@ -1,14 +1,15 @@
 import { PiDotsThreeCircle } from "react-icons/pi"
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { VscLayoutSidebarRight, VscLayoutSidebarRightOff } from "react-icons/vsc";
+import { MainChatProps } from "./MainChat";
 
-export interface ChatHeaderProps {
-    toggleChangeWidth: () => void;
-    toggleShowConversationMembersModalOpen?: () => void;
-    isChangeWidth: boolean;
-}
 
-const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidth, toggleShowConversationMembersModalOpen }) => {
+const ChatHeader: React.FC<MainChatProps> = ({ 
+    toggleChangeWidth, isChangeWidth, 
+    toggleShowConversationMembersModalOpen,
+    conversationResponse 
+}) => {
+    
     const { isDarkMode  } = useTheme();
     
     return (
@@ -27,7 +28,7 @@ const ChatHeader: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidt
                     <img className="w-4 h-4 absolute top-8 left-8" src="/onlineIcon.png" alt="online icon" />
                 </div>
                 <div className='flex flex-col justify-center items-left'>
-                    <h3 className={`${isDarkMode ? 'text-gray-100' : 'text-gray-800'} font-semibold`}>Cristiano Ronaldo</h3>
+                    <h3 className={`${isDarkMode ? 'text-gray-100' : 'text-gray-800'} font-semibold`}>{conversationResponse?.name}</h3>
                     <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-xs`}>Đang hoạt động</p>
                 </div>
             </div>

@@ -16,12 +16,12 @@ function App() {
       element: <RedirectToConversation />
     },
     {
-      path: 'conversations',
+      path: 'conversations/:conv_id',
       element: <HomeView />,
       errorElement: <ErrorPage />
     },
     {
-      path: 'profile',
+      path: 'profile/:user_id',
       element: <ProfileView />,
       children: [
         {

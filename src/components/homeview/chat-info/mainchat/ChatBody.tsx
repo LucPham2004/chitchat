@@ -33,7 +33,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
                 ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[78vh]'}
                 bg-cover bg-center`}
             style={{
-                backgroundImage: `url(${isDarkMode ? 'convBgDark.jpg' : 'convBg.jpg'})`,
+                backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
             }}
         >
             {messages.map((message, i) => {

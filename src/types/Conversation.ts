@@ -16,6 +16,7 @@ export interface ConversationResponse {
 	color?: string;
 	emoji?: string;
 	lastMessage: string;
+	lastMessageTime: string;
 
 	ownerId: number;
 	participantIds: number[];
@@ -38,6 +39,7 @@ export interface ConversationShortResponse {
 	name: string;
 	avatarUrl?: string;
 	lastMessage: string;
+	lastMessageTime: string;
 	ownerId: number;
 	participantIds?: number[];
 	isGroup?: boolean;

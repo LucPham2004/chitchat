@@ -1,39 +1,31 @@
 import { useState, useEffect } from "react"
 import ChatBody, { MessageObject } from "./ChatBody"
-import ChatHeader, { ChatHeaderProps } from "./ChatHeader"
+import ChatHeader from "./ChatHeader"
 import ChatInput from "./ChatInput"
 import { useTheme } from "../../../../utilities/ThemeContext"
+import { ConversationResponse } from "../../../../types/Conversation"
 
+export interface MainChatProps {
+    toggleChangeWidth: () => void;
+    toggleShowConversationMembersModalOpen?: () => void;
+    isChangeWidth: boolean;
+    conversationResponse?: ConversationResponse;
+}
 
-
-const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidth, toggleShowConversationMembersModalOpen }) => {
+const MainChat: React.FC<MainChatProps> = ({ 
+    toggleChangeWidth, isChangeWidth, 
+    toggleShowConversationMembersModalOpen,
+    conversationResponse
+}) => {
+    
     const { isDarkMode  } = useTheme();
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageObject[]>([]);
 
-    useEffect(() => {
-        // Kết nối với backend
-        // socket = io(ENDPOINT);
-
-        // // Lắng nghe sự kiện nhận tin nhắn từ server
-        // socket.on("message", (newMessage: MessageObject) => {
-        //     setMessages((prevMessages) => [...prevMessages, newMessage]);
-        // });
-
-        // return () => {
-        //     // Ngắt kết nối khi component bị unmount
-        //     socket.disconnect();
-        // };
-    }, []);
-
     const sendMessage = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        // if (message) {
-        //     socket.emit("sendMessage", { text: message, user: currentUser.username }, () => {
-        //         setMessage("");
-        //     });
-        // }
+
     };
 
     useEffect(() => {
@@ -79,7 +71,9 @@ const MainChat: React.FC<ChatHeaderProps> = ({ toggleChangeWidth, isChangeWidth,
             <ChatHeader 
                 toggleChangeWidth={toggleChangeWidth} 
                 isChangeWidth={isChangeWidth}
-                toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} />
+                toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} 
+                conversationResponse={conversationResponse} 
+                />
             <div className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden">
                 <ChatBody messages={messages} />
                 <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />

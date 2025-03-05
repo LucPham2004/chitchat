@@ -12,11 +12,19 @@ import { ImBlocked } from "react-icons/im";
 import ParticipantCard from "./ParticipantCard";
 import MediaGrid from "./MediaGrid";
 import { linkUrls } from "../../../../FakeData";
-import { ConversationInfoProps } from "../ChatAndInfo";
 import { Link } from "react-router-dom";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
+import { ConversationResponse } from "../../../../types/Conversation";
 
+
+export interface ConversationInfoProps {
+    togglePinnedMessageModalOpen: () => void;
+    toggleChangeConversationNameModalOpen: () => void;
+    toggleChangeConversationEmojiModalOpen: () => void;
+    toggleChangeWidth: () => void;
+    conversationResponse?: ConversationResponse;
+}
 
 interface AccordionItem {
     title: string;
@@ -27,7 +35,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     togglePinnedMessageModalOpen,
     toggleChangeConversationNameModalOpen,
     toggleChangeConversationEmojiModalOpen,
-    toggleChangeWidth
+    toggleChangeWidth,
+    conversationResponse
  }) => {
 
 	const deviceType = useDeviceTypeByWidth();
@@ -372,7 +381,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     return (
         activeTab !== 'default' ? (
-            <div className={`flex flex-col gap-4 w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
+            <div className={`flex flex-col gap-4 min-w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                 pt-1 px-3 rounded-xl border shadow-sm transition-transform duration-300 
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
                 ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-800' : 'text-black bg-white border-gray-200'}`}
@@ -424,7 +433,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 </div>
             </div>
         ) : (
-            <div className={`w-full overflow-hidden  rounded-xl
+            <div className={`min-w-full overflow-hidden  rounded-xl
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}
                 ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
                 {renderTabContent()}

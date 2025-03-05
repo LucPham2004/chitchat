@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConversationInfo from "./conversationInfo/ConversationInfo";
 import MainChat from "./mainchat/MainChat";
 import { ChangeWidthProps } from "../../../views/HomeView";
@@ -7,22 +7,21 @@ import { pinnedMessagesData } from "../../../FakeData";
 import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
 import ParticipantCard from "./conversationInfo/ParticipantCard";
-import { Link } from "react-router-dom";
-import { FiLogOut } from "react-icons/fi";
+import { Link, useParams } from "react-router-dom";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../utilities/ThemeContext";
+import { useAuth } from "../../../utilities/AuthContext";
+import { getConversationById } from "../../../services/ConversationService";
+import { ConversationResponse } from "../../../types/Conversation";
 
 
-export interface ConversationInfoProps {
-    togglePinnedMessageModalOpen: () => void;
-    toggleChangeConversationNameModalOpen: () => void;
-    toggleChangeConversationEmojiModalOpen: () => void;
-    toggleChangeWidth: () => void;
-}
 
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
+    const {user} = useAuth();
+    const { conv_id } = useParams();
+    const [ Conversation, setConversation ] = useState<ConversationResponse>();
 	const deviceType = useDeviceTypeByWidth();
     const { isDarkMode  } = useTheme();
     
@@ -50,6 +49,32 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
 
     const pinnedMessages = pinnedMessagesData;
 
+    useEffect(() => {
+        const fetchConversation = async () => {
+            try {
+                if (conv_id) {
+                    const response = await getConversationById(parseInt(conv_id));
+                    console.log(response);
+                    if (response.result) {
+                        setConversation(response.result);
+                    } else {
+                        throw new Error("Conversation response result is undefined");
+                    }
+
+                } else {
+                    throw new Error("Conversation ID is undefined");
+                }
+            } catch (error) {
+
+            } finally {
+
+            }
+        };
+
+        fetchConversation();
+        
+        }, [conv_id]);
+
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center rounded-xl
             pb-0 ${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
@@ -62,7 +87,8 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 <MainChat 
                     toggleChangeWidth={toggleChangeWidth} 
                     isChangeWidth={isChangeWidth}
-                    toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen} 
+                    toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
+                    conversationResponse={Conversation}
                 />
             </div>
             <div className={`transition-all duration-100 
@@ -76,6 +102,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
                     toggleChangeConversationEmojiModalOpen={toggleChangeConversationEmojiModalOpen}
                     toggleChangeWidth={toggleChangeWidth}
+                    conversationResponse={Conversation}
                 />
             </div>
 
@@ -128,7 +155,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                             <p className={`text-xs ${charCount > 255 ? 'text-red-500' : 'text-gray-800'}`}>{charCount} / 255</p>
                         </div>
                         <input type="text" className={`w-full p-2 pt-8 border border-gray-200 rounded-lg 
-                            focus:border-blue-500 ${isDarkMode ? 'text-gray-800' : 'text-gray-600'}`} placeholder="" 
+                            focus:border-blue-500 ${isDarkMode ? 'text-gray-800' : 'text-gray-600'}`} placeholder={Conversation?.name} 
                             value={inputValue}
                             onChange={(e) => {
                                 const value = e.target.value;

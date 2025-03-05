@@ -25,6 +25,8 @@ const Conversations = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    
+
     return (
         <div className="flex flex-row gap-2">
             <Sidebar />
@@ -51,7 +53,7 @@ const Conversations = () => {
                             <div className={`absolute top-8 right-0 mt-2 w-64 border rounded-lg shadow-lg z-10
                                 ${isDarkMode ? 'bg-[#2E2E2E] border-gray-900' : 'bg-white border-gray-200'}`}>
                                 <ul className="text-gray-700 px-1">
-                                    <Link to={"/profile"}>
+                                    <Link to={`/profile/${user?.user.id}`}>
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                         ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                             <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
