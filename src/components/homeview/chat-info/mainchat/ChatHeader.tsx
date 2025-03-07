@@ -22,7 +22,7 @@ const ChatHeader: React.FC<MainChatProps> = ({
                 <div className={`p-1 rounded-lg cursor-pointer`}>
                     <img
                         className="w-10 h-10 rounded-full object-cover"
-                        src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"
+                        src={conversationResponse?.avatarUrl}
                         alt={`ksadnjsd's avatar`}
                     />
                     <img className="w-4 h-4 absolute top-8 left-8" src="/onlineIcon.png" alt="online icon" />

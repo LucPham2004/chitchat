@@ -42,6 +42,7 @@ const ConversationList: React.FC = () => {
             setLoading(true);
             try {
                 const response = await getConversationsByOwnerId(parseInt(user.user.id), page);
+                console.log(response);
                 if (!isMounted) return;
     
                 const newConversations = response.result?.content ?? [];

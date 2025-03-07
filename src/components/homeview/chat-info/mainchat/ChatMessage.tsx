@@ -4,6 +4,7 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 interface MessageProps {
 	message: {
 		senderId: number;
+		avatarUrl: string;
 		text: string;
 		name: string;
 	};
@@ -14,7 +15,7 @@ interface MessageProps {
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
-	message: { senderId, text, name },
+	message: { senderId, text, name, avatarUrl },
 	isFirstInGroup, isLastInGroup, isSingleMessage, isLastMessageByCurrentUser }) => {
 
 	const { isDarkMode  } = useTheme();
@@ -31,7 +32,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{senderId !== currentUser.id && isLastInGroup && (
 				<img
-					src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"
+					src={avatarUrl}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="avatar"
 				/>
@@ -39,7 +40,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 			
 			<div
-				className={`relative inline-block max-w-[70%] pt-1 pb-1.5 px-3 ${senderId === currentUser.id
+				className={`relative inline-flex max-w-[80%] pt-1 pb-1.5 px-3 ${senderId === currentUser.id
 						? 'bg-[#0199FC] text-white'
 						: `${isDarkMode ? 'bg-[#4C4C4C] text-gray-300' : 'bg-[#F3F3F3]'} text-[#353535]`
 					} ${isSingleMessage // Nếu là tin nhắn đơn
@@ -57,7 +58,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 									: 'rounded-r-[20px] rounded-l-[4px] ms-10' // Người gửi khác
 					}`}
 			>
-				<p className="text-[15px] break-words w-fit">{text}</p>
+				<p className="text-[15px] break-words inline-flex">{text}</p>
 				{ isFirstInGroup && senderId !== currentUser.id &&
 					<div className={`absolute -top-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{name}</div>
 				}

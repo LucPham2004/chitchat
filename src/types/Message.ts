@@ -6,3 +6,25 @@ export interface PinnedMessage {
     message: string;
     timestamp: string;
 }
+
+
+export interface ChatRequest {
+    id: number;
+    conversationId: number;
+    senderId: number;
+    recipientId: number[];
+    content: string;
+    url: string;
+}
+
+export interface ChatResponse {
+    id: number;
+    conversationId: number;
+    senderId: number;
+    recipientId: number[];
+    content: string;
+    url: string;
+    isRead: boolean;
+    createdAt: string;
+    updatedAt: string;
+}

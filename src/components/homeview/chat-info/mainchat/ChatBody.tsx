@@ -2,10 +2,12 @@ import { useRef, useEffect } from "react";
 import ChatMessage from "./ChatMessage";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
+import { useAuth } from "../../../../utilities/AuthContext";
 
 
 export interface MessageObject {
     senderId: number;
+    avatarUrl: string;
     text: string;
     name: string;
 }
@@ -15,17 +17,17 @@ interface MessagesProps {
 }
 
 const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
+    const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
     const chatEndRef = useRef<HTMLDivElement>(null);
-    const currentUser = {
-        id: 5,
-
-    };
+    
 
     useEffect(() => {
         chatEndRef.current?.scrollIntoView({ behavior: 'instant' });
     }, [messages]);
+
+    if (!user) return
 
     return (
         <div
@@ -47,7 +49,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
                 // Kiểm tra tin nhắn cuối của user hiện tại trong list
                 const lastMessageByCurrentUserIndex = messages
                     .map((msg) => msg.senderId)
-                    .lastIndexOf(currentUser.id);
+                    .lastIndexOf(user?.user.id);
 
                 // Kiểm tra xem tin nhắn hiện tại có phải là tin cuối của user này không
                 const isLastMessageByCurrentUser = i === lastMessageByCurrentUserIndex;

@@ -51,6 +51,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 setIsAnimating(false);
             }, 100); // Thời gian chuyển đổi
         }
+
+        console.log(conversationResponse);
     };
 
     const mediaList:string[] = [];
@@ -84,8 +86,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     ) :
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
                             {fileList.map((file, index) => (
-                                <div>
-                                    <div key={index} className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
+                                <div key={index}>
+                                    <div className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
                                         ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                                         <div className={`text-lg px-2 h-12 flex items-center justify-center rounded-lg
                                             ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
@@ -110,8 +112,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     ) :
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
                             {linkList.map((link, index) => (
-                                <div>
-                                    <div key={index} className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
+                                <div key={index}>
+                                    <div className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
                                         ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
                                         <div className={`text-lg px-2 h-12 flex items-center justify-center rounded-lg
                                             ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
@@ -141,8 +143,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         }
 
                         <div className="flex flex-col items-center gap-1 p-2">
-                            <img className="w-20 h-20 rounded-full object-cover" src="https://lh3.googleusercontent.com/proxy/tm1RJoA6rodhWBKMGRfzeR74pIbdxub44suRwIU0sEoJmhWqKL6fdcu2dam9sX15_HKYaodIjV_63KdvKVR9OIxN6tq9hL2NsGJMDSjwdOowrZrKnJWaCT2AC3HI6KjJyAkf0S9y6wBzJVzblA"></img>
-                            <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>Cristiano Ronaldo</h3>
+                            <img className="w-20 h-20 rounded-full object-cover" src={conversationResponse?.avatarUrl}></img>
+                            <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
 

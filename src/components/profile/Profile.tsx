@@ -66,7 +66,7 @@ const Profile = () => {
                 const response = await getUserById(parseInt(user_id));
                 console.log(response);
                 if (response.result) {
-                    if(user_id == user?.user.id) {
+                    if(parseInt(user_id) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
                     }
                     setUser(response.result);
@@ -339,11 +339,11 @@ const Profile = () => {
                         </div>
                         <div className="flex items-center gap-2">
                             <p>Lionel Messi, Neymar.JR, Benzema và 950 người khác</p>
-                            <Link to={"/profile/friends"}>
-                                <button className={`flex gap-2 items-center text-md min-w-max h-12 border-2 
-                                rounded-full shadow-md transition duration-200 py-2 px-3
+                            <Link to={`/profile/${user?.user.id}/friends`}>
+                                <button className={`flex gap-2 items-center text-md min-w-max h-10 border-2 
+                                rounded-full shadow-md transition duration-200 px-3
                                 ${isDarkMode
-                                        ? 'border-white text-gray-300 bg-[#1F1F1F] hover:bg-gradient-to-r from-[#474747] to-[#5A5A5A] hover:text-white'
+                                        ? 'border-white text-gray-300 bg-[#1F1F1F] hover:border-blue-400 hover:text-blue-400'
                                         : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
                                     }`}>
                                     <p>Tất cả</p>

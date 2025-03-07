@@ -123,7 +123,12 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                         <div key={i} className="flex flex-col p-1 items-start justify-start w-full">
                             <p className="text-xs flex self-end">{message.timestamp}</p>
                             <div key={i} className="p-2 pt-0 mb-1 w-fit">
-                                <ChatMessage message={{ senderId: message.senderId, text: message.message, name: message.name }}
+                                <ChatMessage 
+                                message={{ 
+                                    senderId: message.senderId, 
+                                    text: message.message, 
+                                    name: message.name,
+                                    avatarUrl: message.avatarUrl}}
                                 isFirstInGroup={isFirstInGroup} isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage} />
                             </div>
                             <hr className="w-full"></hr>

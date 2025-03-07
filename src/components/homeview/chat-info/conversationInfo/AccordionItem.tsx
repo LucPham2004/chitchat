@@ -11,17 +11,17 @@ interface AccordionItemProps {
 	hidden?: boolean;
 }
 
-const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAccordion, index, openIndices
+const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAccordion, index, openIndices, hidden
  }) => {
 	const { isDarkMode  } = useTheme();
-	const [isOpenModal, setIsOpenModal] = useState(false);
+
+	if (hidden) return null;
 
 	return (
 		<div className="">
 			<button
 				onClick={() => {
 					toggleAccordion(index);
-					setIsOpenModal(!isOpenModal)
 				} }
 				className={`flex justify-between w-full p-2 py-3 text-left text-md font-medium rounded-lg 
 					${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]'
@@ -35,8 +35,8 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAcc
 				</span>
 			</button>
 			<div
-				className={`transition-[max-height] duration-300 ease-in-out ${isOpenModal ? '' : 'overflow-hidden'}
-					${openIndices.includes(index) ? 'max-h-60' : 'max-h-0'}`}>
+				className={`transition-[max-height] duration-300 ease-in-out overflow-hidden
+					${openIndices.includes(index) ? 'max-h-80' : 'max-h-0'}`}>
 				<div className={``}>{content}</div>
 			</div>
 		</div>
