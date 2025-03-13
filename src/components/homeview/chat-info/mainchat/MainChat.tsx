@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef } from "react"
-import { over } from "stompjs";
 import SockJS from "sockjs-client";
-import ChatBody, { MessageObject } from "./ChatBody"
+import ChatBody from "./ChatBody"
+import { Stomp } from "@stomp/stompjs";
 import ChatHeader from "./ChatHeader"
 import ChatInput from "./ChatInput"
 import { useTheme } from "../../../../utilities/ThemeContext"
 import { ConversationResponse } from "../../../../types/Conversation"
 import { useAuth } from "../../../../utilities/AuthContext"
+import { getConversationMessages } from "../../../../services/MessageService";
+import { ChatResponse } from "../../../../types/Message";
 
 export interface MainChatProps {
     toggleChangeWidth: () => void;
@@ -14,7 +16,6 @@ export interface MainChatProps {
     isChangeWidth: boolean;
     conversationResponse?: ConversationResponse;
 }
-let socketUrl = "http://localhost:8888/ws";
 
 const MainChat: React.FC<MainChatProps> = ({
     toggleChangeWidth, isChangeWidth,
@@ -25,7 +26,7 @@ const MainChat: React.FC<MainChatProps> = ({
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const [message, setMessage] = useState<string>('');
-    const [messages, setMessages] = useState<MessageObject[]>([]);
+    const [messages, setMessages] = useState<ChatResponse[]>([]);
     const stompClientRef = useRef<any>(null);
 
 
@@ -33,19 +34,31 @@ const MainChat: React.FC<MainChatProps> = ({
 
     useEffect(() => {
         if (!conversationResponse || isConnected) return;
+        const fetchMessages = async () => {
+            try {
+                const response = await getConversationMessages(conversationResponse.id, 0);
+                if(!response.result) return;
+                setMessages(response.result.content);
+            } catch (error) {
+                console.error("Lỗi khi lấy tin nhắn:", error);
+            }
+        };
+    
+        fetchMessages();
 
-        const socket = new SockJS(socketUrl);
-        const stompClient = over(socket);
+        const stompClient = Stomp.client("ws://localhost:8888/chat-service/ws");
         stompClientRef.current = stompClient;
 
-        stompClient.connect({}, () => {
-            console.log("Connected to WebSocket");
+        stompClient.connect({}, (frame: any) => {
+            console.log("Connected to WebSocket", frame);
             setIsConnected(true);
 
-            stompClient.subscribe(`/topic/group/${conversationResponse.id}`, (message: any) => {
+            stompClient.subscribe(`/topic/${user?.user.id}`, (message: any) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prev) => [...prev, receivedMessage]);
             });
+        }, (error: any) => {
+            console.error("WebSocket connection failed: ", error);
         });
 
         return () => {
@@ -90,7 +103,7 @@ const MainChat: React.FC<MainChatProps> = ({
                         conversationResponse={conversationResponse}
                     />
                     <div className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden">
-                        <ChatBody messages={messages} />
+                        <ChatBody messages={messages} conversationResponse={conversationResponse}/>
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />
                     </div>
                 </>

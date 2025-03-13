@@ -3,20 +3,17 @@ import ChatMessage from "./ChatMessage";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { useAuth } from "../../../../utilities/AuthContext";
+import { ChatResponse } from "../../../../types/Message";
+import { ConversationResponse } from "../../../../types/Conversation";
 
 
-export interface MessageObject {
-    senderId: number;
-    avatarUrl: string;
-    text: string;
-    name: string;
-}
 
 interface MessagesProps {
-    messages: MessageObject[];
+    messages: ChatResponse[];
+    conversationResponse: ConversationResponse;
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages, conversationResponse }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
@@ -58,7 +55,8 @@ const ChatBody: React.FC<MessagesProps> = ({ messages }) => {
                     <div key={i} className={`${isSameSenderAsNext ? 'mb-[1px]' : 'mb-2'}`}>
                         <ChatMessage message={message} isFirstInGroup={isFirstInGroup}
                             isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}
-                            isLastMessageByCurrentUser={isLastMessageByCurrentUser} />
+                            isLastMessageByCurrentUser={isLastMessageByCurrentUser} 
+                            conversationResponse={conversationResponse}/>
                     </div>
                 )
             })}

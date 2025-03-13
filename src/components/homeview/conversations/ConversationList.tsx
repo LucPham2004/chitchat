@@ -4,7 +4,7 @@ import { useTheme } from "../../../utilities/ThemeContext";
 import { Link } from "react-router-dom";
 import { FaUserFriends } from "react-icons/fa";
 import { PiUserPlusBold } from "react-icons/pi";
-import { getConversationsByOwnerId } from "../../../services/ConversationService";
+import { getJoinedConversationsById } from "../../../services/ConversationService";
 import { ConversationShortResponse } from "../../../types/Conversation";
 import { useAuth } from "../../../utilities/AuthContext";
 import { useInView } from "react-intersection-observer";
@@ -41,7 +41,7 @@ const ConversationList: React.FC = () => {
             if (!user || loading || !hasMore) return;
             setLoading(true);
             try {
-                const response = await getConversationsByOwnerId(parseInt(user.user.id), page);
+                const response = await getJoinedConversationsById(user.user.id, page);
                 console.log(response);
                 if (!isMounted) return;
     

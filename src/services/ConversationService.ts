@@ -2,11 +2,18 @@ import { ApiResponse, Page } from "../types/backend";
 import { ConversationShortResponse, ConversationResponse, ConversationRequest } from "../types/Conversation";
 import instance from "./Axios-customize";
 
+// Get Joined Conversations by user ID
+export const getJoinedConversationsById = async (userId: number, pageNum: number) => {
+    return (await instance.get<ApiResponse<Page<ConversationShortResponse>>>(
+        `/chat-service/conversations/get/joined`,
+        { params: { userId, pageNum } }
+    )).data;
+};
 
 // Get Conversations by Owner ID
 export const getConversationsByOwnerId = async (userId: number, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ConversationShortResponse>>>(
-        `/chat-service/conversations/get/owner`,
+        `/chat-service/conversations/get/owned`,
         { params: { userId, pageNum } }
     )).data;
 };

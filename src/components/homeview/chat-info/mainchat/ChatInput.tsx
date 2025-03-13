@@ -34,6 +34,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 
 	const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		if (event.key === 'Enter') {
+			event.preventDefault();
 			sendMessage(event as unknown as React.FormEvent<HTMLFormElement>);
 		}
 	};
@@ -75,7 +76,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 					onKeyDown={(e) => {
 						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault();
-							sendMessage;
+							sendMessage({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
 						}
 					}}
 				/>
