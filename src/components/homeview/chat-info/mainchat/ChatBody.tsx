@@ -1,33 +1,135 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { ChatResponse } from "../../../../types/Message";
 import { ConversationResponse } from "../../../../types/Conversation";
+import { getConversationMessages } from "../../../../services/MessageService";
 
 
 
 interface MessagesProps {
     messages: ChatResponse[];
+    setMessages: React.Dispatch<React.SetStateAction<ChatResponse[]>>;
     conversationResponse: ConversationResponse;
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, conversationResponse }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
     const chatEndRef = useRef<HTMLDivElement>(null);
-    
+    const chatContainerRef = useRef<HTMLDivElement>(null);
 
+    const [pageNum, setPageNum] = useState(0);
+    const pageNumRef = useRef(0);
+    const [isFetching, setIsFetching] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
+    const [isAtBottom, setIsAtBottom] = useState(true);
+    const hasFetchedInitialMessages = useRef(false); // Trạng thái tải tin nhắn đầu tiên
+
+    // Kiểm tra xem chat có đang ở cuối không
+    const checkIsAtBottom = () => {
+        if (!chatContainerRef.current) return false;
+        const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+        return scrollTop + clientHeight >= scrollHeight - 10; // Chênh lệch nhỏ để tránh sai số
+    };
+
+    // Hàm tải tin nhắn cũ khi kéo lên
+    const fetchOlderMessages = async () => {
+        if (!conversationResponse || isFetching || !hasMore) return;
+        setIsFetching(true);
+
+        try {
+            const chatContainer = chatContainerRef.current;
+            const prevScrollHeight = chatContainer?.scrollHeight || 0; // Lưu vị trí trước khi thêm tin nhắn
+
+            const newPageNum = pageNumRef.current + 1;
+            console.log("Fetching older messages page num: ", newPageNum);
+            const response = await getConversationMessages(conversationResponse.id, newPageNum);
+
+            console.log(response);
+
+            if (response.result && response.result.content.length > 0) {
+
+                const newMessages = response.result?.content.reverse() || [];
+                setMessages((prev) => [...newMessages, ...prev]);
+                pageNumRef.current = newPageNum;
+                setPageNum(newPageNum);
+
+                // Giữ nguyên vị trí cuộn sau khi thêm tin nhắn
+                setTimeout(() => {
+                    if (chatContainer) {
+                        chatContainer.scrollTop = chatContainer.scrollHeight - prevScrollHeight;
+                    }
+                }, 0);
+            } else {
+                setHasMore(false);
+            }
+        } catch (error) {
+            console.error("Lỗi khi tải thêm tin nhắn:", error);
+        }
+
+        setIsFetching(false);
+    };
+
+    // Tải tin nhắn ban đầu khi mở chat
     useEffect(() => {
-        chatEndRef.current?.scrollIntoView({ behavior: 'instant' });
+        if (!conversationResponse || hasFetchedInitialMessages.current) return; // Nếu đã tải rồi thì không gọi lại
+
+        const fetchInitialMessages = async () => {
+            setIsFetching(true);
+            try {
+                const response = await getConversationMessages(conversationResponse.id, 0);
+                console.log("Initial messages:", response);
+
+                if (response.result && response.result.content.length > 0) {
+                    const newMessages = response.result?.content.reverse() || [];
+                    setMessages(newMessages); // Gán trực tiếp, không nối mảng
+                    setPageNum(0);
+                    setHasMore(true);
+                } else {
+                    setHasMore(false);
+                }
+            } catch (error) {
+                console.error("Lỗi khi tải tin nhắn ban đầu:", error);
+            }
+            setIsFetching(false);
+            hasFetchedInitialMessages.current = true; // Đánh dấu đã tải xong
+        };
+
+        fetchInitialMessages();
+    }, [conversationResponse?.id]);
+
+
+    // Theo dõi cuộn để kiểm tra nếu kéo lên trên cùng thì tải tin nhắn cũ
+    useEffect(() => {
+        const chatContainer = chatContainerRef.current;
+        if (!chatContainer) return;
+
+        const handleScroll = () => {
+            if (chatContainer.scrollTop === 0 && hasMore) {
+                fetchOlderMessages();
+            }
+            setIsAtBottom(checkIsAtBottom());
+        };
+
+        chatContainer.addEventListener("scroll", handleScroll);
+        return () => chatContainer.removeEventListener("scroll", handleScroll);
+    }, [conversationResponse?.id, hasMore]);
+
+    // Chỉ tự động cuộn xuống khi chat ở dưới cùng và có tin nhắn mới
+    useEffect(() => {
+        if (isAtBottom) {
+            chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        }
     }, [messages]);
 
     if (!user) return
 
     return (
-        <div
+        <div ref={chatContainerRef}
             className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-4
                 ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[78vh]'}
                 bg-cover bg-center`}
@@ -55,8 +157,8 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, conversationResponse }) =
                     <div key={i} className={`${isSameSenderAsNext ? 'mb-[1px]' : 'mb-2'}`}>
                         <ChatMessage message={message} isFirstInGroup={isFirstInGroup}
                             isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}
-                            isLastMessageByCurrentUser={isLastMessageByCurrentUser} 
-                            conversationResponse={conversationResponse}/>
+                            isLastMessageByCurrentUser={isLastMessageByCurrentUser}
+                            conversationResponse={conversationResponse} />
                     </div>
                 )
             })}

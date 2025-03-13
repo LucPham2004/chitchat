@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { conversations } from "../../../FakeData";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { Link } from "react-router-dom";
-import { FaUserFriends } from "react-icons/fa";
 import { PiUserPlusBold } from "react-icons/pi";
 import { getJoinedConversationsById } from "../../../services/ConversationService";
 import { ConversationShortResponse } from "../../../types/Conversation";
 import { useAuth } from "../../../utilities/AuthContext";
-import { useInView } from "react-intersection-observer";
+import { timeAgo } from "../../../utilities/timeAgo";
 
 
 const ConversationList: React.FC = () => {
@@ -96,7 +94,7 @@ const ConversationList: React.FC = () => {
                                         {conv.lastMessage}
                                     </p>
                                     <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}> 
-                                        {conv.lastMessageTime}</p>
+                                        {timeAgo(conv.lastMessageTime)}</p>
                                 </div>
                             </div>
                         </li>

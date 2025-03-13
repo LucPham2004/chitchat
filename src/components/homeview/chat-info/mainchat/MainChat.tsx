@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react"
-import SockJS from "sockjs-client";
 import ChatBody from "./ChatBody"
 import { Stomp } from "@stomp/stompjs";
 import ChatHeader from "./ChatHeader"
@@ -7,7 +6,6 @@ import ChatInput from "./ChatInput"
 import { useTheme } from "../../../../utilities/ThemeContext"
 import { ConversationResponse } from "../../../../types/Conversation"
 import { useAuth } from "../../../../utilities/AuthContext"
-import { getConversationMessages } from "../../../../services/MessageService";
 import { ChatResponse } from "../../../../types/Message";
 
 export interface MainChatProps {
@@ -29,22 +27,10 @@ const MainChat: React.FC<MainChatProps> = ({
     const [messages, setMessages] = useState<ChatResponse[]>([]);
     const stompClientRef = useRef<any>(null);
 
-
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
         if (!conversationResponse || isConnected) return;
-        const fetchMessages = async () => {
-            try {
-                const response = await getConversationMessages(conversationResponse.id, 0);
-                if(!response.result) return;
-                setMessages(response.result.content);
-            } catch (error) {
-                console.error("Lỗi khi lấy tin nhắn:", error);
-            }
-        };
-    
-        fetchMessages();
 
         const stompClient = Stomp.client("ws://localhost:8888/chat-service/ws");
         stompClientRef.current = stompClient;
@@ -102,8 +88,10 @@ const MainChat: React.FC<MainChatProps> = ({
                         toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                         conversationResponse={conversationResponse}
                     />
-                    <div className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden">
-                        <ChatBody messages={messages} conversationResponse={conversationResponse}/>
+                    <div 
+                        className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
+                        >
+                        <ChatBody messages={messages} setMessages={setMessages} conversationResponse={conversationResponse} />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage} />
                     </div>
                 </>

@@ -77,6 +77,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 						if (e.key === 'Enter' && !e.shiftKey) {
 							e.preventDefault();
 							sendMessage({ preventDefault: () => {} } as React.FormEvent<HTMLFormElement>);
+
+							setMessage('');
+            				e.currentTarget.style.height = 'auto';
 						}
 					}}
 				/>

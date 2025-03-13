@@ -19,6 +19,12 @@ const ChatMessage: React.FC<MessageProps> = ({
 	const { user } = useAuth();
 	const { isDarkMode  } = useTheme();
 
+	const splitLongWords = (text: string, maxLength = 20) => {
+		return text.replace(/\S{21,}/g, (match) => {
+			return match.match(new RegExp(`.{1,${maxLength}}`, "g"))?.join(" ") ?? match;
+		});
+	};
+	
 	return (
 		<div
 			className={`flex items-end ${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'
@@ -53,7 +59,10 @@ const ChatMessage: React.FC<MessageProps> = ({
 									: 'rounded-r-[20px] rounded-l-[4px] ms-10' // Người gửi khác
 					}`}
 			>
-				<p className="text-[15px] break-words inline-flex">{message.content}</p>
+				<p className="text-[15px] whitespace-normal break-words inline-flex">
+					{splitLongWords(message.content)}
+				</p>
+
 				{ isFirstInGroup && message.senderId !== user?.user.id &&
 					<div className={`absolute -top-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}></div>
 				}
