@@ -19,8 +19,8 @@ export const getConversationsByOwnerId = async (userId: number, pageNum: number)
 };
 
 // Get Conversation by ID
-export const getConversationById = async (id: number) => {
-    return (await instance.get<ApiResponse<ConversationResponse>>(`/chat-service/conversations/get/${id}`)).data;
+export const getConversationById = async (convId: number, userId: number) => {
+    return (await instance.get<ApiResponse<ConversationResponse>>(`/chat-service/conversations/get/${convId}/${userId}`)).data;
 };
 
 // Create Conversation

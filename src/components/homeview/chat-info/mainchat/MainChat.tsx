@@ -7,6 +7,7 @@ import { useTheme } from "../../../../utilities/ThemeContext"
 import { ConversationResponse } from "../../../../types/Conversation"
 import { useAuth } from "../../../../utilities/AuthContext"
 import { ChatResponse } from "../../../../types/Message";
+import { useParams } from "react-router-dom";
 
 export interface MainChatProps {
     toggleChangeWidth: () => void;
@@ -22,6 +23,7 @@ const MainChat: React.FC<MainChatProps> = ({
 }) => {
 
     const { user } = useAuth();
+    const { conv_id } = useParams();
     const { isDarkMode } = useTheme();
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<ChatResponse[]>([]);
@@ -30,30 +32,42 @@ const MainChat: React.FC<MainChatProps> = ({
     const [isConnected, setIsConnected] = useState(false);
 
     useEffect(() => {
-        if (!conversationResponse || isConnected) return;
-
+        if (!conversationResponse || !conv_id) return;
+    
+        // Ngắt kết nối WebSocket cũ nếu có
+        if (stompClientRef.current && stompClientRef.current.connected) {
+            console.log("Disconnecting WebSocket...");
+            stompClientRef.current.disconnect();
+            setIsConnected(false);
+        }
+    
+        // Tạo một kết nối WebSocket mới
         const stompClient = Stomp.client("ws://localhost:8888/chat-service/ws");
         stompClientRef.current = stompClient;
-
+    
         stompClient.connect({}, (frame: any) => {
             console.log("Connected to WebSocket", frame);
             setIsConnected(true);
-
-            stompClient.subscribe(`/topic/${user?.user.id}`, (message: any) => {
+    
+            // Lắng nghe tin nhắn của cuộc trò chuyện mới
+            stompClient.subscribe(`/topic/conversation/${conv_id}`, (message: any) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prev) => [...prev, receivedMessage]);
             });
         }, (error: any) => {
             console.error("WebSocket connection failed: ", error);
         });
-
+    
         return () => {
+            // Ngắt kết nối khi component unmount
             if (stompClientRef.current && stompClientRef.current.connected) {
-                console.log("Disconnecting Web Socket...");
+                console.log("Disconnecting WebSocket...");
                 stompClientRef.current.disconnect();
+                setIsConnected(false);
             }
         };
-    }, [conversationResponse?.id]);
+    }, [conversationResponse?.id, conv_id]); // Lắng nghe sự thay đổi của `conv_id`
+    
 
 
     const sendMessage = (event: React.FormEvent<HTMLFormElement>) => {
@@ -61,7 +75,7 @@ const MainChat: React.FC<MainChatProps> = ({
 
         if (message.trim() && stompClientRef.current && conversationResponse) {
             const chatMessage = {
-                conversationId: conversationResponse.id,
+                conversationId: conv_id,
                 senderId: user?.user.id,
                 recipientId: conversationResponse.participantIds,
                 content: message

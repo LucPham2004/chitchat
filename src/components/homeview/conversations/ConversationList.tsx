@@ -103,8 +103,8 @@ const ConversationList: React.FC = () => {
                 {loading && 
                     <div className="w-12 h-12 border-3 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>}
                 
-                {!loading && conversations.length === 0 && (
-                    <div className="flex flex-col justify-center items-center">
+                {!loading && conversations.length < 6 && (
+                    <div className="flex flex-col justify-center items-center border-t border-gray-400 mt-2">
                         <p className={`text-center text-md font-semibold py-4 px-10
                             ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                             Hãy tìm kiếm bạn bè để bắt đầu các cuộc trò chuyện

@@ -6,6 +6,7 @@ import { useAuth } from "../../../../utilities/AuthContext";
 import { ChatResponse } from "../../../../types/Message";
 import { ConversationResponse } from "../../../../types/Conversation";
 import { getConversationMessages } from "../../../../services/MessageService";
+import { useParams } from "react-router-dom";
 
 
 
@@ -22,6 +23,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     const chatEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
+    const { conv_id } = useParams();
     const [pageNum, setPageNum] = useState(0);
     const pageNumRef = useRef(0);
     const [isFetching, setIsFetching] = useState(false);
@@ -76,7 +78,13 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
     // Tải tin nhắn ban đầu khi mở chat
     useEffect(() => {
-        if (!conversationResponse || hasFetchedInitialMessages.current) return; // Nếu đã tải rồi thì không gọi lại
+        if (!conversationResponse) return; // Nếu đã tải rồi thì không gọi lại
+
+        setMessages([]);
+        setPageNum(0);
+        pageNumRef.current = 0;
+        setHasMore(true);
+        hasFetchedInitialMessages.current = false;
 
         const fetchInitialMessages = async () => {
             setIsFetching(true);
@@ -100,7 +108,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
         };
 
         fetchInitialMessages();
-    }, [conversationResponse?.id]);
+    }, [conv_id]);
 
 
     // Theo dõi cuộn để kiểm tra nếu kéo lên trên cùng thì tải tin nhắn cũ

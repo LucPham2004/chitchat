@@ -52,28 +52,24 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     useEffect(() => {
         const fetchConversation = async () => {
             try {
-                if (conv_id) {
-                    const response = await getConversationById(parseInt(conv_id));
+                if (conv_id && user?.user.id) {
+                    const response = await getConversationById(parseInt(conv_id), user?.user.id);
                     console.log(response);
                     if (response.result) {
                         setConversation(response.result);
                     } else {
                         throw new Error("Conversation response result is undefined");
                     }
-
                 } else {
                     throw new Error("Conversation ID is undefined");
                 }
             } catch (error) {
 
-            } finally {
-
             }
         };
-
+        
         fetchConversation();
-
-        }, [conv_id]);
+    }, [conv_id]);
 
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center rounded-xl
@@ -124,11 +120,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                             <p className="text-xs flex self-end">{message.timestamp}</p>
                             <div key={i} className="p-2 pt-0 mb-1 w-fit">
                                 <ChatMessage 
-                                message={{ 
-                                    senderId: message.senderId, 
-                                    text: message.message, 
-                                    name: message.name,
-                                    avatarUrl: message.avatarUrl}}
+                                message={[]}
                                 isFirstInGroup={isFirstInGroup} isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage} />
                             </div>
                             <hr className="w-full"></hr>

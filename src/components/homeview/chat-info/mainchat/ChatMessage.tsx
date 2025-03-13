@@ -5,12 +5,12 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 
 
 interface MessageProps {
-	message: ChatResponse;
+	message: ChatResponse | any;
 	isFirstInGroup: boolean;
 	isLastInGroup: boolean;
 	isSingleMessage: boolean;
 	isLastMessageByCurrentUser?: boolean;
-	conversationResponse: ConversationResponse;
+	conversationResponse?: ConversationResponse;
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
@@ -33,7 +33,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && (
 				<img
-					src={conversationResponse.avatarUrl}
+					src={conversationResponse?.avatarUrl}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="avatar"
 				/>

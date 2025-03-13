@@ -57,10 +57,10 @@ const Sidebar = () => {
             
             <div className="flex flex-col items-center gap-2">
                 <button className={` rounded-lg 
-                    ${isDarkMode ? 'text-yellow-300 text-xl p-3 hover:bg-[#5A5A5A]' 
-                        : 'text-orange-400 text-2xl p-2.5 bg-gray-100 hover:bg-gray-200'}`}
+                    ${isDarkMode ? 'text-yellow-400 text-xl p-3 hover:bg-[#5A5A5A]' 
+                        : 'text-yellow-400 text-2xl p-2.5 bg-gray-100 hover:bg-gray-200'}`}
                         onClick={toggleDarkMode}>
-                    {isDarkMode ? <FaMoon /> : <IoMdSunny />}
+                    {isDarkMode ? <IoMdSunny /> : <FaMoon />}
                 </button>
 
                 <button className={`p-3 rounded-lg text-xl
