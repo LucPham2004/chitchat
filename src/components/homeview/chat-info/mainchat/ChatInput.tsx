@@ -25,7 +25,6 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 
 	const handleEmojiClick = (emojiData: EmojiClickData) => {
 		setMessage(message + emojiData.emoji);
-		setShowEmojiPicker(false);
 	};
 
 	const handleSendEmoji = () => {
@@ -80,13 +79,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 
 							setMessage('');
             				e.currentTarget.style.height = 'auto';
+							setShowEmojiPicker(false);
 						}
 					}}
 				/>
 
 				<div className={`absolute right-0 bottom-0.5 text-xl text-blue-400 p-2 rounded-full 
 					${isDarkMode ? 'hover:bg-[#5A5A5A]' : 'hover:bg-gray-200'} cursor-pointer`}
-					onClick={() => setShowEmojiPicker(prev => !prev)}>
+					onClick={() => setShowEmojiPicker(true)}>
 					<FaFaceGrinWide />
 				</div>
 			</div>

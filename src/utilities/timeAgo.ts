@@ -5,7 +5,7 @@ export const timeAgo = (timestamp: string) => {
     const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
 
     if (diffInSeconds < 60) {
-        return `${diffInSeconds} giây`;
+        return `vừa xong`;
     }
     
     const diffInMinutes = Math.floor(diffInSeconds / 60);

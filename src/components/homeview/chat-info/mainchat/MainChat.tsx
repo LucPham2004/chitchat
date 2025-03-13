@@ -8,6 +8,7 @@ import { ConversationResponse } from "../../../../types/Conversation"
 import { useAuth } from "../../../../utilities/AuthContext"
 import { ChatResponse } from "../../../../types/Message";
 import { useParams } from "react-router-dom";
+import { useChatContext } from "../../../../utilities/ChatContext";
 
 export interface MainChatProps {
     toggleChangeWidth: () => void;
@@ -25,6 +26,8 @@ const MainChat: React.FC<MainChatProps> = ({
     const { user } = useAuth();
     const { conv_id } = useParams();
     const { isDarkMode } = useTheme();
+    const { updateLastMessage } = useChatContext();
+    
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<ChatResponse[]>([]);
     const stompClientRef = useRef<any>(null);
@@ -53,6 +56,8 @@ const MainChat: React.FC<MainChatProps> = ({
             stompClient.subscribe(`/topic/conversation/${conv_id}`, (message: any) => {
                 const receivedMessage = JSON.parse(message.body);
                 setMessages((prev) => [...prev, receivedMessage]);
+
+                updateLastMessage(conv_id, receivedMessage.senderId, receivedMessage.content, new Date().toISOString());
             });
         }, (error: any) => {
             console.error("WebSocket connection failed: ", error);
@@ -83,6 +88,10 @@ const MainChat: React.FC<MainChatProps> = ({
 
             stompClientRef.current.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
             setMessage('');
+
+            if(conv_id && user?.user.id) {
+                updateLastMessage(conv_id, user?.user.id, message, new Date().toISOString());
+            }
         }
     };
 

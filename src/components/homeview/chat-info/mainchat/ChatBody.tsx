@@ -7,6 +7,7 @@ import { ChatResponse } from "../../../../types/Message";
 import { ConversationResponse } from "../../../../types/Conversation";
 import { getConversationMessages } from "../../../../services/MessageService";
 import { useParams } from "react-router-dom";
+import { useChatContext } from "../../../../utilities/ChatContext";
 
 
 
@@ -27,6 +28,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     const [pageNum, setPageNum] = useState(0);
     const pageNumRef = useRef(0);
     const [isFetching, setIsFetching] = useState(false);
+    const { updateLastMessage } = useChatContext();
     const [hasMore, setHasMore] = useState(true);
     const [isAtBottom, setIsAtBottom] = useState(true);
     const hasFetchedInitialMessages = useRef(false); // Trạng thái tải tin nhắn đầu tiên
@@ -94,9 +96,14 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
                 if (response.result && response.result.content.length > 0) {
                     const newMessages = response.result?.content.reverse() || [];
-                    setMessages(newMessages); // Gán trực tiếp, không nối mảng
+                    setMessages(newMessages);
                     setPageNum(0);
                     setHasMore(true);
+                    if(conv_id) {
+                        const lastMessages = newMessages;
+                        const lastMessage = lastMessages[lastMessages.length - 1];
+                        updateLastMessage(conv_id, lastMessage.senderId, lastMessage.content, lastMessage.createdAt);
+                    }
                 } else {
                     setHasMore(false);
                 }

@@ -4,6 +4,7 @@ import './styles/index.css';
 import App from './App';
 import { ThemeProvider } from './utilities/ThemeContext';
 import { AuthProvider } from './utilities/AuthContext';
+import { ChatProvider } from './utilities/ChatContext';
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
@@ -11,7 +12,9 @@ if (rootElement) {
     <StrictMode>
       <AuthProvider>
         <ThemeProvider>
-          <App />
+          <ChatProvider>
+            <App />
+          </ChatProvider>
         </ThemeProvider>
       </AuthProvider>
     </StrictMode>
