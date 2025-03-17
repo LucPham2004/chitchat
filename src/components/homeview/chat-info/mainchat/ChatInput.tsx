@@ -1,12 +1,12 @@
 import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { FaFaceGrinWide } from 'react-icons/fa6';
 import { IoIosImages } from 'react-icons/io';
 import { PiPaperPlaneRightFill } from 'react-icons/pi';
 import { useTheme } from '../../../../utilities/ThemeContext';
 
 interface ChatInputProps {
-	setMessage: (message: string) => void;
+	setMessage: React.Dispatch<React.SetStateAction<string>>;
 	sendMessage: (event: React.FormEvent<HTMLFormElement>) => void;
 	message: string;
 }
@@ -24,7 +24,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message 
 	};
 
 	const handleEmojiClick = (emojiData: EmojiClickData) => {
-		setMessage(message + emojiData.emoji);
+		setTimeout(() => {
+		  setMessage((prevMessage) => prevMessage + emojiData.emoji);
+		}, 0);
 	};
 
 	const handleSendEmoji = () => {

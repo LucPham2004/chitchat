@@ -39,6 +39,7 @@ export interface ConversationShortResponse {
 	name: string;
 	avatarUrl?: string;
 	lastMessage: string;
+	isThisYourLastMessage: boolean;
 	lastMessageTime: string;
 	ownerId: number;
 	participantIds?: number[];

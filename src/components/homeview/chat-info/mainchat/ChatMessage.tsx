@@ -25,7 +25,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 		});
 	};
 
-	const isOnlyEmojiOrNumber = (text: string) => {
+	const isOnlyEmoji = (text: string) => {
 		if (!text) return false;
 		const stringToTest = text.replace(/ /g, '');
 		const emojiRegex = /^(?:(?:\p{RI}\p{RI}|\p{Emoji}(?:\p{Emoji_Modifier}|\u{FE0F}\u{20E3}?|[\u{E0020}-\u{E007E}]+\u{E007F})?(?:\u{200D}\p{Emoji}(?:\p{Emoji_Modifier}|\u{FE0F}\u{20E3}?|[\u{E0020}-\u{E007E}]+\u{E007F})?)*)|[\u{1f900}-\u{1f9ff}\u{2600}-\u{26ff}\u{2700}-\u{27bf}])+$/u;
@@ -45,9 +45,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 			<div className={`relative inline-flex max-w-[80%] pt-1 pb-1.5 
 					
-					${isOnlyEmojiOrNumber(message.content) ? '' : `${message.senderId === user?.user.id
+					${isOnlyEmoji(message.content) ? '' : `${message.senderId === user?.user.id
 						? 'bg-[#EA1A1A] text-white px-3'
-						: `${isDarkMode ? 'bg-[#27221B] text-gray-300 px-3' : 'bg-[#F3F3F3]'} `} `}
+						: `${isDarkMode ? 'bg-[#27221B] text-gray-300 px-3' : 'bg-[#F3F3F3] px-3'} `} `}
 					
 					${isSingleMessage // Nếu là tin nhắn đơn
 						? message.senderId === user?.user.id ? 'rounded-[20px]' : 'rounded-[20px] mt-6'
@@ -64,8 +64,8 @@ const ChatMessage: React.FC<MessageProps> = ({
 									: 'rounded-r-[20px] rounded-l-[4px] ms-10' // Người gửi khác
 					} `}
 			>
-				<p className={`text-[15px] whitespace-normal break-words inline-flex 
-    				${isOnlyEmojiOrNumber(message.content) ? 'text-4xl' : ''}`}>
+				<p className={`whitespace-normal break-words inline-flex 
+    				${isOnlyEmoji(message.content) ? 'text-4xl' : 'text-[15px]'}`}>
 					{splitLongWords(message.content)}
 				</p>
 

@@ -41,6 +41,10 @@ const Profile = () => {
     const isMountedRef = useRef(true);
 
     useEffect(() => {
+        document.title = user?.user.firstName + " " + user?.user.lastName || "Chit Chat";
+    }, []);
+
+    useEffect(() => {
         isMountedRef.current = true; // Đánh dấu là component đang mounted
 
         const fetchData = async () => {

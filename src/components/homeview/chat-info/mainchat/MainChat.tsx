@@ -32,7 +32,9 @@ const MainChat: React.FC<MainChatProps> = ({
     const [messages, setMessages] = useState<ChatResponse[]>([]);
     const stompClientRef = useRef<any>(null);
 
-    const [isConnected, setIsConnected] = useState(false);
+    useEffect(() => {
+        document.title = conversationResponse?.name + " | Chit Chat" || "Chit Chat";
+    }, []);
 
     useEffect(() => {
         if (!conversationResponse || !conv_id) return;
@@ -41,7 +43,6 @@ const MainChat: React.FC<MainChatProps> = ({
         if (stompClientRef.current && stompClientRef.current.connected) {
             console.log("Disconnecting WebSocket...");
             stompClientRef.current.disconnect();
-            setIsConnected(false);
         }
     
         // Tạo một kết nối WebSocket mới
@@ -50,7 +51,6 @@ const MainChat: React.FC<MainChatProps> = ({
     
         stompClient.connect({}, (frame: any) => {
             console.log("Connected to WebSocket", frame);
-            setIsConnected(true);
     
             // Lắng nghe tin nhắn của cuộc trò chuyện mới
             stompClient.subscribe(`/topic/conversation/${conv_id}`, (message: any) => {
@@ -68,7 +68,6 @@ const MainChat: React.FC<MainChatProps> = ({
             if (stompClientRef.current && stompClientRef.current.connected) {
                 console.log("Disconnecting WebSocket...");
                 stompClientRef.current.disconnect();
-                setIsConnected(false);
             }
         };
     }, [conversationResponse?.id, conv_id]); // Lắng nghe sự thay đổi của `conv_id`
@@ -97,12 +96,14 @@ const MainChat: React.FC<MainChatProps> = ({
 
 
     return (
-        <div className={`min-h-[96vh] flex flex-col items-center pe-1 pt-1 pb-0 
+        <div className={`min-h-[96vh] flex flex-col items-center justify-center pe-1 pt-1 pb-0 
             rounded-xl shadow-sm overflow-hidden
             ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}>
 
             {!conversationResponse ? (
-                <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                <div className="flex items-center justify-center w-full h-full">
+                    <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                </div>
             ) : (
                 <>
                     <ChatHeader

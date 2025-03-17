@@ -77,6 +77,10 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
         setIsFetching(false);
     };
+    
+    useEffect(() => {
+        document.title = conversationResponse?.name + " | Chit Chat" || "Chit Chat";
+    }, []);
 
     // Tải tin nhắn ban đầu khi mở chat
     useEffect(() => {

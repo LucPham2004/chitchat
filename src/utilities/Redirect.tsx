@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../utilities/AuthContext";
+import { useAuth } from "./AuthContext";
 
 const RedirectToConversation = () => {
     const {user} = useAuth();

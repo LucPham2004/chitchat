@@ -87,7 +87,7 @@ const ConversationList: React.FC = () => {
                                 ref={index === conversations.length - 1 ? lastConversationRef : null}
                                 className={`flex items-center p-2.5 rounded-lg cursor-pointer
                                     ${isDarkMode ? 'text-white hover:bg-[#3A3A3A]' : 'text-black hover:bg-gray-100'}
-                                    ${conv_id && conv.id === parseInt(conv_id) && isDarkMode ? 'bg-[#303030]' : ''}`}
+                                    ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#303030]' : 'bg-gray-200' : ''}`}
                             >
                                 <img
                                     src={conv.avatarUrl}
@@ -101,7 +101,9 @@ const ConversationList: React.FC = () => {
                                     <div className="w-full flex items-center justify-between">
                                         <p className={`text-[13px] truncate max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap
                                             ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            {!lastMessageData ? conv.lastMessage : senderId !== user?.user.id ? lastMessage : 'Bạn: ' + lastMessage}
+                                            {!lastMessageData 
+                                                ? `${conv.isThisYourLastMessage ? 'Bạn: ' + conv.lastMessage : conv.lastMessage}`
+                                                : `${senderId !== user?.user.id ? lastMessage : 'Bạn: ' + lastMessage}`}
                                         </p>
                                         <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             {!lastMessageData ? timeAgo(conv.lastMessageTime) : timeAgo(lastMessageTime)}</p>

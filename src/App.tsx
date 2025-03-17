@@ -7,13 +7,13 @@ import RegisterView from './views/RegisterView';
 import ProfileView from './views/ProfileView';
 import Friends from './components/profile/Friends';
 import Profile from './components/profile/Profile';
-import RedirectToConversation from './views/RedirectToConversations';
+import Redirect from './utilities/Redirect';
 
 function App() {
   const router = createBrowserRouter([
     {
       path: '',
-      element: <RedirectToConversation />
+      element: <Redirect />
     },
     {
       path: 'conversations/:conv_id',

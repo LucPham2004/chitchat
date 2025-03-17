@@ -5,7 +5,7 @@ import FriendCard from "./FriendCard";
 import SearchBar from "../common/SearchBar";
 import { ImBlocked } from "react-icons/im";
 import { IoChatbubblesSharp } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FriendRequestCard from "./FriendRequestCard";
 import UserCard from "./UserCard";
 import { useTheme } from "../../utilities/ThemeContext";
@@ -47,6 +47,11 @@ const Friends = () => {
     const otherUser = false;
 
     const friends = friendsData;
+
+    
+    useEffect(() => {
+        document.title = "Bạn bè | Chit Chat";
+    }, []);
 
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-col

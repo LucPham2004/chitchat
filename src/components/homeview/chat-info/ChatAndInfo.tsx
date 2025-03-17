@@ -3,7 +3,7 @@ import ConversationInfo from "./conversationInfo/ConversationInfo";
 import MainChat from "./mainchat/MainChat";
 import { ChangeWidthProps } from "../../../views/HomeView";
 import Modal from "../../common/Modal";
-import { pinnedMessagesData } from "../../../FakeData";
+import { conversations, pinnedMessagesData } from "../../../FakeData";
 import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
 import ParticipantCard from "./conversationInfo/ParticipantCard";
@@ -70,6 +70,10 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         
         fetchConversation();
     }, [conv_id]);
+
+    useEffect(() => {
+        document.title = Conversation?.name + " | Chit Chat" || "Chit Chat";
+    }, []);
 
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center rounded-xl
