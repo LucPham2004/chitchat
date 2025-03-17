@@ -119,6 +119,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
         };
 
         fetchInitialMessages();
+        chatEndRef.current?.scrollIntoView({ behavior: "instant" });
     }, [conv_id]);
 
 
@@ -141,7 +142,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     // Chỉ tự động cuộn xuống khi chat ở dưới cùng và có tin nhắn mới
     useEffect(() => {
         if (isAtBottom) {
-            chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 500);
         }
     }, [messages]);
 
@@ -150,7 +151,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     return (
         <div ref={chatContainerRef}
             className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-4
-                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[78vh]'}
+                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[50vh]'}
                 bg-cover bg-center`}
             style={{
                 backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,

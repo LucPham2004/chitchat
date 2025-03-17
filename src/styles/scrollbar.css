@@ -31,3 +31,16 @@
 .dark ::-webkit-scrollbar-thumb:hover {
   background: #5D5E5F; /* Màu khi hover trong chế độ tối */
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px; /* Chiều cao thanh cuộn ngang */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(100, 100, 100, 0.5);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

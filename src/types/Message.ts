@@ -14,7 +14,8 @@ export interface ChatRequest {
     senderId: number;
     recipientId: number[];
     content: string;
-    url: string;
+    publicIds: string[];
+    urls: string[];
 }
 
 export interface ChatResponse {
@@ -23,7 +24,8 @@ export interface ChatResponse {
     senderId: number;
     recipientId: number[];
     content: string;
-    url: string;
+    publicIds: string[];
+    urls: string[];
     isRead: boolean;
     createdAt: string;
     updatedAt: string;

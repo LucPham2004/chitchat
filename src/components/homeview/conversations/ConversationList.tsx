@@ -103,7 +103,7 @@ const ConversationList: React.FC = () => {
                                             ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             {!lastMessageData 
                                                 ? `${conv.isThisYourLastMessage ? 'Bạn: ' + conv.lastMessage : conv.lastMessage}`
-                                                : `${senderId !== user?.user.id ? lastMessage : 'Bạn: ' + lastMessage}`}
+                                                : lastMessage}
                                         </p>
                                         <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                             {!lastMessageData ? timeAgo(conv.lastMessageTime) : timeAgo(lastMessageTime)}</p>
