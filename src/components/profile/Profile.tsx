@@ -12,8 +12,10 @@ import { useAuth } from "../../utilities/AuthContext";
 import { Account, GetAccount } from "../../types/backend";
 import { AxiosError } from "axios";
 import { callFetchAccount } from "../../services/AuthService";
-import { getUserById } from "../../services/UserService";
-import { UserResponse } from "../../types/User";
+import { getUserById, updateUserImages } from "../../services/UserService";
+import { UserImageUpdateReq, UserResponse } from "../../types/User";
+import { uploadUserImage } from "../../services/ImageService";
+import Avatar from "../common/Avatar";
 
 interface User {
     id: number;
@@ -24,14 +26,17 @@ interface User {
 const LOCAL_STORAGE_KEY = 'user_account';
 
 const Profile = () => {
-    const {user} = useAuth();
+    const { user } = useAuth();
     const { user_id_param } = useParams();
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
-    
+
     const [showMenu, setShowMenu] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
+    const [showAvatarModal, setShowAvatarModal] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
     const navigate = useNavigate();
 
     const [userAccount, setUser] = useState<UserResponse | null>(null);
@@ -70,7 +75,7 @@ const Profile = () => {
                 const response = await getUserById(parseInt(user_id_param));
                 console.log(response);
                 if (response.result) {
-                    if(parseInt(user_id_param) == user?.user.id) {
+                    if (parseInt(user_id_param) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
                     }
                     setUser(response.result);
@@ -99,7 +104,7 @@ const Profile = () => {
             <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
         </div>
     );
-    
+
     if (error) return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
             pb-0 rounded-xl border shadow-sm overflow-y-auto
@@ -107,7 +112,7 @@ const Profile = () => {
             <p className="text-red-500 text-lg font-semibold">Lỗi tải dữ liệu, xin vui lòng thử lại sau</p>
         </div>
     );
-    
+
 
 
     const goBack = () => {
@@ -129,36 +134,37 @@ const Profile = () => {
         const file = event.target.files?.[0];
         if (file) {
             setSelectedFile(file);
+            const url = URL.createObjectURL(file);
+            setPreviewUrl(url);
         }
     };
 
-    const handleUpdate = async () => {
+    const handleUpdateImages = async (isUpdateAvatar: boolean) => {
         try {
-            // let newImageUrl = imageUrl;
+            if (!selectedFile || !userAccount) return;
 
-            // if (selectedFile) {
-            //     const uploadResult = await uploadGroupImage(selectedFile, groupId);
-            //     newImageUrl = uploadResult.secure_url;
-            // } else if (inputUrl.trim() !== "") {
-            //     newImageUrl = inputUrl;
-            // }
+            const uploadResult = await uploadUserImage(selectedFile, user?.user.id ? user.user.id : userAccount.id);
 
-            // const groupResponse = await editGroup({
-            //     groupId,
-            //     adminId,
-            //     name: group?.name,
-            //     imageUrl: newImageUrl,
-            //     privacy: GroupPrivacy.PUBLIC
-            // });
-            // console.log(groupResponse);
+            // if isUpdateAvatar == true -> update avatar
+            // else -> update cover photo            
+            const request: UserImageUpdateReq = isUpdateAvatar ? {
+                id: userAccount.id,
+                avatarPublicId: uploadResult.public_id,
+                avatarUrl: uploadResult.secure_url,
+            } : {
+                id: userAccount.id,
+                coverPhotoPublicId: uploadResult.public_id,
+                coverPhotoUrl: uploadResult.secure_url,
+            };
 
-            // // 3. Cập nhật giao diện
-            // setImageUrl(newImageUrl);
-            // setInputUrl("");
-            // setSelectedFile(null);
-            // setShowMenu(false);
+            const response = await updateUserImages(request);
+            console.log("Cập nhật thành công:", response);
+
+            // Cập nhật UI nếu cần
+            setShowAvatarModal(false);
+            await fetchUser();
         } catch (error) {
-            console.error("Lỗi khi cập nhật nhóm:", error);
+            console.error("Lỗi khi cập nhật:", error);
         }
     };
 
@@ -168,9 +174,9 @@ const Profile = () => {
             ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="relative flex flex-col w-full min-h-full">
                 <div className="absolute top-3 left-4 z-10">
-                <button className={`p-2 rounded-full text-xl
-                    ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]' 
-                        : 'text-black bg-gray-200 hover:bg-gray-100'}`}
+                    <button className={`p-2 rounded-full text-xl
+                    ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
+                            : 'text-black bg-gray-200 hover:bg-gray-100'}`}
                         onClick={goBack}>
                         <FaArrowLeft />
                     </button>
@@ -180,20 +186,17 @@ const Profile = () => {
                     {/* Ảnh bìa */}
                     <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600">
                         <img
-                            src="https://images.unsplash.com/photo-1501594907352-04cda38ebc29"
+                            src={userAccount?.coverPhotoUrl}
                             alt="Cover"
                             className="w-full h-full object-cover"
                         />
                     </div>
 
                     {/* Ảnh đại diện */}
-                    <div className="absolute bottom-0 left-8 transform translate-y-1/2">
-                        <img
-                            src={userAccount?.avatarUrl || '/user_default.avif'}
-                            alt="Profile"
-                            className={`w-40 h-40 rounded-full border-4 object-cover
-                                ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}
-                        />
+                    <div className={`absolute bottom-0 left-8 rounded-full transform translate-y-1/2 border-4
+                            ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}>
+                        
+                        <Avatar avatarUrl={userAccount?.avatarUrl || '/user_default.avif'} width={40} height={40}></Avatar>
                     </div>
 
                     <div className="absolute right-2 bottom-2">
@@ -231,7 +234,7 @@ const Profile = () => {
                                 {/* Nhập URL ảnh */}
                                 <div className="flex flex-row gap-2">
                                     <button
-                                        onClick={handleUpdate}
+                                        onClick={() => handleUpdateImages(false)}
                                         className="bg-blue-100 text-blue-500 w-[70%] p-2 rounded-md hover:bg-blue-200"
                                     >
                                         Cập nhật
@@ -268,49 +271,50 @@ const Profile = () => {
                         }
 
                         {user_id_param && parseInt(user_id_param) != user?.user.id ? (
-                        <div className="flex flex-col items-end gap-2 pt-4">
-                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                            <div className="flex flex-col items-end gap-2 pt-4">
+                                <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400' 
-                                    : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                        : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
                                 rounded-full shadow-md transition duration-200`}>
-                                <IoChatbubblesSharp />
-                                <p className="font-semibold">Gửi tin nhắn</p>
-                            </button>
-                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                                    <IoChatbubblesSharp />
+                                    <p className="font-semibold">Gửi tin nhắn</p>
+                                </button>
+                                <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400' 
-                                    : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                        : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                 hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
                                 rounded-full shadow-md transition duration-200`}>
-                                <PiHandWavingFill />
-                                <p className="font-semibold px-0.5">Gửi kết bạn</p>
-                            </button>
-                        </div>
+                                    <PiHandWavingFill />
+                                    <p className="font-semibold px-0.5">Gửi kết bạn</p>
+                                </button>
+                            </div>
                         )
-                        : (
-                        <div className="flex flex-col items-end gap-2 pt-4">
-                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                            : (
+                                <div className="flex flex-col items-end gap-2 pt-4">
+                                    <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                 ${isDarkMode ? 'border-white' : 'border-black'}
                                 border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
-                                 shadow-md transition duration-200`}>
-                                <BiSolidEditAlt />
-                                <p className="font-semibold">Chỉnh sửa</p>
-                            </button>
-                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
+                                shadow-md transition duration-200`}
+                                        onClick={() => setShowAvatarModal(true)}>
+                                        <BiSolidEditAlt />
+                                        <p className="font-semibold">Chỉnh sửa</p>
+                                    </button>
+                                    <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                 ${isDarkMode ? 'border-white' : 'border-black'}
                                 border-2 border-black text-black bg-white 
                                 hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
                                 rounded-full shadow-md transition duration-200`}>
-                                <IoSettings />
-                                <p className="font-semibold px-0.5">Cài đặt</p>
-                            </button>
-                        </div>
-                        )}
+                                        <IoSettings />
+                                        <p className="font-semibold px-0.5">Cài đặt</p>
+                                    </button>
+                                </div>
+                            )}
                     </div>
                 </div>
 
@@ -398,7 +402,7 @@ const Profile = () => {
                             <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl border-2
                                     hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
                                     rounded-full shadow-md transition duration-200
-                                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300' 
+                                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300'
                                     : 'bg-white text-gray-700 border-gray-700'}`}>
                                 <FaTiktok />
 
@@ -438,7 +442,7 @@ const Profile = () => {
                             <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl border-2 
                                     hover:bg-gradient-to-r from-gray-700 to-gray-800 hover:text-white 
                                     rounded-full shadow-md transition duration-200
-                                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300' 
+                                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300'
                                     : 'bg-white text-gray-700 border-gray-700'}`}>
                                 <FaGithub />
 
@@ -447,6 +451,40 @@ const Profile = () => {
                     </div>
                 </div>
             </div>
+
+            {showAvatarModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className={`bg-white dark:bg-[#1F1F1F] p-6 rounded-lg shadow-lg w-96`}>
+                        <h2 className="text-xl font-semibold mb-4 text-center">Cập nhật ảnh đại diện</h2>
+
+                        {previewUrl ? (
+                            <img src={previewUrl} alt="Preview" className="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
+                        ) : (
+                            <div className="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-300 flex items-center justify-center">
+                                <span>Preview</span>
+                            </div>
+                        )}
+
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="mb-4" />
+
+                        <div className="flex justify-end space-x-2">
+                            <button
+                                className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
+                                onClick={() => setShowAvatarModal(false)}
+                            >
+                                Hủy
+                            </button>
+                            <button
+                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                onClick={() => handleUpdateImages(true)}
+                            >
+                                Cập nhật
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
         </div>
     );
 }

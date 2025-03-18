@@ -2,7 +2,7 @@ import { BsPencilSquare } from "react-icons/bs";
 import ConversationList from "./ConversationList";
 import '../../../styles/scrollbar.css';
 import SearchBar from "../../common/SearchBar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSettings } from "react-icons/io5";
 import { FiLogOut } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -11,6 +11,8 @@ import { FaMoon } from "react-icons/fa";
 import { useTheme } from "../../../utilities/ThemeContext";
 import Sidebar from "./Sidebar";
 import { useAuth } from "../../../utilities/AuthContext";
+import Avatar from "../../common/Avatar";
+import { UserResponse } from "../../../types/User";
 
 const Conversations = () => {
     const {user} = useAuth();
@@ -18,6 +20,8 @@ const Conversations = () => {
 
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
     const toggleSettingModalOpen = () => setIsSettingModalOpen(!isSettingModalOpen);
+    const LOCAL_STORAGE_KEY = 'user_account';
+    const [userAccount, setUser] = useState<UserResponse | null>(null);
 
     const { isDarkMode, toggleDarkMode } = useTheme();
 
@@ -25,7 +29,12 @@ const Conversations = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
-    
+    useEffect(() => {
+        const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedUser && storedUser !== "undefined") {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
 
     return (
         <div className="flex flex-row gap-2">
@@ -46,7 +55,7 @@ const Conversations = () => {
                         </button>
                         <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
                             onClick={toggleMenu}>
-                            <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
+                            <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={8} height={8}></Avatar>
                         </button>
 
                         {isMenuOpen && (

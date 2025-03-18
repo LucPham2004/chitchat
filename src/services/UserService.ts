@@ -1,4 +1,4 @@
-import { UserCreationRequest, UserUpdateRequest, UserResponse, UserDTO } from '../types/User';
+import { UserCreationRequest, UserUpdateRequest, UserResponse, UserDTO, UserImageUpdateReq } from '../types/User';
 import { ApiResponse, Page } from '../types/backend';
 import instance from './Axios-customize';
 
@@ -15,6 +15,10 @@ export const getUserById = async (id: number) => {
 // Update User
 export const updateUser = async (request: UserUpdateRequest) => {
     return (await instance.put<ApiResponse<UserResponse>>('/user-service/users/update', request)).data;
+};
+
+export const updateUserImages = async (request: UserImageUpdateReq) => {
+    return (await instance.put<ApiResponse<UserResponse>>('/user-service/users/update/images', request)).data;
 };
 
 // Delete User by ID

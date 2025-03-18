@@ -18,11 +18,18 @@ export interface UserUpdateRequest {
     id: number;
     firstName?: string;
     lastName?: string;
-    avatarUrl?: string;
     dob?: Date;
     gender?: Gender;
     bio?: string;
     location?: string;
+}
+
+export interface UserImageUpdateReq {
+    id: number;
+    avatarPublicId?: string;
+    avatarUrl?: string;
+    coverPhotoPublicId?: string;
+    coverPhotoUrl?: string;
 }
 
 export interface UserDTO {
@@ -39,7 +46,10 @@ export interface UserDTO {
 export interface UserResponse {
     id: number;
     username: string;
+    avatarPublicId?: string;
     avatarUrl: string;
+    coverPhotoPublicId?: string;
+    coverPhotoUrl?: string;
     email: string;
     firstName: string;
     lastName: string;

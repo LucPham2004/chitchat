@@ -6,12 +6,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { GrSettingsOption } from "react-icons/gr";
 import { useAuth } from "../../../utilities/AuthContext";
 import { callLogout } from "../../../services/AuthService";
+import Avatar from "../../common/Avatar";
+import { useEffect, useState } from "react";
+import { UserResponse } from "../../../types/User";
 
 
 const Sidebar = () => {
     const {user, setUser} = useAuth();
     const navigate = useNavigate();
     const { isDarkMode, toggleDarkMode } = useTheme();
+    const LOCAL_STORAGE_KEY = 'user_account';
+    const [userAccount, setUserAccount] = useState<UserResponse | null>(null);
 
     const handleLogout = async () => {
         try {
@@ -25,6 +30,13 @@ const Sidebar = () => {
         }
     };
     
+    useEffect(() => {
+        const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedUser && storedUser !== "undefined") {
+            setUserAccount(JSON.parse(storedUser));
+        }
+    }, []);
+    
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden min-w-[10%] flex flex-col gap-4 
             py-2 items-center justify-between rounded-xl
@@ -32,9 +44,8 @@ const Sidebar = () => {
             
             <div className="flex flex-col items-center gap-2">
                 <Link to={`/profile/${user?.user.id}`}>
-                    <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
-                        >
-                        <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-10 h-10 rounded-full" />
+                    <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}>
+                        <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={10} height={10}></Avatar>
                     </button>
                 </Link>
 {/*                 

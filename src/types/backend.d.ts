@@ -49,7 +49,10 @@ export interface Account {
           username: string;
           firstName: string;
           lastName?: string;
-          avatarUrl?: string;
+          avatarPublicId?: string;
+          avatarUrl: string;
+          coverPhotoPublicId?: string;
+          coverPhotoUrl?: string;
           location?: string;
           bio?: string;
           job?: string;
