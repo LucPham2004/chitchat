@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
 import { callLogin } from '../services/AuthService';
 import { Account } from '../types/backend';
@@ -28,6 +28,10 @@ const LoginView = () => {
 			alert('Đã xảy ra lỗi. Vui lòng thử lại!');
 		}
 	};
+
+	useEffect(() => {
+		document.title = "Đăng nhập | Chit Chat";
+	}, []);
 
 	return (
 		<div className='flex items-center justify-center'>

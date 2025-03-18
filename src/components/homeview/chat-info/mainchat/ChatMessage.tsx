@@ -41,9 +41,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 	return (
 		<div className={`relative flex items-end ${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}`}>
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
-			{message.senderId !== user?.user.id && isLastInGroup && (
+			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
 				<img
-					src={conversationResponse?.avatarUrl}
+					src={conversationResponse?.avatarUrls[0]}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="avatar"
 				/>
@@ -87,21 +87,21 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Show images/videos */}
 				{message.publicIds != null && (
-					<div className={`flex flex-col gap-[1px] max-w-[80%]
+					<div className={`flex flex-col gap-[1px] max-w-[100%]
 					${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start gap-2'}`}>
 						{message.publicIds.map((publicId: string, index: number) => {
 							const url = message.urls[index];
 							const isVideo = isVideoUrl(url);
 
 							return (
-								<div key={publicId} className={`relative group w-full max-w-[60%] cursor-pointer
+								<div key={publicId} className={`relative group w-full max-w-[50%] min-w-[50%] cursor-pointer
           								${!isLastInGroup ? 'ms-10' : ''}`}>
 
 									{isVideo ? (
 										<video src={url} controls className="w-full h-auto rounded-xl"/>
 									) : (
 										<div>
-											<img src={url} alt="A message media" className="w-full h-auto rounded-xl"/>
+											<img loading="lazy" src={url} alt="A message media" className="w-full h-auto rounded-xl"/>
 											<div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-md"></div>
 										</div>
 									)}

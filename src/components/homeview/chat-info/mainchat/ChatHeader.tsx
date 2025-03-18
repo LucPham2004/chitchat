@@ -2,6 +2,7 @@ import { PiDotsThreeCircle } from "react-icons/pi"
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { VscLayoutSidebarRight, VscLayoutSidebarRightOff } from "react-icons/vsc";
 import { MainChatProps } from "./MainChat";
+import ConversationAvatar from "../../conversations/ConversationAvatar";
 
 
 const ChatHeader: React.FC<MainChatProps> = ({ 
@@ -21,11 +22,8 @@ const ChatHeader: React.FC<MainChatProps> = ({
                 ${isDarkMode ? 'hover:bg-[#353130]' : 'hover:bg-gray-100'}`}
                 onClick={toggleShowConversationMembersModalOpen}>
                 <div className={`p-1 rounded-lg cursor-pointer`}>
-                    <img
-                        className="w-10 h-10 rounded-full object-cover"
-                        src={conversationResponse?.avatarUrl}
-                        alt={`ksadnjsd's avatar`}
-                    />
+                    <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []} 
+                        width={10} height={10}></ConversationAvatar>
                     <img className="w-4 h-4 absolute top-8 left-8" src="/onlineIcon.png" alt="online icon" />
                 </div>
                 <div className='flex flex-col justify-center items-left'>

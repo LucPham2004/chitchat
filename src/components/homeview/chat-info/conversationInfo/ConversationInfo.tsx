@@ -9,6 +9,7 @@ import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { ConversationResponse } from "../../../../types/Conversation";
 import Accordion from "./Accordion";
+import ConversationAvatar from "../../conversations/ConversationAvatar";
 
 
 export interface ConversationInfoProps {
@@ -143,7 +144,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         }
 
                         <div className="flex flex-col items-center gap-1 p-2">
-                            <img className="w-20 h-20 rounded-full object-cover" src={conversationResponse?.avatarUrl}></img>
+                            <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []} 
+                                width={20} height={20}></ConversationAvatar>
                             <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>

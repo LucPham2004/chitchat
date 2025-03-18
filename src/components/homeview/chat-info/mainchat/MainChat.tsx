@@ -69,7 +69,7 @@ const MainChat: React.FC<MainChatProps> = ({
                 if(receivedMessage.urls.length > 0) {
                     updateLastMessage(conv_id, receivedMessage.senderId, `${receivedMessage.senderId == user?.user.id ? "Bạn" : conversationResponse.name}` + " đã gửi một " + `${isVideoUrl(receivedMessage.urls[receivedMessage.urls.length - 1]) ? "video" : "ảnh"}`, new Date().toISOString());
                 } else {
-                    updateLastMessage(conv_id, receivedMessage.senderId, receivedMessage.content, new Date().toISOString());
+                    updateLastMessage(conv_id, receivedMessage.senderId, `${receivedMessage.senderId == user?.user.id ? "Bạn: " + receivedMessage.content : receivedMessage.content}`, new Date().toISOString());
                 }
             });
         }, (error: any) => {

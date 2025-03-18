@@ -21,7 +21,7 @@ function App() {
       errorElement: <ErrorPage />
     },
     {
-      path: 'profile/:user_id',
+      path: 'profile/:user_id_param',
       element: <ProfileView />,
       children: [
         {

@@ -11,7 +11,7 @@ export interface Conversation {
 export interface ConversationResponse {
 	id: number;
 	name: string;
-	avatarUrl?: string;
+	avatarUrls?: string[];
 	description?: string;
 	color?: string;
 	emoji?: string;
@@ -37,7 +37,7 @@ export interface ConversationResponse {
 export interface ConversationShortResponse {
 	id: number;
 	name: string;
-	avatarUrl?: string;
+	avatarUrls?: string[];
 	lastMessage: string;
 	isThisYourLastMessage: boolean;
 	lastMessageTime: string;
@@ -50,7 +50,7 @@ export interface ConversationShortResponse {
 export interface ConversationRequest {
 	id: number;
 	name: string;
-	avatarUrl?: string;
+	avatarUrls?: string[];
 	description?: string;
 	color?: string;
 	emoji?: string;

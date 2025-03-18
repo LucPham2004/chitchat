@@ -7,6 +7,7 @@ import { ConversationShortResponse } from "../../../types/Conversation";
 import { useAuth } from "../../../utilities/AuthContext";
 import { timeAgo } from "../../../utilities/timeAgo";
 import { useChatContext } from "../../../utilities/ChatContext";
+import ConversationAvatar from "./ConversationAvatar";
 
 
 const ConversationList: React.FC = () => {
@@ -89,15 +90,12 @@ const ConversationList: React.FC = () => {
                                     ${isDarkMode ? 'text-white hover:bg-[#3A3A3A]' : 'text-black hover:bg-gray-100'}
                                     ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#303030]' : 'bg-gray-200' : ''}`}
                             >
-                                <img
-                                    src={conv.avatarUrl}
-                                    alt={conv.name}
-                                    className="w-12 h-12 rounded-full mr-4 object-cover"
-                                />
-                                <div className="flex-1 max-w-[80%]">
-                                    <h4 className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                                <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []} 
+                                    width={12} height={12}></ConversationAvatar>
+                                <div className="flex-1 max-w-[80%] ms-4">
+                                    <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                         {conv.name}
-                                    </h4>
+                                    </p>
                                     <div className="w-full flex items-center justify-between">
                                         <p className={`text-[13px] truncate max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap
                                             ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>

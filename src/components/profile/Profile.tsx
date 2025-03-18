@@ -1,5 +1,5 @@
-import { IoLogoYoutube, IoSettings } from "react-icons/io5";
-import { PiUploadSimpleFill } from "react-icons/pi";
+import { IoChatbubblesSharp, IoLogoYoutube, IoSettings } from "react-icons/io5";
+import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -25,7 +25,7 @@ const LOCAL_STORAGE_KEY = 'user_account';
 
 const Profile = () => {
     const {user} = useAuth();
-    const { user_id } = useParams();
+    const { user_id_param } = useParams();
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
     
@@ -66,11 +66,11 @@ const Profile = () => {
 
     const fetchUser = async () => {
         try {
-            if (user_id) {
-                const response = await getUserById(parseInt(user_id));
+            if (user_id_param) {
+                const response = await getUserById(parseInt(user_id_param));
                 console.log(response);
                 if (response.result) {
-                    if(parseInt(user_id) == user?.user.id) {
+                    if(parseInt(user_id_param) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
                     }
                     setUser(response.result);
@@ -267,8 +267,9 @@ const Profile = () => {
                             </div>
                         }
 
+                        {user_id_param && parseInt(user_id_param) != user?.user.id ? (
                         <div className="flex flex-col items-end gap-2 pt-4">
-                            {/* <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                            <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                 ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400' 
                                     : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
@@ -285,7 +286,11 @@ const Profile = () => {
                                 rounded-full shadow-md transition duration-200`}>
                                 <PiHandWavingFill />
                                 <p className="font-semibold px-0.5">Gửi kết bạn</p>
-                            </button> */}
+                            </button>
+                        </div>
+                        )
+                        : (
+                        <div className="flex flex-col items-end gap-2 pt-4">
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                 ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                 ${isDarkMode ? 'border-white' : 'border-black'}
@@ -305,6 +310,7 @@ const Profile = () => {
                                 <p className="font-semibold px-0.5">Cài đặt</p>
                             </button>
                         </div>
+                        )}
                     </div>
                 </div>
 
@@ -350,7 +356,7 @@ const Profile = () => {
                                         ? 'border-white text-gray-300 bg-[#1F1F1F] hover:border-blue-400 hover:text-blue-400'
                                         : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
                                     }`}>
-                                    <p>Tất cả</p>
+                                    <p>Bạn bè</p>
                                     <FaArrowRight />
                                 </button>
                             </Link>

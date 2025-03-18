@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
 import { callLogin, callRegister } from '../services/AuthService';
 import { Gender } from '../types/User';
@@ -55,6 +55,9 @@ const RegisterView = () => {
 		}
 	};
 	
+	useEffect(() => {
+		document.title = "Đăng ký | Chit Chat";
+	}, []);
 
 	return (
 		<div className='flex items-center justify-center'>
