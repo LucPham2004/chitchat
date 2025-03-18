@@ -35,6 +35,10 @@ const ConversationList: React.FC = () => {
         if (node) observer.current.observe(node);
     }, [loading, hasMore]);
 
+	const isVideoUrl = (url: string): boolean => {
+		const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
+	};
 
 
     useEffect(() => {
@@ -77,9 +81,27 @@ const ConversationList: React.FC = () => {
             <ul className="w-full">
                 {conversations.map((conv, index) => {
                     const lastMessageData = lastMessages[conv.id];
-                    const senderId = lastMessageData ? lastMessageData.senderId : null;
-                    const lastMessage = lastMessageData ? lastMessageData.content : "Chưa có tin nhắn";
+                    let lastMessage = "";
                     const lastMessageTime = lastMessageData ? lastMessageData.timestamp : "";
+
+                    if(!lastMessageData || lastMessageData.content == "") {
+                        if(conv.lastMessage.content == "") {
+                            if(conv.lastMessage.senderId == user?.user.id) {
+                                lastMessage = "Bạn đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
+                            } else {
+                                lastMessage = conv.name + " đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
+                            }
+                        } else {
+                            if(conv.lastMessage.senderId == user?.user.id) {
+                                lastMessage = "Bạn: " + conv.lastMessage.content;
+                            } else {
+                                lastMessage = conv.lastMessage.content;
+                            }
+                        }
+                    } else {
+                        console.log(lastMessageData);
+                        lastMessage = lastMessageData.content;
+                    }
 
                     return (
                         <Link to={`/conversations/${conv.id}`} key={conv.id}>
@@ -99,12 +121,10 @@ const ConversationList: React.FC = () => {
                                     <div className="w-full flex items-center justify-between">
                                         <p className={`text-[13px] truncate max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap
                                             ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            {!lastMessageData 
-                                                ? `${conv.isThisYourLastMessage ? 'Bạn: ' + conv.lastMessage : conv.lastMessage}`
-                                                : lastMessage}
+                                            {lastMessage}
                                         </p>
                                         <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            {!lastMessageData ? timeAgo(conv.lastMessageTime) : timeAgo(lastMessageTime)}</p>
+                                            {!lastMessageData ? timeAgo(conv.lastMessage.createdAt) : timeAgo(lastMessageTime)}</p>
                                     </div>
                                 </div>
                             </li>

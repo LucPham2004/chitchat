@@ -15,9 +15,18 @@ export interface ConversationResponse {
 	description?: string;
 	color?: string;
 	emoji?: string;
-	lastMessage: string;
-	lastMessageTime: string;
-
+	lastMessage: {
+		id: number;
+		conversationId: number;
+		senderId: number;
+		recipientId: number[];
+		content: string;
+		publicIds: string[];
+		urls: string[];
+		isRead: boolean;
+		createdAt: string;
+		updatedAt: string;
+	}
 	ownerId: number;
 	participantIds: number[];
 
@@ -38,9 +47,18 @@ export interface ConversationShortResponse {
 	id: number;
 	name: string;
 	avatarUrls?: string[];
-	lastMessage: string;
-	isThisYourLastMessage: boolean;
-	lastMessageTime: string;
+	lastMessage: {
+		id: number;
+		conversationId: number;
+		senderId: number;
+		recipientId: number[];
+		content: string;
+		publicIds: string[];
+		urls: string[];
+		isRead: boolean;
+		createdAt: string;
+		updatedAt: string;
+	}
 	ownerId: number;
 	participantIds?: number[];
 	isGroup?: boolean;

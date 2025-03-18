@@ -39,35 +39,12 @@ const Profile = () => {
 
     const navigate = useNavigate();
 
-    const [userAccount, setUser] = useState<UserResponse | null>(null);
+    const [userAccount, setUserAccount] = useState<UserResponse | null>(null);
+    const [userProfile, setUserProfile] = useState<UserResponse | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
     const isMountedRef = useRef(true);
-
-    useEffect(() => {
-        document.title = user?.user.firstName + " " + user?.user.lastName || "Chit Chat";
-    }, []);
-
-    useEffect(() => {
-        isMountedRef.current = true; // Đánh dấu là component đang mounted
-
-        const fetchData = async () => {
-            const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
-            if (storedUser && storedUser !== "undefined") {
-                setUser(JSON.parse(storedUser));
-                setLoading(false);
-            } else {
-                await fetchUser();
-            }
-        };
-
-        fetchData();
-
-        return () => {
-            isMountedRef.current = false; // Cleanup khi component unmount
-        };
-    }, []);
 
     const fetchUser = async () => {
         try {
@@ -77,8 +54,13 @@ const Profile = () => {
                 if (response.result) {
                     if (parseInt(user_id_param) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
+                        setUserAccount(response.result);
+                        localStorage.setItem("user_profile", JSON.stringify(response.result));
+                        setUserProfile(response.result);
+                    } else {
+                        localStorage.setItem("user_profile", JSON.stringify(response.result));
+                        setUserProfile(response.result);
                     }
-                    setUser(response.result);
                 } else {
                     throw new Error("User response result is undefined");
                 }
@@ -96,6 +78,45 @@ const Profile = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        isMountedRef.current = true; // Đánh dấu là component đang mounted
+
+        const fetchData = async () => {
+            const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
+            const storedProfile = localStorage.getItem("user_profile");
+            if (storedUser && storedUser !== "undefined" && user_id_param && parseInt(user_id_param) == user?.user.id) {
+                setUserAccount(JSON.parse(storedUser));
+                setLoading(false);
+            } 
+            if (storedProfile && storedProfile !== "undefined" && user_id_param && parseInt(user_id_param) != user?.user.id) {
+                setUserProfile(JSON.parse(storedProfile));
+                setLoading(false);
+            } else {
+                await fetchUser();
+            }
+        };
+
+        fetchData();
+
+        return () => {
+            isMountedRef.current = false; // Cleanup khi component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        fetchUser();
+        document.title = userProfile?.firstName + " " + userProfile?.lastName || "Chit Chat";
+    }, [user_id_param]);
+    
+    useEffect(() => {
+        const storedProfile = localStorage.getItem("user_profile");
+        if(storedProfile && storedProfile !== "undefined") {
+            setUserProfile(JSON.parse(storedProfile));
+        }
+        console.log(userProfile);
+        document.title = userProfile?.firstName + " " + userProfile?.lastName || "Chit Chat";
+    }, []);
 
     if (loading) return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
@@ -186,7 +207,7 @@ const Profile = () => {
                     {/* Ảnh bìa */}
                     <div className="w-full h-full bg-gradient-to-r from-blue-500 to-purple-600">
                         <img
-                            src={userAccount?.coverPhotoUrl}
+                            src={userProfile?.coverPhotoUrl}
                             alt="Cover"
                             className="w-full h-full object-cover"
                         />
@@ -196,7 +217,7 @@ const Profile = () => {
                     <div className={`absolute bottom-0 left-8 rounded-full transform translate-y-1/2 border-4
                             ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}>
                         
-                        <Avatar avatarUrl={userAccount?.avatarUrl || '/user_default.avif'} width={40} height={40}></Avatar>
+                        <Avatar avatarUrl={userProfile?.avatarUrl || '/user_default.avif'} width={40} height={40}></Avatar>
                     </div>
 
                     <div className="absolute right-2 bottom-2">
@@ -257,36 +278,37 @@ const Profile = () => {
                             ${deviceType == 'PC' ? 'max-w-[25%]' :
                                 deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
                             } `}>
-                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-2xl font-bold`}>{userAccount?.firstName + " " + userAccount?.lastName}</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userAccount?.job ? userAccount?.job : userAccount?.friendNum + " bạn bè"}</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userAccount?.location || userAccount?.dob}</p>
+                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-2xl font-bold`}>{userProfile?.firstName + " " + userProfile?.lastName}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userProfile?.job ? userProfile?.job : userProfile?.friendNum + " bạn bè"}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userProfile?.location || userProfile?.dob}</p>
                         </div>
 
                         {deviceType == 'PC' &&
                             <div className="flex flex-row gap-4 items-center justify-center max-w-[30%] max-h-[136px]">
                                 <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
-                                    {userAccount?.bio}
+                                    {userProfile?.bio}
                                 </p>
                             </div>
                         }
 
                         {user_id_param && parseInt(user_id_param) != user?.user.id ? (
                             <div className="flex flex-col items-end gap-2 pt-4">
+                                {/* <Link to={`/conversation/`}></Link> */}
                                 <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
-                                ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
-                                        : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
-                                hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-200`}>
+                                        ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                        ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                                : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                        hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
+                                        rounded-full shadow-md transition duration-200`}>
                                     <IoChatbubblesSharp />
                                     <p className="font-semibold">Gửi tin nhắn</p>
                                 </button>
                                 <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
-                                ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
-                                        : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
-                                hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                rounded-full shadow-md transition duration-200`}>
+                                        ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                        ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                                : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                        hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
+                                        rounded-full shadow-md transition duration-200`}>
                                     <PiHandWavingFill />
                                     <p className="font-semibold px-0.5">Gửi kết bạn</p>
                                 </button>
@@ -324,7 +346,7 @@ const Profile = () => {
                     {deviceType !== 'PC' &&
                         <div className="flex flex-row gap-4 items-center justify-center max-w-[80%] max-h-[136px]">
                             <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
-                                {userAccount?.bio}
+                                {userProfile?.bio}
                             </p>
                         </div>
                     }
@@ -332,7 +354,7 @@ const Profile = () => {
                     <div className={`flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
                          border-2 
                         ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
-                        <p className="font-semibold">Bạn có tổng cộng {userAccount?.friendNum} người bạn</p>
+                        <p className="font-semibold">Bạn có tổng cộng {userProfile?.friendNum} người bạn</p>
                         <div className="flex items-center -space-x-2">
                             {users.map((user) => (
                                 <div key={user.id} className="relative group">

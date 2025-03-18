@@ -10,6 +10,8 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 import { ConversationResponse } from "../../../../types/Conversation";
 import Accordion from "./Accordion";
 import ConversationAvatar from "../../conversations/ConversationAvatar";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../../../utilities/AuthContext";
 
 
 export interface ConversationInfoProps {
@@ -28,6 +30,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     conversationResponse
  }) => {
 
+    const { user } = useAuth();
 	const deviceType = useDeviceTypeByWidth();
     const { isDarkMode  } = useTheme();
     
@@ -151,14 +154,19 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         </div>
 
                         <div className={`flex flex-row justify-center gap-4 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
-                            <div className="flex flex-col items-center w-[70px] text-center">
-                                <button className={`p-2 text-xl rounded-full
-                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
-                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
-                                    <FaUserCircle />
-                                </button>
-                                <p className="text-sm">Trang cá nhân</p>
-                            </div>
+                            
+                            {!conversationResponse?.isGroup && (
+                                <div className="flex flex-col items-center w-[70px] text-center">
+                                    <Link to={`/profile/${conversationResponse?.participantIds.find(id => id !== user?.user.id)}`}>
+                                        <button className={`p-2 text-xl rounded-full
+                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
+                                            : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                                            <FaUserCircle />
+                                        </button>
+                                        <p className="text-sm">Trang cá nhân</p>
+                                    </Link>
+                                </div>
+                            )}
 
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full

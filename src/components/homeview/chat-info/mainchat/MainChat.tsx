@@ -134,49 +134,38 @@ const MainChat: React.FC<MainChatProps> = ({
             }
          } catch (error) {
                 console.error('Error creating post:', error);
-
-                // // Delete uploaded images/videos if the post creation fails
-                // for (const publicId of uploadedPublicIds) {
-                //     try {
-                //         await deleteImage(publicId);
-                //         console.log('Uploaded image/video deleted successfully.');
-                //     } catch (deleteError) {
-                //         console.error('Error deleting uploaded image/video:', deleteError);
-                //     }
-                // }
-
-                throw error;
             }
         };
 
 
         return (
+            !conversationResponse ? (
+                <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+                    pb-0 rounded-xl border shadow-sm overflow-y-auto
+                    ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+                    <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                </div>
+            ) : (
             <div className={`min-h-[96vh] flex flex-col items-center justify-center pe-1 pt-1 pb-0 
-            rounded-xl shadow-sm overflow-hidden
-            ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}>
-
-                {!conversationResponse ? (
-                    <div className="flex items-center justify-center w-full h-full">
-                        <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                rounded-xl shadow-sm overflow-hidden
+                ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}>
+                <>
+                    <ChatHeader
+                        toggleChangeWidth={toggleChangeWidth}
+                        isChangeWidth={isChangeWidth}
+                        toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
+                        conversationResponse={conversationResponse}
+                    />
+                    <div
+                        className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
+                    >
+                        <ChatBody messages={messages} setMessages={setMessages} conversationResponse={conversationResponse} />
+                        <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
+                            files={files} setFiles={setFiles} />
                     </div>
-                ) : (
-                    <>
-                        <ChatHeader
-                            toggleChangeWidth={toggleChangeWidth}
-                            isChangeWidth={isChangeWidth}
-                            toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
-                            conversationResponse={conversationResponse}
-                        />
-                        <div
-                            className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
-                        >
-                            <ChatBody messages={messages} setMessages={setMessages} conversationResponse={conversationResponse} />
-                            <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
-                                files={files} setFiles={setFiles} />
-                        </div>
-                    </>
-                )}
+                </>
             </div>
+            )
         );
 
     }
