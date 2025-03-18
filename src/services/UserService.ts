@@ -31,24 +31,19 @@ export const getAllUsers = async (page: number = 0, size: number = 20) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/all', { params: { page, size } })).data;
 };
 
-// // Get Group Members
-// export const getGroupMembers = async (groupId: number, pageNum: number = 0) => {
-//     return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/group/members', { params: { groupId, pageNum } })).data;
-// };
-
-// // Get Group Admins
-// export const getGroupAdmins = async (groupId: number, pageNum: number = 0) => {
-//     return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/group/admins', { params: { groupId, pageNum } })).data;
-// };
-
 // Get User's Friends
 export const getUserFriends = async (userId: number, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/friends', { params: { userId, pageNum } })).data;
 };
 
+// Get User's Friends
+export const getUserFriendRequests = async (userId: number, pageNum: number = 0) => {
+    return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/friends/request', { params: { userId, pageNum } })).data;
+};
+
 // Get Mutual Friends
 export const getMutualFriends = async (meId: number, youId: number, pageNum: number = 0) => {
-    return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/mutualFriends', { params: { meId, youId, pageNum } })).data;
+    return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/friends/mutual', { params: { meId, youId, pageNum } })).data;
 };
 
 // Get Suggested Friends

@@ -1,8 +1,8 @@
 import { PiDotsThreeOutline } from "react-icons/pi";
 import { FriendCardProps } from "./FriendCard";
 import { FaUserPlus } from "react-icons/fa";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
-import { useTheme } from "../../utilities/ThemeContext";
+import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../../../utilities/ThemeContext";
 
 
 

@@ -49,6 +49,7 @@ const Profile = () => {
     const fetchUser = async () => {
         try {
             if (user_id_param) {
+                setLoading(true);
                 const response = await getUserById(parseInt(user_id_param));
                 console.log(response);
                 if (response.result) {
@@ -106,17 +107,16 @@ const Profile = () => {
 
     useEffect(() => {
         fetchUser();
-        document.title = userProfile?.firstName + " " + userProfile?.lastName || "Chit Chat";
     }, [user_id_param]);
-    
+
     useEffect(() => {
-        const storedProfile = localStorage.getItem("user_profile");
-        if(storedProfile && storedProfile !== "undefined") {
-            setUserProfile(JSON.parse(storedProfile));
+        if (userProfile?.firstName && userProfile?.lastName) {
+            document.title = `${userProfile.firstName} ${userProfile.lastName}`;
+        } else {
+            document.title = "Chit Chat";
         }
-        console.log(userProfile);
-        document.title = userProfile?.firstName + " " + userProfile?.lastName || "Chit Chat";
-    }, []);
+    }, [userProfile]);
+    
 
     if (loading) return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
@@ -375,7 +375,7 @@ const Profile = () => {
                         </div>
                         <div className="flex items-center gap-2">
                             <p>Lionel Messi, Neymar.JR, Benzema và 950 người khác</p>
-                            <Link to={`/profile/${user?.user.id}/friends`}>
+                            <Link to={`/profile/${user_id_param}/friends`}>
                                 <button className={`flex gap-2 items-center text-md min-w-max h-10 border-2 
                                 rounded-full shadow-md transition duration-200 px-3
                                 ${isDarkMode

@@ -1,8 +1,8 @@
 import { PiDotsThreeOutline } from "react-icons/pi";
 import { IoChatbubblesSharp } from "react-icons/io5";
-import { UserDTO } from "../../types/User";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
-import { useTheme } from "../../utilities/ThemeContext";
+import { UserDTO } from "../../../types/User";
+import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import { useTheme } from "../../../utilities/ThemeContext";
 
 export interface FriendCardProps {
     friend: UserDTO;

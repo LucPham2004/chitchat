@@ -74,6 +74,13 @@ const ConversationList: React.FC = () => {
         };
     }, [page]);
 
+    if(loading) return (
+        <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+            pb-0 rounded-xl border shadow-sm overflow-y-auto
+            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+            <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+        </div>
+    );
 
     return (
         <div className={`w-full rounded-lg 

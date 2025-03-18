@@ -148,7 +148,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                         <div className="flex flex-col items-center gap-1 p-2">
                             <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []} 
-                                width={20} height={20}></ConversationAvatar>
+                                width={24} height={24}></ConversationAvatar>
                             <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
