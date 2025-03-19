@@ -1,4 +1,4 @@
-import { IoChatbubblesSharp, IoLogoYoutube, IoSettings } from "react-icons/io5";
+import { IoCamera, IoChatbubblesSharp, IoClose, IoLogoYoutube, IoSettings } from "react-icons/io5";
 import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
@@ -35,7 +35,8 @@ const Profile = () => {
     const [inputUrl, setInputUrl] = useState("");
     const [showAvatarModal, setShowAvatarModal] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(user?.user.avatarUrl ? user?.user.avatarUrl : null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const navigate = useNavigate();
 
@@ -150,6 +151,10 @@ const Profile = () => {
         { id: 8, name: 'Emma', avatar: 'https://images.unsplash.com/photo-1523292562811-8fa7962a78c8' },
         { id: 9, name: 'Charlie', avatar: 'https://images.unsplash.com/photo-1552058544-f2b08422138a' },
     ];
+    
+    const handleCameraClick = () => {
+        fileInputRef.current?.click();
+    };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -476,33 +481,48 @@ const Profile = () => {
 
             {showAvatarModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className={`bg-white dark:bg-[#1F1F1F] p-6 rounded-lg shadow-lg w-96`}>
+                    <div className={`relative bg-white dark:bg-[#1F1F1F] dark:text-gray-300 p-6 rounded-xl shadow-lg w-96`}>
                         <h2 className="text-xl font-semibold mb-4 text-center">Cập nhật ảnh đại diện</h2>
 
                         {previewUrl ? (
-                            <img src={previewUrl} alt="Preview" className="w-32 h-32 rounded-full mx-auto mb-4 object-cover" />
+                            <div className="relative w-32 h-32 rounded-full mx-auto mb-4 cursor-pointer"
+                                    onClick={handleCameraClick}>
+                                <img src={previewUrl} alt="Preview" className="w-32 h-32 rounded-full object-cover" />
+                                <div className="absolute top-4 right-4 opacity-0 text-4xl text-gray-800 hover:opacity-60 
+                                    rounded-full p-8 bg-gray-300">
+                                    <IoCamera />
+                                </div>
+                            </div>
                         ) : (
-                            <div className="w-32 h-32 rounded-full mx-auto mb-4 bg-gray-300 flex items-center justify-center">
-                                <span>Preview</span>
+                            <div className="w-32 h-32 text-4xl text-gray-200 dark:text-black rounded-full 
+                                mx-auto mb-4 bg-gray-200 flex items-center justify-center cursor-pointer"
+                                onClick={handleCameraClick}>
+                                <span className="rounded-full p-8 bg-gray-300">
+                                    <IoCamera />
+                                </span>
                             </div>
                         )}
 
-                        <input type="file" accept="image/*" onChange={handleFileChange} className="mb-4" />
+                        <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" ref={fileInputRef}/>
 
-                        <div className="flex justify-end space-x-2">
+                        <div className="flex justify-center space-x-2">
                             <button
-                                className="px-4 py-2 bg-gray-300 text-black rounded hover:bg-gray-400"
-                                onClick={() => setShowAvatarModal(false)}
-                            >
-                                Hủy
-                            </button>
-                            <button
-                                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                                className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
                                 onClick={() => handleUpdateImages(true)}
                             >
                                 Cập nhật
                             </button>
                         </div>
+                        <button className={`absolute top-4 right-4 text-2xl text-gray-700 font-semibold rounded-full p-1
+                            ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
+                                : 'text-black bg-gray-100 hover:bg-gray-200'}`}
+                            onClick={() => {
+                                setPreviewUrl(null);
+                                setSelectedFile(null);
+                                setShowAvatarModal(false);
+                            }}>
+                            <IoClose />
+                        </button>
                     </div>
                 </div>
             )}

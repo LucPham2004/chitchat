@@ -13,7 +13,7 @@ import { ImBlocked } from "react-icons/im";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
-import { getConversationById } from "../../../services/ConversationService";
+import { getConversationById, updateConversationPartially } from "../../../services/ConversationService";
 import { ConversationResponse } from "../../../types/Conversation";
 
 
@@ -75,6 +75,19 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         document.title = Conversation?.name + " | Chit Chat" || "Chit Chat";
     }, []);
 
+    const handleEmojiSelect = async (emoji: string) => {
+        try {
+            if(conv_id && user?.user.id) {
+                const response = await updateConversationPartially({ emoji }, parseInt(conv_id), user?.user.id);
+                console.log(response);
+                setIsChangeConversationEmojiModalOpen(false);
+            }
+        } catch (error) {
+          console.error("Lỗi khi cập nhật emoji đoạn chat:", error);
+        }
+      };
+      
+
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center rounded-xl
             pb-0 ${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
@@ -123,8 +136,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                         <div key={i} className="flex flex-col p-1 items-start justify-start w-full">
                             <p className="text-xs flex self-end">{message.timestamp}</p>
                             <div key={i} className="p-2 pt-0 mb-1 w-fit">
-                                <ChatMessage 
-                                message={[]}
+                                <ChatMessage message={[]}
                                 isFirstInGroup={isFirstInGroup} isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage} />
                             </div>
                             <hr className="w-full"></hr>
@@ -176,8 +188,23 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                         <button className={`flex items-center justify-center gap-2 w-full p-1 text-md font-medium rounded-lg 
                             ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]' 
                             : 'text-gray-800 hover:bg-gray-100'}
-                            ${charCount < 1 ? 'cursor-not-allowed' : ''}`}>
-                        Lưu
+                            ${charCount < 1 ? 'cursor-not-allowed' : ''}`}
+                            onClick={async () => {
+                                if (charCount < 1) return;
+                                try {
+                                    if(conv_id && user?.user.id) {
+                                        const response = await updateConversationPartially({  name: inputValue }, parseInt(conv_id), user?.user.id);
+                                        console.log(response);
+                                        setIsChangeConversationNameModalOpen(false);
+                                        setInputValue('');
+                                        setCharCount(0);
+                                    }
+                                } catch (error) {
+                                  console.error("Lỗi khi cập nhật tên đoạn chat:", error);
+                                }
+                              }}
+                            >
+                            Lưu
                         </button>
                     </div>
                 </div>
@@ -187,7 +214,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
             <Modal isOpen={isChangeConversationEmojiModalOpen} onClose={() => setIsChangeConversationEmojiModalOpen(false)}>
                 <h2 className="text-lg font-bold mb-3">Biểu tượng cảm xúc</h2>
                 <div className="flex flex-col items-start justify-start w-full">
-                    <EmojiPicker width={420} height={420}/>
+                    <EmojiPicker width={420} height={420} onEmojiClick={(e) => handleEmojiSelect(e.emoji)}/>
                 </div>
             </Modal>
 

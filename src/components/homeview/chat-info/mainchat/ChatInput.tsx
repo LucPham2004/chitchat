@@ -12,9 +12,10 @@ interface ChatInputProps {
 	message: string;
 	files: File[];
 	setFiles: React.Dispatch<React.SetStateAction<File[]>>;
+	emoji?: string;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message, files, setFiles }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message, files, setFiles, emoji }) => {
 	const { isDarkMode } = useTheme();
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -40,7 +41,9 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 	};
 
 	const handleSendEmoji = () => {
-		setMessage('🐧');
+		if(emoji) {
+			setMessage(emoji);
+		}
 	};
 
 
@@ -146,7 +149,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 
 					<div className={`absolute right-0 bottom-0.5 text-xl text-blue-400 p-2 rounded-full 
 					${isDarkMode ? 'hover:bg-[#5A5A5A]' : 'hover:bg-gray-200'} cursor-pointer`}
-						onClick={() => setShowEmojiPicker(true)}>
+						onClick={() => setShowEmojiPicker((prev) => !prev)}>
 						<FaFaceGrinWide />
 					</div>
 				</div>
@@ -172,7 +175,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 						${isDarkMode ? 'hover:bg-[#5A5A5A]' : 'hover:bg-gray-200'}`}
 						onClick={handleSendEmoji}
 					>
-						🐧
+						{emoji}
 					</button>
 				)}
 			</div>

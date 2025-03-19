@@ -29,8 +29,12 @@ export const createConversation = async (request: ConversationRequest) => {
 };
 
 // Update Conversation
-export const updateConversation = async (request: ConversationRequest) => {
-    return (await instance.put<ApiResponse<ConversationResponse>>('/chat-service/conversations/update', request)).data;
+export const updateConversation = async (request: ConversationRequest, userId: number) => {
+    return (await instance.put<ApiResponse<ConversationResponse>>(`/chat-service/conversations/update/${userId}`, request)).data;
+};
+
+export const updateConversationPartially = async (request: ConversationRequest, conv_id: number, userId: number) => {
+    return (await instance.patch<ApiResponse<ConversationResponse>>(`/chat-service/conversations/update/partially/${conv_id}/${userId}`, request)).data;
 };
 
 // Delete Conversation by ID

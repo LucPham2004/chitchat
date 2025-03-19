@@ -66,16 +66,15 @@ export interface ConversationShortResponse {
 };
 
 export interface ConversationRequest {
-	id: number;
-	name: string;
-	avatarUrls?: string[];
+	id?: number;
+	name?: string;
+	avatarUrls?: string;
 	description?: string;
 	color?: string;
 	emoji?: string;
-	lastMessage: string;
   
-	participantIds: number[];
-	ownerId: number;
+	participantIds?: number[];
+	ownerId?: number;
 
 	isGroup?: boolean;
 	isRead?: boolean;
@@ -88,4 +87,4 @@ export interface ConversationRequest {
 	isSpam?: boolean;
 	isMarkedAsUnread?: boolean;
 	isMarkedAsRead?: boolean;
-  }
+}
