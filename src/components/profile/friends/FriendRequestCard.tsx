@@ -7,6 +7,7 @@ import { IoClose } from "react-icons/io5";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
 import { deleteFriendship, editFriendshipStatus } from "../../../services/FriendshipService";
+import { Link } from "react-router-dom";
 
 
 
@@ -20,6 +21,7 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
             if (!user) return;
             const res = await editFriendshipStatus(user?.user.id, friend.id, 'Accepted');
             console.log("Yêu cầu kết bạn đã được gửi: ", res);
+            return (<></>)
         } catch (error) {
             console.error("Lỗi khi gửi yêu cầu kết bạn: ", error);
         }
@@ -31,6 +33,7 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
                 await deleteFriendship(user?.user.id, friend.id);
             }
             console.log("Đã xoá kết bạn.");
+            return (<></>)
         } catch (error) {
             console.error("Lỗi khi xoá kết bạn: ", error);
         }
@@ -43,9 +46,9 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
             ${isDarkMode ? 'border-gray-600' : 'border-gray-100'}
         `}>
             <div className="flex items-center gap-4">
-                <img src={friend.avatarUrl} alt={friend.firstName + " " + friend.lastName} className="w-24 h-24 rounded-lg object-cover" />
+                <img src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} alt={friend.firstName + " " + friend.lastName} className="w-24 h-24 rounded-lg object-cover" />
                 <div className={`flex flex-col items-start  ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <h3 className="text-lg">{friend.firstName + " " + friend.lastName}</h3>
+                    <Link to={`/profile/${friend.id}`} className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
                     <p className="text-sm font-semibold">{friend.mutualFriendsNum} bạn chung</p>
                 </div>
             </div>

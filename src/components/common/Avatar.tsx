@@ -8,11 +8,14 @@ interface AvatarProps {
 const Avatar: React.FC<AvatarProps> = ({ avatarUrl, width, height }) => {
 
     return (
-        <img
-            src={avatarUrl}
-            alt="avatar"
-            className={`w-${width} h-${height} rounded-full object-cover`}
-        />
+        <div className={`max-w-[160px] max-h-[160px]`}>
+            <img
+                src={avatarUrl}
+                alt="avatar"
+                style={{ width: `${width * 4}px`, height: `${height * 4}px` }}
+                className="rounded-full object-cover"
+            />
+        </div>
     );
 };
 

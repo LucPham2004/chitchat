@@ -1,6 +1,6 @@
 import { FaArrowLeft, FaLink, FaUserCircle } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaFileAlt } from "react-icons/fa";
 import { BsFillBellFill } from "react-icons/bs";
 import MediaGrid from "./MediaGrid";
@@ -10,8 +10,10 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 import { ConversationResponse } from "../../../../types/Conversation";
 import Accordion from "./Accordion";
 import ConversationAvatar from "../../conversations/ConversationAvatar";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../../../utilities/AuthContext";
+import { getMediasByConversationId } from "../../../../services/MediaService";
+import { MediaResponse } from "../../../../types/Media";
 
 
 export interface ConversationInfoProps {
@@ -22,28 +24,31 @@ export interface ConversationInfoProps {
     conversationResponse?: ConversationResponse;
 }
 
-const ConversationInfo: React.FC<ConversationInfoProps> = ({ 
+const ConversationInfo: React.FC<ConversationInfoProps> = ({
     togglePinnedMessageModalOpen,
     toggleChangeConversationNameModalOpen,
     toggleChangeConversationEmojiModalOpen,
     toggleChangeWidth,
     conversationResponse
- }) => {
+}) => {
 
     const { user } = useAuth();
-	const deviceType = useDeviceTypeByWidth();
-    const { isDarkMode  } = useTheme();
-    
+    const { conv_id } = useParams();
+    const deviceType = useDeviceTypeByWidth();
+    const { isDarkMode } = useTheme();
+
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-
-    const toggleUserMenu = () => {
-        setIsUserMenuOpen(!isUserMenuOpen);
-    };
-
+    const [mediaList, setMediaList] = useState<MediaResponse[]>([]);
 
     const [activeTab, setActiveTab] = useState('default'); // Tab mặc định
     const [isAnimating, setIsAnimating] = useState(false);
     const [animationDirection, setAnimationDirection] = useState('');
+
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const toggleUserMenu = () => {
+        setIsUserMenuOpen(!isUserMenuOpen);
+    };
 
     const handleTabChange = (tab: any) => {
         if (tab !== activeTab) {
@@ -59,9 +64,40 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
         console.log(conversationResponse);
     };
 
-    const mediaList:string[] = [];
-    const fileList:string[] = linkUrls;
-    const linkList:string[] = linkUrls;
+    const fileList: string[] = [];
+    const linkList: string[] = [];
+
+    const fetchMediasFilesLinks = async () => {
+        try {
+            if (conv_id) {
+                setLoading(true);
+                let response;
+
+                switch (activeTab) {
+                    case 'media':
+                        response = await getMediasByConversationId(parseInt(conv_id), 0);
+                        if (response.result) {
+                            setMediaList(response.result.content);
+                        }
+                        break;
+                    case 'files':
+
+                        break;
+                    case 'links':
+
+                        break;
+                    default:
+                }
+                setLoading(false);
+            }
+        } catch (error) {
+            console.log('Lỗi khi lấy danh sách media:', error);
+        }
+    }
+
+    useEffect(() => {
+        fetchMediasFilesLinks();
+    }, [activeTab, conv_id]);
 
     // Nội dung từng tab
     const renderTabContent = () => {
@@ -111,7 +147,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                                 Không có liên kết nào</p>
                             <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
-                            Liên kết các bạn trao đổi với nhóm này sẽ hiện ở đây</p>
+                                Liên kết các bạn trao đổi với nhóm này sẽ hiện ở đây</p>
                         </div>
                     ) :
                         <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
@@ -139,7 +175,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                         {deviceType !== 'PC' &&
                             <button className={`absolute w-fit p-2 top-4 left-4 text-left text-xl font-medium rounded-full 
-                                ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
+                                ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
                                     : 'text-gray-800 hover:bg-gray-100'}`}
                                 onClick={() => toggleChangeWidth()}>
                                 <FaArrowLeft />
@@ -147,20 +183,20 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         }
 
                         <div className="flex flex-col items-center gap-1 p-2">
-                            <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []} 
+                            <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []}
                                 width={24} height={24}></ConversationAvatar>
                             <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
 
                         <div className={`flex flex-row justify-center gap-4 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
-                            
+
                             {!conversationResponse?.isGroup && (
                                 <div className="flex flex-col items-center w-[70px] text-center">
                                     <Link to={`/profile/${conversationResponse?.participantIds.find(id => id !== user?.user.id)}`}>
                                         <button className={`p-2 text-xl rounded-full
-                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
-                                            : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
+                                                : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                             <FaUserCircle />
                                         </button>
                                         <p className="text-sm">Trang cá nhân</p>
@@ -170,8 +206,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
-                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
-                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
+                                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <BsFillBellFill />
                                 </button>
                                 <p className="text-sm">Tắt thông báo</p>
@@ -179,8 +215,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
-                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
-                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                                    ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
+                                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                                     <IoSearch />
                                 </button>
                                 <p className="text-sm">Tìm kiếm</p>
@@ -188,7 +224,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         </div>
 
                         <div className="flex flex-col p-2">
-                            <Accordion 
+                            <Accordion
                                 toggleChangeConversationEmojiModalOpen={toggleChangeConversationEmojiModalOpen}
                                 toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
                                 togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
@@ -214,7 +250,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 <div className="flex items-center gap-2 p-2">
                     <button className={`flex items-center gap-2 p-2 text-left text-lg font-medium 
                         rounded-full 
-                        ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]' 
+                        ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
                             : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={() => handleTabChange('default')}>
                         <FaArrowLeft />
@@ -226,8 +262,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
                     <button
                         className={`rounded-full p-2 text-center font-semibold 
-                            ${activeTab === 'media' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
-                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400' 
+                            ${activeTab === 'media' ? isDarkMode ? 'text-gray-300 bg-[#474747]'
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400'
                                 : 'text-gray-500'}`}
                         onClick={() => setActiveTab('media')}
                     >
@@ -235,8 +271,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
                     <button
                         className={`rounded-full p-2 flex-1 text-center font-semibold 
-                            ${activeTab === 'files' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
-                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400' 
+                            ${activeTab === 'files' ? isDarkMode ? 'text-gray-300 bg-[#474747]'
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400'
                                 : 'text-gray-500'}`}
                         onClick={() => setActiveTab('files')}
                     >
@@ -244,8 +280,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     </button>
                     <button
                         className={`rounded-full p-2 flex-1 text-center font-semibold 
-                            ${activeTab === 'links' ? isDarkMode ? 'text-gray-300 bg-[#474747]' 
-                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400' 
+                            ${activeTab === 'links' ? isDarkMode ? 'text-gray-300 bg-[#474747]'
+                                : 'text-black bg-gray-200' : isDarkMode ? 'text-gray-400'
                                 : 'text-gray-500'}`}
                         onClick={() => setActiveTab('links')}
                     >
@@ -254,7 +290,17 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 </div>
 
                 <div className="p-2 pe-0 flex justify-center">
-                    {renderTabContent()}
+                    
+                    {loading ? (
+                        <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+                            pb-0 rounded-xl border shadow-sm overflow-y-auto
+                            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+                            <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                        </div>
+                    )
+                    : (
+                        renderTabContent()
+                    )}
                 </div>
             </div>
         ) : (

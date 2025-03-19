@@ -151,7 +151,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     return (
         <div ref={chatContainerRef}
             className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-4
-                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[50vh]'}
+                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[50vh]' : 'max-h-[78vh] min-h-[62vh]'}
                 bg-cover bg-center`}
             style={{
                 backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,

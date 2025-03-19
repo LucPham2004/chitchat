@@ -1,7 +1,8 @@
 import React from 'react';
+import { MediaResponse } from '../../../../types/Media';
 
 interface MediaGridProps {
-  medias: string[];
+  medias: MediaResponse[];
 }
 
 const MediaGrid: React.FC<MediaGridProps> = ({ medias }) => {
@@ -10,7 +11,7 @@ const MediaGrid: React.FC<MediaGridProps> = ({ medias }) => {
       {medias.map((media, index) => (
         <div key={index} className="overflow-hidden shadow-md">
           <img
-            src={media}
+            src={media.url}
             alt={`Media ${index + 1}`}
             className="w-full h-24 object-cover"
           />

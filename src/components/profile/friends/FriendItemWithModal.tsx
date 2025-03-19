@@ -35,19 +35,14 @@ const FriendItemWithModal: React.FC<FriendItemProps> = ({
             {isOpen && (
                 <div className={`absolute right-10 ${menuPosition} mt-2 w-64 border rounded-lg shadow-lg z-10 ${baseClass}`}>
                     <ul className="text-gray-700 p-1">
-                        <Link to="/profile">
+                        <Link to={`/conversation/${friend.id}`}>
                             <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer ${hoverClass}`}>
-                                <img src={friend.avatarUrl} className="w-8 h-8 rounded-full" />
-                                Xem trang cá nhân
+                                <button className={`p-2 rounded-full text-black text-xl ${btnClass}`}>
+                                    <IoChatbubblesSharp />
+                                </button>
+                                Nhắn tin
                             </li>
                         </Link>
-                        <hr />
-                        <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer ${hoverClass}`}>
-                            <button className={`p-2 rounded-full text-black text-xl ${btnClass}`}>
-                                <IoChatbubblesSharp />
-                            </button>
-                            Nhắn tin
-                        </li>
                         <hr />
                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold cursor-pointer ${hoverClass}`}>
                             <button className={`p-2 rounded-full text-black text-xl ${btnClass}`}>
