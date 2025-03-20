@@ -92,6 +92,9 @@ const MainChat: React.FC<MainChatProps> = ({
 
         const uploadedPublicIds: string[] = [];
         const uploadedUrls: string[] = [];
+        const uploadedHeights: number[] = [];
+        const uploadedWidths: number[] = [];
+        const uploadedResourceTypes: string[] = [];
 
         try {
             for (const file of files) {
@@ -99,11 +102,17 @@ const MainChat: React.FC<MainChatProps> = ({
                     const uploadResult = await uploadConversationVideo(file, Number(conv_id));
                     uploadedPublicIds.push(uploadResult.public_id);
                     uploadedUrls.push(uploadResult.secure_url);
+                    uploadedHeights.push(uploadResult.height);
+                    uploadedWidths.push(uploadResult.width);
+                    uploadedResourceTypes.push(uploadResult.resource_type);
                 }
                 if(file.type.startsWith("image")) {
                     const uploadResult = await uploadConversationImage(file, Number(conv_id));
                     uploadedPublicIds.push(uploadResult.public_id);
                     uploadedUrls.push(uploadResult.secure_url);
+                    uploadedHeights.push(uploadResult.height);
+                    uploadedWidths.push(uploadResult.width);
+                    uploadedResourceTypes.push(uploadResult.resource_type);
                 }
             }
 
@@ -114,7 +123,10 @@ const MainChat: React.FC<MainChatProps> = ({
                     recipientId: conversationResponse.participantIds,
                     content: message,
                     publicIds: uploadedPublicIds,
-                    urls: uploadedUrls
+                    urls: uploadedUrls,
+                    heights: uploadedHeights,
+                    widths: uploadedWidths,
+                    resourceTypes: uploadedResourceTypes
                 };
 
                 if(!message && uploadedPublicIds.length == 0 && uploadedUrls.length == 0) return;
@@ -122,15 +134,6 @@ const MainChat: React.FC<MainChatProps> = ({
                 stompClientRef.current.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
                 setMessage('');
                 setFiles([]);
-
-                // if (conv_id && user?.user.id) {
-                    
-                //     if(uploadedUrls.length > 0) {
-                //         updateLastMessage(conv_id, user?.user.id, "Bạn đã gửi một " + `${isVideoUrl(uploadedUrls[uploadedUrls.length - 1]) ? "video" : "ảnh"}`, new Date().toISOString());
-                //     } else {
-                //         updateLastMessage(conv_id, user?.user.id, "Bạn: " + message, new Date().toISOString());
-                //     }
-                // }
             }
          } catch (error) {
                 console.error('Error creating post:', error);

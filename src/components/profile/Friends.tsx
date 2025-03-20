@@ -185,7 +185,7 @@ const Friends = () => {
                     )}
 
                     {/* All friends */}
-                    {activeTab == 'allFriends' && (friends.length > 0 ? friends.map((friend, index) => (
+                    {activeTab == 'allFriends' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
                         <FriendItemWithModal
                             key={friend.id}
                             friend={friend}
@@ -206,7 +206,7 @@ const Friends = () => {
                     ))}
 
                     {/* Friend requests */}
-                    {activeTab == 'friendRequests' && (friends.length > 0 ? friends.map((friend, index) => (
+                    {activeTab == 'friendRequests' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
                         <FriendItemWithModal
                             key={friend.id}
                             friend={friend}
@@ -240,7 +240,7 @@ const Friends = () => {
                     ))}
 
                     {/* Mutual friends */}
-                    {activeTab == 'mutualFriends' && (friends.length > 0 ? friends.map((friend, index) => (
+                    {activeTab == 'mutualFriends' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
                         <FriendItemWithModal
                             key={friend.id}
                             friend={friend}

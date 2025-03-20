@@ -92,9 +92,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 						{message.publicIds.map((publicId: string, index: number) => {
 							const url = message.urls[index];
 							const isVideo = isVideoUrl(url);
+							const aspectRatio = message.widths[index] / message.heights[index];
+							const widthPercentage = aspectRatio > 1.33 ? '80%' : `${aspectRatio < 0.75 ? '50%' : '60%'}`;
 
 							return (
-								<div key={publicId} className={`relative group w-full max-w-[50%] min-w-[50%] cursor-pointer
+								<div key={publicId} className={`relative group w-[${widthPercentage}] max-w-[450px] min-w-[100px] cursor-pointer
           								${!isLastInGroup ? 'ms-10' : ''}`}>
 
 									{isVideo ? (
