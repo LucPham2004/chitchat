@@ -52,7 +52,8 @@ const Conversations = () => {
                     <h2 className={`flex self-start text-2xl font-bold text-left w-[40%]
                         ${isDarkMode ? 'text-white' : 'text-black'}`}> Đoạn chat </h2>
                     <div className="relative flex flex-row gap-4 items-center justify-end w-[65%]">
-                        <button className={`p-2 rounded-full text-xl 
+                        <button onClick={() => setIsNewChatModalOpen(true)}
+                            className={`p-2 rounded-full text-xl 
                             ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
                                 : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                             <BsPencilSquare />
@@ -153,7 +154,7 @@ const Conversations = () => {
                     </div>
                 </Modal>
 
-                <CreateNewChatModal isOpen={isNewChatModalOpen} onClose={() => setIsNewChatModalOpen(false)} friends={[]} />
+                <CreateNewChatModal isOpen={isNewChatModalOpen} onClose={() => setIsNewChatModalOpen(false)} />
             </div>
         </div>
     );
