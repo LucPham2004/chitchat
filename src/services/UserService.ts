@@ -12,6 +12,12 @@ export const getUserById = async (id: number) => {
     return (await instance.get<ApiResponse<UserResponse>>(`/user-service/users/get/${id}`)).data;
 };
 
+export const getOtherUserById = async (selfId: number, otherId: number) => {
+    return (await instance.get<ApiResponse<UserResponse>>(`/user-service/users/get`,
+        { params: { selfId, otherId } }
+    )).data;
+};
+
 // Update User
 export const updateUser = async (request: UserUpdateRequest) => {
     return (await instance.put<ApiResponse<UserResponse>>('/user-service/users/update', request)).data;

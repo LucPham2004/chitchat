@@ -76,8 +76,8 @@ const ConversationList: React.FC = () => {
 
     if(loading) return (
         <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
-            pb-0 rounded-xl border shadow-sm overflow-y-auto
-            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+            pb-0 rounded-xl shadow-sm overflow-y-auto
+            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
             <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
         </div>
     );
@@ -92,7 +92,9 @@ const ConversationList: React.FC = () => {
                     const lastMessageTime = lastMessageData ? lastMessageData.timestamp : "";
 
                     if(!lastMessageData || lastMessageData.content == "") {
-                        if(conv.lastMessage.content == "") {
+                        if(conv.lastMessage == null) {
+                            lastMessage = "Các bạn có thể trò chuyện với nhau";
+                        } else if(conv.lastMessage.content == "") {
                             if(conv.lastMessage.senderId == user?.user.id) {
                                 lastMessage = "Bạn đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
                             } else {
@@ -107,7 +109,15 @@ const ConversationList: React.FC = () => {
                         }
                     } else {
                         console.log(lastMessageData);
-                        lastMessage = lastMessageData.content;
+                        if(lastMessageData.senderId == user?.user.id) {
+                            if(lastMessageData.content.startsWith("Bạn: ")) {
+                                lastMessage = lastMessageData.content;
+                            } else {
+                                lastMessage = "Bạn: " + lastMessageData.content;
+                            }
+                        } else {
+                            lastMessage = lastMessageData.content;
+                        }
                     }
 
                     return (
@@ -131,7 +141,7 @@ const ConversationList: React.FC = () => {
                                             {lastMessage}
                                         </p>
                                         <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                                            {!lastMessageData ? timeAgo(conv.lastMessage.createdAt) : timeAgo(lastMessageTime)}</p>
+                                            {!lastMessageData ? timeAgo(conv.lastMessage != null ? conv.lastMessage.createdAt : '') : timeAgo(lastMessageTime)}</p>
                                     </div>
                                 </div>
                             </li>
@@ -147,7 +157,7 @@ const ConversationList: React.FC = () => {
                             ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                             Hãy tìm kiếm bạn bè để bắt đầu các cuộc trò chuyện
                         </p>
-                        <Link to="/profile/friends">
+                        <Link to={`/profile/${user?.user.id}/friends`}>
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit rounded-full
                                 ${isDarkMode ? 'border-white text-white bg-[#474747] hover:bg-[#5A5A5A]'
                                     : 'border-black text-gray-800 bg-gray-200 hover:bg-gray-300'}

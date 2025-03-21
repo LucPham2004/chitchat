@@ -44,7 +44,7 @@ const RegisterView = () => {
 				if (response.data.code === 1000 && response.data.result) {
 					const account: Account = response.data.result;
 					login(account);
-					window.location.href = '/profile';
+					window.location.href = `/profile/${account.user.id}`;
 				} else {
 					alert('Đăng nhập thất bại: ' + response.data.message);
 				}

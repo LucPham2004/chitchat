@@ -12,7 +12,7 @@ import { useAuth } from "../../utilities/AuthContext";
 import { Account, GetAccount } from "../../types/backend";
 import { AxiosError } from "axios";
 import { callFetchAccount } from "../../services/AuthService";
-import { getUserById, updateUserImages } from "../../services/UserService";
+import { getOtherUserById, getUserById, updateUserImages } from "../../services/UserService";
 import { UserImageUpdateReq, UserResponse } from "../../types/User";
 import { uploadUserImage } from "../../services/ImageService";
 import Avatar from "../common/Avatar";
@@ -49,9 +49,9 @@ const Profile = () => {
 
     const fetchUser = async () => {
         try {
-            if (user_id_param) {
+            if (user?.user.id && user_id_param) {
                 setLoading(true);
-                const response = await getUserById(parseInt(user_id_param));
+                const response = await getOtherUserById(user?.user.id, parseInt(user_id_param));
                 console.log(response);
                 if (response.result) {
                     if (parseInt(user_id_param) == user?.user.id) {
@@ -72,9 +72,7 @@ const Profile = () => {
                 throw new Error("User ID is undefined");
             }
         } catch (error) {
-            const axiosError = error as AxiosError;
             if (!isMountedRef.current) return;
-            // setError(axiosError.response?.data?.message || "Lỗi khi tải dữ liệu");
         } finally {
             if (!isMountedRef.current) return;
             setLoading(false);

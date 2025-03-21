@@ -147,7 +147,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 						}}
 					/>
 
-					<div className={`absolute right-0 bottom-0.5 text-xl text-blue-400 p-2 rounded-full 
+					<div className={`absolute right-0 bottom-0 text-xl text-blue-400 p-2 rounded-full 
 					${isDarkMode ? 'hover:bg-[#5A5A5A]' : 'hover:bg-gray-200'} cursor-pointer`}
 						onClick={() => setShowEmojiPicker((prev) => !prev)}>
 						<FaFaceGrinWide />

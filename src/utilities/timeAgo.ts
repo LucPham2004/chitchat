@@ -4,6 +4,10 @@ export const timeAgo = (timestamp: string) => {
     const past = new Date(timestamp);
     const diffInSeconds = Math.floor((now.getTime() - past.getTime()) / 1000);
 
+    if(timestamp == '') {
+        return '';
+    }
+
     if (diffInSeconds < 60) {
         return `vừa xong`;
     }

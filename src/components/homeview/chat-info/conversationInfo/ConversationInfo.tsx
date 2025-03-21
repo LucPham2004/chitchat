@@ -232,6 +232,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 isUserMenuOpen={isUserMenuOpen}
                                 toggleUserMenu={toggleUserMenu}
                                 isGroup={conversationResponse?.isGroup}
+                                emoji={conversationResponse?.emoji}
                             ></Accordion>
 
                         </div>

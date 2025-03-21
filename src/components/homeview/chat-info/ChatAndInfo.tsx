@@ -21,7 +21,7 @@ import { ConversationResponse } from "../../../types/Conversation";
 const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWidth }) => {
     const {user} = useAuth();
     const { conv_id } = useParams();
-    const [ Conversation, setConversation ] = useState<ConversationResponse>();
+    const [ Conversation, setConversation ] = useState<ConversationResponse | undefined>();
 	const deviceType = useDeviceTypeByWidth();
     const { isDarkMode  } = useTheme();
     
@@ -50,6 +50,8 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const pinnedMessages = pinnedMessagesData;
 
     useEffect(() => {
+        setConversation(undefined);
+
         const fetchConversation = async () => {
             try {
                 if (conv_id && user?.user.id) {

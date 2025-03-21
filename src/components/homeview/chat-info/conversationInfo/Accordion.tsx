@@ -20,6 +20,7 @@ interface AccordionProps {
     isUserMenuOpen: boolean;
     toggleUserMenu: () => void;
     isGroup?: boolean | undefined;
+    emoji?: string;
 }
 
 interface AccordionItem {
@@ -35,7 +36,8 @@ const Accordion: React.FC<AccordionProps> = ({
     handleTabChange,
     isUserMenuOpen,
     toggleUserMenu,
-    isGroup
+    isGroup,
+    emoji
  }) => {
     const { isDarkMode  } = useTheme();
     const hidden = false;
@@ -89,7 +91,7 @@ const Accordion: React.FC<AccordionProps> = ({
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={toggleChangeConversationEmojiModalOpen}>
                         <div className={`rounded-full p-1.5 text- ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            🐧
+                            {emoji}
                         </div>
                         <p>Thay đổi biểu tượng cảm xúc</p>
                     </button>

@@ -43,6 +43,10 @@ const MainChat: React.FC<MainChatProps> = ({
     useEffect(() => {
         document.title = conversationResponse?.name + " | Chit Chat" || "Chit Chat";
     }, []);
+    
+    useEffect(() => {
+        setMessages([]);
+    }, [conv_id]);
 
     useEffect(() => {
         if (!conversationResponse || !conv_id) return;
@@ -160,7 +164,7 @@ const MainChat: React.FC<MainChatProps> = ({
                         conversationResponse={conversationResponse}
                     />
                     <div
-                        className="flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
+                        className="relative flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
                     >
                         <ChatBody messages={messages} setMessages={setMessages} conversationResponse={conversationResponse} />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
