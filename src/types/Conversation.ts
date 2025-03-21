@@ -30,7 +30,7 @@ export interface ConversationResponse {
 	ownerId: number;
 	participantIds: number[];
 
-	isGroup?: boolean;
+	group?: boolean;
 	isRead?: boolean;
 	isMuted?: boolean;
 	isPinned?: boolean;
@@ -61,7 +61,7 @@ export interface ConversationShortResponse {
 	}
 	ownerId: number;
 	participantIds?: number[];
-	isGroup?: boolean;
+	group?: boolean;
 	isRead?: boolean;
 };
 

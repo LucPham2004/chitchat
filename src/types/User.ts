@@ -68,3 +68,12 @@ export interface UserResponse {
     friendNum: number;
     mutualFriendsNum?: number | null;
 }
+
+export interface ChatParticipants {
+    id: number;
+    username: string;
+    avatarPublicId: string;
+    avatarUrl: string;
+    firstName: string;
+    lastName: string;
+}

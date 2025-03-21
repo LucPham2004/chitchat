@@ -8,6 +8,7 @@ import { ConversationResponse } from "../../../../types/Conversation";
 import { getConversationMessages } from "../../../../services/MessageService";
 import { useParams } from "react-router-dom";
 import { useChatContext } from "../../../../utilities/ChatContext";
+import { ChatParticipants } from "../../../../types/User";
 
 
 
@@ -15,9 +16,10 @@ interface MessagesProps {
     messages: ChatResponse[];
     setMessages: React.Dispatch<React.SetStateAction<ChatResponse[]>>;
     conversationResponse: ConversationResponse;
+    participants?: ChatParticipants[];
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
@@ -178,7 +180,9 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                         <ChatMessage message={message} isFirstInGroup={isFirstInGroup}
                             isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}
                             isLastMessageByCurrentUser={isLastMessageByCurrentUser}
-                            conversationResponse={conversationResponse} />
+                            conversationResponse={conversationResponse} 
+                            participants={participants}
+                            />
                     </div>
                 )
             })}

@@ -11,18 +11,21 @@ import { useParams } from "react-router-dom";
 import { useChatContext } from "../../../../utilities/ChatContext";
 import { deleteImage, uploadConversationImage } from "../../../../services/ImageService";
 import { uploadConversationVideo } from "../../../../services/VideoService";
+import { ChatParticipants } from "../../../../types/User";
 
 export interface MainChatProps {
     toggleChangeWidth: () => void;
     toggleShowConversationMembersModalOpen?: () => void;
     isChangeWidth: boolean;
     conversationResponse?: ConversationResponse;
+    participants?: ChatParticipants[];
 }
 
 const MainChat: React.FC<MainChatProps> = ({
     toggleChangeWidth, isChangeWidth,
     toggleShowConversationMembersModalOpen,
-    conversationResponse
+    conversationResponse,
+    participants
 }) => {
 
     const { user } = useAuth();
@@ -166,7 +169,12 @@ const MainChat: React.FC<MainChatProps> = ({
                     <div
                         className="relative flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
                     >
-                        <ChatBody messages={messages} setMessages={setMessages} conversationResponse={conversationResponse} />
+                        <ChatBody 
+                            messages={messages} 
+                            setMessages={setMessages} 
+                            conversationResponse={conversationResponse}
+                            participants={participants}
+                        />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
                             files={files} setFiles={setFiles} emoji={conversationResponse.emoji}/>
                     </div>

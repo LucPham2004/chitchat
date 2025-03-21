@@ -13,8 +13,9 @@ import { ImBlocked } from "react-icons/im";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
-import { getConversationById, updateConversationPartially } from "../../../services/ConversationService";
+import { getConversationById, getParticipantsByConvId, updateConversationPartially } from "../../../services/ConversationService";
 import { ConversationResponse } from "../../../types/Conversation";
+import { ChatParticipants } from "../../../types/User";
 
 
 
@@ -22,6 +23,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const {user} = useAuth();
     const { conv_id } = useParams();
     const [ Conversation, setConversation ] = useState<ConversationResponse | undefined>();
+    const [ Participants, setParticipants ] = useState<ChatParticipants[] | undefined>();
 	const deviceType = useDeviceTypeByWidth();
     const { isDarkMode  } = useTheme();
     
@@ -56,9 +58,13 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
             try {
                 if (conv_id && user?.user.id) {
                     const response = await getConversationById(parseInt(conv_id), user?.user.id);
+                    const participants = await getParticipantsByConvId(parseInt(conv_id));
+                    
+                    console.log("Participants:", participants);
                     console.log(response);
                     if (response.result) {
                         setConversation(response.result);
+                        setParticipants(participants.result);
                     } else {
                         throw new Error("Conversation response result is undefined");
                     }
@@ -104,6 +110,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     isChangeWidth={isChangeWidth}
                     toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                     conversationResponse={Conversation}
+                    participants={Participants}
                 />
             </div>
             <div className={`transition-all duration-100 

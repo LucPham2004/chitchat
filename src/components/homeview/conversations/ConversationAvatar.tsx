@@ -14,7 +14,8 @@ const ConversationAvatar: React.FC<ConversationAvatarProps> = ({ avatarUrls, wid
             <img
                 src={'/user_default.avif'}
                 alt="avatar"
-                className={`w-${width} h-${height} rounded-full object-cover`}
+                className={`rounded-full object-cover`}
+                style={{ width: `${width * 4}px`, height: `${height * 4}px` }}
             />
         );
     }
@@ -24,27 +25,32 @@ const ConversationAvatar: React.FC<ConversationAvatarProps> = ({ avatarUrls, wid
             <img
                 src={avatarUrls[0]}
                 alt="avatar"
-                className={`w-${width} h-${height} rounded-full object-cover`}
+                className={`rounded-full object-cover`}
+                style={{ width: `${width * 4}px`, height: `${height * 4}px` }}
             />
         );
     }
 
     return (
-        <div className="relative w-10 h-10">
+        <div className="relative"
+            style={{ width: `${width * 4}px`, height: `${height * 4}px` }}>
             <img
                 src={avatarUrls[0]}
                 alt="avatar1"
-                className="w-6 h-6 rounded-full object-cover absolute top-0 left-0 border-2 border-white"
+                className="rounded-full object-cover absolute top-0 left-0 border-2 border-white"
+                style={{ width: `${width * 2.2}px`, height: `${height * 2.2}px` }}
             />
             <img
                 src={avatarUrls[1]}
                 alt="avatar2"
-                className="w-6 h-6 rounded-full object-cover absolute top-0 right-0 border-2 border-white"
+                className="rounded-full object-cover absolute top-0 right-0 border-2 border-white"
+                style={{ width: `${width * 2.2}px`, height: `${height * 2.2}px` }}
             />
             <img
                 src={avatarUrls[2]}
                 alt="avatar3"
-                className="w-6 h-6 rounded-full object-cover absolute bottom-0 left-1/2 transform -translate-x-1/2 border-2 border-white"
+                className="rounded-full object-cover absolute bottom-0 left-1/2 transform -translate-x-1/2 border-2 border-white"
+                style={{ width: `${width * 2.2}px`, height: `${height * 2.2}px` }}
             />
         </div>
     );

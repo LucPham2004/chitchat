@@ -191,7 +191,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                         <div className={`flex flex-row justify-center gap-4 mb-2 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
 
-                            {!conversationResponse?.isGroup && (
+                            {!conversationResponse?.group && (
                                 <div className="flex flex-col items-center w-[70px] text-center">
                                     <Link to={`/profile/${conversationResponse?.participantIds.find(id => id !== user?.user.id)}`}>
                                         <button className={`p-2 text-xl rounded-full
@@ -231,7 +231,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 handleTabChange={handleTabChange}
                                 isUserMenuOpen={isUserMenuOpen}
                                 toggleUserMenu={toggleUserMenu}
-                                isGroup={conversationResponse?.isGroup}
+                                isGroup={conversationResponse?.group}
                                 emoji={conversationResponse?.emoji}
                             ></Accordion>
 

@@ -1,5 +1,6 @@
 import { ConversationResponse } from "../../../../types/Conversation";
 import { ChatResponse } from "../../../../types/Message";
+import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { useTheme } from "../../../../utilities/ThemeContext";
 
@@ -11,10 +12,14 @@ interface MessageProps {
 	isSingleMessage: boolean;
 	isLastMessageByCurrentUser?: boolean;
 	conversationResponse?: ConversationResponse;
+	participants?: ChatParticipants[];
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
-	message, isFirstInGroup, isLastInGroup, isSingleMessage, isLastMessageByCurrentUser, conversationResponse }) => {
+	message, isFirstInGroup, isLastInGroup, isSingleMessage, 
+	isLastMessageByCurrentUser, conversationResponse,
+	participants
+}) => {
 
 	const { user } = useAuth();
 	const { isDarkMode } = useTheme();
@@ -37,13 +42,17 @@ const ChatMessage: React.FC<MessageProps> = ({
 		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
 	};
 
+	const isMatchingSender = (senderId: number) => {
+		console.log(conversationResponse?.group)
+		return participants?.find(participant => participant.id === senderId);
+	}
 
 	return (
 		<div className={`relative flex items-end ${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}`}>
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
 				<img
-					src={conversationResponse?.avatarUrls[0]}
+					src={isMatchingSender(message.senderId)?.avatarUrl}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="avatar"
 				/>
@@ -75,12 +84,14 @@ const ChatMessage: React.FC<MessageProps> = ({
 						} `}
 					>
 						<p className={`whitespace-normal break-words inline-flex 
-    				${isOnlyEmoji(message.content) ? 'text-4xl' : 'text-[15px]'}`}>
+    						${isOnlyEmoji(message.content) ? 'text-4xl' : 'text-[15px]'}`}>
 							{splitLongWords(message.content)}
 						</p>
 
-						{isFirstInGroup && message.senderId !== user?.user.id &&
-							<div className={`absolute -top-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}></div>
+						{isFirstInGroup && message.senderId !== user?.user.id && conversationResponse?.group &&
+							<div className={`absolute -top-5 left-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+								{isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}` }
+							</div>
 						}
 					</div>
 				)}
