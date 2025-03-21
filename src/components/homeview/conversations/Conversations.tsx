@@ -13,6 +13,7 @@ import Sidebar from "./Sidebar";
 import { useAuth } from "../../../utilities/AuthContext";
 import Avatar from "../../common/Avatar";
 import { UserResponse } from "../../../types/User";
+import CreateNewChatModal from "./CreateNewChatModal";
 
 const Conversations = () => {
     const {user} = useAuth();
@@ -20,6 +21,9 @@ const Conversations = () => {
 
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
     const toggleSettingModalOpen = () => setIsSettingModalOpen(!isSettingModalOpen);
+    const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
+
+
     const LOCAL_STORAGE_KEY = 'user_account';
     const [userAccount, setUser] = useState<UserResponse | null>(null);
 
@@ -148,6 +152,8 @@ const Conversations = () => {
                         </div>
                     </div>
                 </Modal>
+
+                <CreateNewChatModal isOpen={isNewChatModalOpen} onClose={() => setIsNewChatModalOpen(false)} friends={[]} />
             </div>
         </div>
     );
