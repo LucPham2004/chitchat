@@ -43,7 +43,6 @@ const ChatMessage: React.FC<MessageProps> = ({
 	};
 
 	const isMatchingSender = (senderId: number) => {
-		console.log(conversationResponse?.group)
 		return participants?.find(participant => participant.id === senderId);
 	}
 

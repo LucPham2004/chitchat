@@ -2,7 +2,7 @@ import { PiDotsThreeBold } from "react-icons/pi";
 import { useTheme } from "../../../../utilities/ThemeContext";
 
 export interface Participant {
-    id: string;
+    id: number;
     avatar: string;
     name: string;
     toggleUserMenu?: () => void;

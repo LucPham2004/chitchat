@@ -10,6 +10,7 @@ import { TiPin } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import ParticipantCard from "./ParticipantCard";
 import { useTheme } from "../../../../utilities/ThemeContext";
+import { ChatParticipants } from "../../../../types/User";
 
 
 interface AccordionProps {
@@ -21,6 +22,7 @@ interface AccordionProps {
     toggleUserMenu: () => void;
     isGroup?: boolean | undefined;
     emoji?: string;
+    participants?: ChatParticipants[];
 }
 
 interface AccordionItem {
@@ -29,20 +31,21 @@ interface AccordionItem {
     hidden?: boolean | undefined;
 }
 
-const Accordion: React.FC<AccordionProps> = ({ 
-    togglePinnedMessageModalOpen, 
-    toggleChangeConversationNameModalOpen, 
-    toggleChangeConversationEmojiModalOpen, 
+const Accordion: React.FC<AccordionProps> = ({
+    togglePinnedMessageModalOpen,
+    toggleChangeConversationNameModalOpen,
+    toggleChangeConversationEmojiModalOpen,
     handleTabChange,
     isUserMenuOpen,
     toggleUserMenu,
     isGroup,
-    emoji
- }) => {
-    const { isDarkMode  } = useTheme();
+    emoji,
+    participants
+}) => {
+    const { isDarkMode } = useTheme();
     const hidden = false;
     const [openIndices, setOpenIndices] = useState<number[]>([3]);
-    
+
     const toggleAccordion = (index: number) => {
         setOpenIndices((prev) =>
             prev.includes(index)
@@ -50,7 +53,7 @@ const Accordion: React.FC<AccordionProps> = ({
                 : [...prev, index]
         );
     };
-    
+
     const sections: AccordionItem[] = [
         {
             title: 'Thông tin về đoạn chat',
@@ -111,33 +114,38 @@ const Accordion: React.FC<AccordionProps> = ({
             title: 'Các thành viên trong đoạn chat',
             content: (
                 <div className="relative">
-                    <ParticipantCard id={"1"} avatar={"/avatar.jpg"} name={"Tiến Lực"} toggleUserMenu={toggleUserMenu}/>
-                    {isUserMenuOpen && (
-                        <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
-                            <ul className="text-gray-700 p-1">
-                                <Link to={`/profile/${"1"}`}>
-                                    <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                        <img src="/avatar.jpg" className="w-8 h-8 rounded-full"/>
-                                        Xem trang cá nhân
-                                    </li>
-                                </Link>
-                                <hr></hr>
-                                <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-                                        
-                                    </button>
-                                    Nhắn tin
-                                </li>
-                                <hr></hr>
-                                <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                    <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-                                        <FiLogOut />
-                                    </button>
-                                    Chặn
-                                </li>
-                            </ul>
+                    {participants?.map((participant) => (
+                        <div>
+                            <ParticipantCard key={participant.id} id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
+
+                            {isUserMenuOpen && (
+                                <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
+                                    <ul className="text-gray-700 p-1">
+                                        <Link to={`/profile/${participant.id}`}>
+                                            <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                                <img src={participant.avatarUrl} className="w-8 h-8 rounded-full" />
+                                                Xem trang cá nhân
+                                            </li>
+                                        </Link>
+                                        <hr></hr>
+                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                            <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+
+                                            </button>
+                                            Nhắn tin
+                                        </li>
+                                        <hr></hr>
+                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
+                                            <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
+                                                <FiLogOut />
+                                            </button>
+                                            Chặn
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                         </div>
-                        )}
+                    ))}
                 </div>
             ),
             hidden: isGroup ? false : true
@@ -214,14 +222,14 @@ const Accordion: React.FC<AccordionProps> = ({
     return (
         <div className="rounded-lg overflow-hidden">
             {sections.map((section, index) => (
-                <AccordionItem key={index} 
+                <AccordionItem key={index}
                     title={section.title}
                     content={section.content}
                     toggleAccordion={toggleAccordion}
                     index={index}
                     openIndices={openIndices}
                     hidden={section.hidden}
-                    >
+                >
                 </AccordionItem>
             ))}
         </div>

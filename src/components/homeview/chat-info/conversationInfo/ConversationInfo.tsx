@@ -14,6 +14,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { getMediasByConversationId } from "../../../../services/MediaService";
 import { MediaResponse } from "../../../../types/Media";
+import { ChatParticipants } from "../../../../types/User";
 
 
 export interface ConversationInfoProps {
@@ -22,6 +23,7 @@ export interface ConversationInfoProps {
     toggleChangeConversationEmojiModalOpen: () => void;
     toggleChangeWidth: () => void;
     conversationResponse?: ConversationResponse;
+    participants?: ChatParticipants[];
 }
 
 const ConversationInfo: React.FC<ConversationInfoProps> = ({
@@ -29,7 +31,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     toggleChangeConversationNameModalOpen,
     toggleChangeConversationEmojiModalOpen,
     toggleChangeWidth,
-    conversationResponse
+    conversationResponse,
+    participants
 }) => {
 
     const { user } = useAuth();
@@ -233,6 +236,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 toggleUserMenu={toggleUserMenu}
                                 isGroup={conversationResponse?.group}
                                 emoji={conversationResponse?.emoji}
+                                participants={participants}
                             ></Accordion>
 
                         </div>
