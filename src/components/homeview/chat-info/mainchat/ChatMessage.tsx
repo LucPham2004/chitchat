@@ -88,7 +88,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 						</p>
 
 						{isFirstInGroup && message.senderId !== user?.user.id && conversationResponse?.group &&
-							<div className={`absolute -top-5 left-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+							<div className={`absolute -top-5 left-1 text-xs w-max ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
 								{isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}` }
 							</div>
 						}
