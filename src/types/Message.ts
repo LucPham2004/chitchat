@@ -1,3 +1,5 @@
+import { MessageEmojiReaction } from "./MessageEmojiReaction";
+
 export interface PinnedMessage {
     senderId: number;
     user: string;
@@ -14,6 +16,8 @@ export interface ChatRequest {
     senderId: number;
     recipientId: number[];
     content: string;
+    
+    reactions: MessageEmojiReaction[];
 
     publicIds: string[];
     urls: string[];
@@ -29,6 +33,8 @@ export interface ChatResponse {
     senderId: number;
     recipientId: number[];
     content: string;
+
+    reactions: MessageEmojiReaction[];
 
     publicIds: string[];
     urls: string[];

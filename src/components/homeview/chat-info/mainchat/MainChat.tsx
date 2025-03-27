@@ -110,31 +110,25 @@ const MainChat: React.FC<MainChatProps> = ({
                     alert("Chưa hỗ trợ định dạng file này!");
                     return;
                 }
+                let uploadResult;
                 if(file.type.startsWith("video")) {
-                    const uploadResult = await uploadConversationVideo(file, Number(conv_id));
-                    uploadedPublicIds.push(uploadResult.public_id);
-                    uploadedUrls.push(uploadResult.secure_url);
-                    uploadedFileNames.push(uploadResult.original_filename);
+                    uploadResult = await uploadConversationVideo(file, Number(conv_id));
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
-                    uploadedResourceTypes.push(uploadResult.resource_type);
                 } else if(file.type.startsWith("image")) {
-                    const uploadResult = await uploadConversationImage(file, Number(conv_id));
-                    uploadedPublicIds.push(uploadResult.public_id);
-                    uploadedUrls.push(uploadResult.secure_url);
-                    uploadedFileNames.push(uploadResult.original_filename);
+                    uploadResult = await uploadConversationImage(file, Number(conv_id));
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
-                    uploadedResourceTypes.push(uploadResult.resource_type);
                 } else {
-                    const uploadResult = await uploadFile(file, Number(conv_id));
-                    uploadedPublicIds.push(uploadResult.public_id);
-                    uploadedUrls.push(uploadResult.secure_url);
-                    uploadedFileNames.push(uploadResult.original_filename);
+                    uploadResult = await uploadFile(file, Number(conv_id));
                     uploadedHeights.push(5);
                     uploadedWidths.push(3);
-                    uploadedResourceTypes.push(uploadResult.resource_type);
                 }
+                
+                uploadedPublicIds.push(uploadResult.public_id);
+                uploadedUrls.push(uploadResult.secure_url);
+                uploadedFileNames.push(uploadResult.original_filename);
+                uploadedResourceTypes.push(uploadResult.resource_type);
             }
 
             if ((message.trim() || files.length > 0) && stompClientRef.current && conversationResponse) {
@@ -163,17 +157,20 @@ const MainChat: React.FC<MainChatProps> = ({
             }
         };
 
+        const handleDeleteMessage = (messageId: number) => {
+            setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
+        };
 
         return (
             !conversationResponse ? (
-                <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+                <div className={`min-h-[96vh] max-h-[96vh]  w-full flex items-center justify-center
                     pb-0 rounded-xl border shadow-sm overflow-y-auto
                     ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
                     <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
                 </div>
             ) : (
             <div className={`min-h-[96vh] flex flex-col items-center justify-center pe-1 pt-1 pb-0 
-                rounded-xl shadow-sm overflow-hidden bg-cover bg-center
+                rounded-xl shadow-sm bg-cover bg-center
                 ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}
                 style={{
                     backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
@@ -186,13 +183,14 @@ const MainChat: React.FC<MainChatProps> = ({
                         conversationResponse={conversationResponse}
                     />
                     <div className="relative flex flex-col items-center justify-start w-full 
-                        max-h-[87vh] min-h-[87vh] overflow-hidden">
+                        max-h-[87vh] min-h-[87vh] ">
                         <ChatBody 
                             messages={messages} 
                             setMessages={setMessages} 
                             conversationResponse={conversationResponse}
                             participants={participants}
                             files={files}
+                            onDeleteMessage={handleDeleteMessage}
                         />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
                             files={files} setFiles={setFiles} emoji={conversationResponse.emoji}/>

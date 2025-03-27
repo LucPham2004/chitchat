@@ -21,6 +21,10 @@ const ConversationList: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
+    const sortedConversations = [...conversations].sort((a, b) => 
+        new Date(b.lastMessage?.createdAt || 0).getTime() - new Date(a.lastMessage?.createdAt || 0).getTime()
+    );
+    
     const observer = useRef<IntersectionObserver | null>(null);
     const lastConversationRef = useCallback((node: HTMLLIElement | null) => {
         if (loading || !hasMore) return;
@@ -86,7 +90,7 @@ const ConversationList: React.FC = () => {
         <div className={`w-full rounded-lg 
             ${isDarkMode ? 'bg-[#1F1F1F] text-gray-100 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
             <ul className="w-full">
-                {conversations.map((conv, index) => {
+                {sortedConversations.map((conv, index) => {
                     const lastMessageData = lastMessages[conv.id];
                     let lastMessage = "";
                     const lastMessageTime = lastMessageData ? lastMessageData.timestamp : "";

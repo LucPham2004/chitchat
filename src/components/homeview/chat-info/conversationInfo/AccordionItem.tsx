@@ -24,7 +24,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAcc
 					toggleAccordion(index);
 				} }
 				className={`flex justify-between w-full p-2 py-3 text-left text-md font-medium rounded-lg 
-					${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]'
+					${isDarkMode ? 'text-gray-200 hover:bg-[#5A5A5A]'
 					: 'text-gray-800 hover:bg-gray-100'}`}
 			>
 				{title}

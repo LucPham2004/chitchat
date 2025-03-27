@@ -18,9 +18,10 @@ interface MessagesProps {
     conversationResponse: ConversationResponse;
     participants?: ChatParticipants[];
     files?: File[];
+    onDeleteMessage: (id: number) => void;
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files, onDeleteMessage }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
@@ -181,6 +182,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                             isLastMessageByCurrentUser={isLastMessageByCurrentUser}
                             conversationResponse={conversationResponse} 
                             participants={participants}
+                            onDeleteMessage={onDeleteMessage}
                             />
                     </div>
                 )

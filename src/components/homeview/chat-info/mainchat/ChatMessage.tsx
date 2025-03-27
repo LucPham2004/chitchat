@@ -1,10 +1,13 @@
-import { FaFileAlt } from "react-icons/fa";
+import { FaEllipsisH, FaFileAlt, FaPlus, FaSmile, FaTrash } from "react-icons/fa";
 import { ConversationResponse } from "../../../../types/Conversation";
 import { ChatResponse } from "../../../../types/Message";
 import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { useTheme } from "../../../../utilities/ThemeContext";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { deleteMessage } from "../../../../services/MessageService";
+import { createMessageMessageEmojiReaction, deleteMessageMessageEmojiReaction } from "../../../../services/MessageEmojiReactionService";
+import { MessageEmojiReaction } from "../../../../types/MessageEmojiReaction";
 
 
 interface MessageProps {
@@ -15,16 +18,33 @@ interface MessageProps {
 	isLastMessageByCurrentUser?: boolean;
 	conversationResponse?: ConversationResponse;
 	participants?: ChatParticipants[];
+	onDeleteMessage?: (id: number) => void;
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
 	message, isFirstInGroup, isLastInGroup, isSingleMessage,
 	isLastMessageByCurrentUser, conversationResponse,
-	participants
+	participants, onDeleteMessage
 }) => {
 
 	const { user } = useAuth();
 	const { isDarkMode } = useTheme();
+	const [messageReactions, setMessageReactions] = useState<MessageEmojiReaction[]>(message.reactions);
+
+	const [activeEmojiPicker, setActiveEmojiPicker] = useState<number | null>(null);
+	const [activeMenuMessage, setActiveMenuMessage] = useState<number | null>(null);
+
+	const emojis = ["😂", "❤️", "👍", "😢", "🔥", "😡"];
+
+	const toggleEmojiPicker = (messageId: number) => {
+		setActiveEmojiPicker(activeEmojiPicker === messageId ? null : messageId);
+		setActiveMenuMessage(null);
+	};
+
+	const toggleMenuMessage = (messageId: number) => {
+		setActiveMenuMessage(activeMenuMessage === messageId ? null : messageId);
+		setActiveEmojiPicker(null);
+	};
 
 	const splitLongWords = (text: string, maxLength = 20) => {
 		return text.replace(/\S{21,}/g, (match) => {
@@ -48,8 +68,58 @@ const ChatMessage: React.FC<MessageProps> = ({
 		return participants?.find(participant => participant.id === senderId);
 	}
 
+	const handleSelectEmoji = async (messageId: number, emoji: string) => {
+		if (!user?.user.id) return; // Kiểm tra userId trước khi gọi API
+
+		try {
+			const response = await createMessageMessageEmojiReaction(user.user.id, messageId, emoji);
+			console.log(response.result);
+			console.log(`Đã gửi reaction ${emoji} cho tin nhắn ${messageId}`);
+
+			setMessageReactions(prev => response.result ? [...prev, response.result] : prev);
+			
+			// Đóng emoji picker sau khi chọn
+			setActiveEmojiPicker(null);
+		} catch (error) {
+			console.error("Lỗi khi gửi reaction:", error);
+		}
+	};
+
+	const handleDeleteMessageReaction = async () => {
+		try {
+			if (message.id != undefined && user?.user) {
+				await deleteMessageMessageEmojiReaction(user.user.id, message.id);
+				console.log("Tin nhắn reaction đã bị xoá: message id:" + message.id + " user id: " + user.user.id);
+				
+				setMessageReactions(prev =>
+					prev.filter(reaction => reaction.userId !== user.user.id)
+				);
+			}
+		} catch (error) {
+			console.error("Lỗi khi xoá tin nhắn:", error);
+		}
+	};
+
+	const handleDeleteMessage = async () => {
+		try {
+			if (message.id != undefined) {
+				await deleteMessage(message.id);
+				console.log("Tin nhắn đã bị xoá:", message.id);
+				onDeleteMessage?.(message.id);
+			}
+		} catch (error) {
+			console.error("Lỗi khi xoá tin nhắn:", error);
+		}
+	};
+
+	useEffect(() => {
+		setActiveEmojiPicker(null);
+		setActiveMenuMessage(null);
+	}, [message]);
+
+
 	return (
-		<div className={`relative flex items-end ${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}`}>
+		<div className={`relative flex items-end group ${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}`}>
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
 				<img
@@ -59,7 +129,54 @@ const ChatMessage: React.FC<MessageProps> = ({
 				/>
 			)}
 
-			<div className={`flex flex-col max-w-[80%] gap-0.5
+			{/* Nút reaction và menu khi hover vào tin nhắn */}
+			<div className={`relative self-center hidden gap-1 me-6
+				${message.senderId === user?.user.id ? 'left-4 group-hover:flex' : 'hidden'}`}>
+				<button className={`py-1.5 px-1.5 rounded-full text-md border
+					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
+						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+					onClick={() => toggleEmojiPicker(message.id)}>
+					<FaSmile />
+				</button>
+
+				{/* Popup emoji */}
+				{activeEmojiPicker === message.id && activeMenuMessage !== message.id && (
+					<div className="absolute -left-28 bottom-6 mb-2 p-2 bg-white dark:bg-[#1F1F1F] 
+						shadow-md rounded-full flex gap-0.5 z-40">
+						{emojis.map((emoji, index) => (
+							<button key={index} className="text-2xl hover:scale-110 transition"
+								onClick={() => handleSelectEmoji(message.id, emoji)}>
+								{emoji}
+							</button>
+						))}
+						<button className="py-1 px-2 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400">
+							<FaPlus className="text-sm text-gray-700 dark:text-gray-200" />
+						</button>
+					</div>
+				)}
+
+				<button className={`py-1.5 px-1.5 rounded-full text-md border
+					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
+						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+					onClick={() => toggleMenuMessage(message.id)}>
+					<FaEllipsisH />
+				</button>
+
+				{/* Menu xóa tin nhắn - chỉ hiển thị nếu tin nhắn này được chọn */}
+				{activeMenuMessage === message.id && activeEmojiPicker !== message.id && (
+					<div className="absolute -right-12 bottom-6 mb-2 p-2 bg-white dark:bg-[#1F1F1F] shadow-md rounded-lg z-40">
+						<button
+							className="flex items-center text-sm w-max gap-2 p-1 text-red-500 hover:text-red-700"
+							onClick={handleDeleteMessage}
+						>
+							<FaTrash />
+							Xoá tin nhắn
+						</button>
+					</div>
+				)}
+			</div>
+
+			<div className={`relative flex flex-col max-w-[70%] gap-0.5
 				${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start'}`}>
 
 				{message.content && (
@@ -88,6 +205,16 @@ const ChatMessage: React.FC<MessageProps> = ({
     						${isOnlyEmoji(message.content) ? 'text-4xl' : 'text-[15px]'}`}>
 							{splitLongWords(message.content)}
 						</p>
+
+						{messageReactions.length > 0 && (
+							<div className="absolute -right-3 -bottom-3 flex gap-[1px] mt-1 cursor-pointer"
+								onClick={handleDeleteMessageReaction}>
+								{messageReactions.map((reaction, index) => (
+									<span key={index} className="text-lg">{reaction.emoji}</span>
+								))}
+								<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
+							</div>
+						)}
 
 						{isFirstInGroup && message.senderId !== user?.user.id && conversationResponse?.group &&
 							<div className={`absolute -top-5 left-1 text-xs w-max ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -147,6 +274,39 @@ const ChatMessage: React.FC<MessageProps> = ({
 					</div>
 				)}
 
+			</div>
+
+			{/* Nút reaction và menu khi hover vào tin nhắn */}
+			<div className={`relative self-center hidden gap-1 
+					${message.senderId === user?.user.id ? 'hidden' : 'right-0 group-hover:flex'}`}>
+				<button className={`py-1.5 px-1.5 rounded-full text-md border
+					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
+						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+					onClick={() => toggleEmojiPicker(message.id)}>
+					<FaSmile />
+				</button>
+
+				{/* Popup emoji */}
+				{activeEmojiPicker == message.id && (
+					<div className="absolute -right-24 bottom-6 mb-2 p-2 bg-white dark:bg-[#1F1F1F]
+						shadow-md rounded-full flex gap-0.5 z-40">
+						{emojis.map((emoji, index) => (
+							<button key={index} className="text-2xl hover:scale-110 transition"
+								onClick={() => handleSelectEmoji(message.id, emoji)}>
+								{emoji}
+							</button>
+						))}
+						<button className="py-1 px-2 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400">
+							<FaPlus className="text-sm text-gray-700 dark:text-gray-200" />
+						</button>
+					</div>
+				)}
+
+				<button className={`py-1.5 px-1.5 rounded-full text-md border
+					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
+						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}>
+					<FaEllipsisH />
+				</button>
 			</div>
 
 			{isLastMessageByCurrentUser &&
