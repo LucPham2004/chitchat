@@ -21,6 +21,6 @@ export const createMessageMessageEmojiReaction = async (userId: number, messageI
 
 // Delete Message MessageEmojiReaction
 export const deleteMessageMessageEmojiReaction = async (userId: number, messageId: number) => {
-    await instance.delete<ApiResponse<void>>(`/chat-service/message-reactions/remove/user/${userId}/message/${messageId}`);
+    return (await instance.delete<ApiResponse<void>>(`/chat-service/message-reactions/remove/user/${userId}/message/${messageId}`)).data;
 };
 

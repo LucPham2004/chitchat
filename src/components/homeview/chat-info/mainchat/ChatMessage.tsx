@@ -29,7 +29,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 	const { user } = useAuth();
 	const { isDarkMode } = useTheme();
-	const [messageReactions, setMessageReactions] = useState<MessageEmojiReaction[]>(message.reactions);
+	const [messageReactions, setMessageReactions] = useState<MessageEmojiReaction[]>([]);
 
 	const [activeEmojiPicker, setActiveEmojiPicker] = useState<number | null>(null);
 	const [activeMenuMessage, setActiveMenuMessage] = useState<number | null>(null);
@@ -77,7 +77,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			console.log(`Đã gửi reaction ${emoji} cho tin nhắn ${messageId}`);
 
 			setMessageReactions(prev => response.result ? [...prev, response.result] : prev);
-			
+
 			// Đóng emoji picker sau khi chọn
 			setActiveEmojiPicker(null);
 		} catch (error) {
@@ -88,12 +88,15 @@ const ChatMessage: React.FC<MessageProps> = ({
 	const handleDeleteMessageReaction = async () => {
 		try {
 			if (message.id != undefined && user?.user) {
-				await deleteMessageMessageEmojiReaction(user.user.id, message.id);
-				console.log("Tin nhắn reaction đã bị xoá: message id:" + message.id + " user id: " + user.user.id);
-				
-				setMessageReactions(prev =>
-					prev.filter(reaction => reaction.userId !== user.user.id)
-				);
+				const response = await deleteMessageMessageEmojiReaction(user.user.id, message.id);
+
+				if(response.code == 200) {
+					console.log("Tin nhắn reaction đã bị xoá: message id:" + message.id + " user id: " + user.user.id);
+	
+					setMessageReactions(prev =>
+						prev.filter(reaction => reaction.userId !== user.user.id)
+					);
+				}
 			}
 		} catch (error) {
 			console.error("Lỗi khi xoá tin nhắn:", error);
@@ -117,9 +120,15 @@ const ChatMessage: React.FC<MessageProps> = ({
 		setActiveMenuMessage(null);
 	}, [message]);
 
+	useEffect(() => {
+		setMessageReactions(message.reactions || []);
+	}, [message.reactions]);
 
 	return (
-		<div className={`relative flex items-end group ${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}`}>
+		<div className={`relative flex items-end group 
+			${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}
+			${isLastInGroup && 'mb-4'}
+			`}>
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
 				<img
@@ -141,7 +150,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Popup emoji */}
 				{activeEmojiPicker === message.id && activeMenuMessage !== message.id && (
-					<div className="absolute -left-28 bottom-6 mb-2 p-2 bg-white dark:bg-[#1F1F1F] 
+					<div className="absolute -left-28 bottom-5 mb-2 p-2 bg-white dark:bg-[#1F1F1F] 
 						shadow-md rounded-full flex gap-0.5 z-40">
 						{emojis.map((emoji, index) => (
 							<button key={index} className="text-2xl hover:scale-110 transition"
@@ -177,7 +186,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 			</div>
 
 			<div className={`relative flex flex-col max-w-[70%] gap-0.5
-				${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start'}`}>
+				${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start'}
+				${messageReactions.length > 0 && !isLastInGroup && 'mb-4'}
+				`}>
 
 				{message.content && (
 					<div className={`relative inline-flex pt-1 pb-1.5 
@@ -207,10 +218,10 @@ const ChatMessage: React.FC<MessageProps> = ({
 						</p>
 
 						{messageReactions.length > 0 && (
-							<div className="absolute -right-3 -bottom-3 flex gap-[1px] mt-1 cursor-pointer"
+							<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0`}
 								onClick={handleDeleteMessageReaction}>
 								{messageReactions.map((reaction, index) => (
-									<span key={index} className="text-lg">{reaction.emoji}</span>
+									<span key={index} className="text-lg drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
 								))}
 								<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
 							</div>
@@ -268,9 +279,26 @@ const ChatMessage: React.FC<MessageProps> = ({
 										</div>
 									)}
 
+									{messageReactions.length > 0 && (
+										<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0`}
+											onClick={handleDeleteMessageReaction}>
+											{messageReactions.map((reaction, index) => (
+												<span key={index} className="text-lg drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
+											))}
+											<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
+										</div>
+									)}
 								</div>
 							);
 						})}
+
+						{isFirstInGroup && message.senderId !== user?.user.id && conversationResponse?.group &&
+							<div className={`absolute -top-5 text-xs w-max 
+								${isDarkMode ? 'text-gray-400' : 'text-gray-600'}
+								${!isSingleMessage ? 'left-11' : 'left-1'}`}>
+								{isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}`}
+							</div>
+						}
 					</div>
 				)}
 
@@ -288,7 +316,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Popup emoji */}
 				{activeEmojiPicker == message.id && (
-					<div className="absolute -right-24 bottom-6 mb-2 p-2 bg-white dark:bg-[#1F1F1F]
+					<div className="absolute -right-24 bottom-5 mb-2 p-2 bg-white dark:bg-[#1F1F1F]
 						shadow-md rounded-full flex gap-0.5 z-40">
 						{emojis.map((emoji, index) => (
 							<button key={index} className="text-2xl hover:scale-110 transition"
@@ -310,7 +338,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			</div>
 
 			{isLastMessageByCurrentUser &&
-				<div className={`absolute -bottom-4 right-1 text-xs w-max
+				<div className={`absolute -bottom-6 right-1 text-xs w-max
 					${isDarkMode ? 'text-gray-200' : 'text-gray-600'}`}>Đã gửi</div>
 			}
 		</div>

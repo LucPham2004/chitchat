@@ -8,6 +8,7 @@ import { useAuth } from "../../../utilities/AuthContext";
 import { timeAgo } from "../../../utilities/timeAgo";
 import { useChatContext } from "../../../utilities/ChatContext";
 import ConversationAvatar from "./ConversationAvatar";
+import { FaEllipsisH } from "react-icons/fa";
 
 
 const ConversationList: React.FC = () => {
@@ -20,6 +21,11 @@ const ConversationList: React.FC = () => {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+    const toggleMenu = (conversationId: number) => {
+        setOpenMenuId((prev) => (prev === conversationId ? null : conversationId));
+    };
 
     const sortedConversations = [...conversations].sort((a, b) => 
         new Date(b.lastMessage?.createdAt || 0).getTime() - new Date(a.lastMessage?.createdAt || 0).getTime()
@@ -131,7 +137,7 @@ const ConversationList: React.FC = () => {
                             <li
                                 key={conv.id}
                                 ref={index === conversations.length - 1 ? lastConversationRef : null}
-                                className={`flex items-center p-2.5 rounded-lg cursor-pointer
+                                className={`relative flex items-center p-2.5 rounded-lg cursor-pointer group
                                     ${isDarkMode ? 'text-white hover:bg-[#3A3A3A]' : 'text-black hover:bg-gray-100'}
                                     ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#303030]' : 'bg-gray-200' : ''}`}
                             >
@@ -150,6 +156,38 @@ const ConversationList: React.FC = () => {
                                             {!lastMessageData ? timeAgo(conv.lastMessage != null ? conv.lastMessage.createdAt : '') : timeAgo(lastMessageTime)}</p>
                                     </div>
                                 </div>
+
+                                <div className={` absolute hidden gap-1 right-10 group-hover:flex`}>
+                                    <button className={`p-2 rounded-full text-md border
+                                            ${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#242424] hover:text-gray-200'
+                                            : 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                toggleMenu(conv.id);
+                                            }}
+                                        >
+                                        <FaEllipsisH />
+                                    </button>
+                                </div>
+                                {/* Menu */}
+                                {openMenuId === conv.id && (
+                                    <div className="absolute top-10 right-0 mt-2 bg-white dark:bg-[#303030] shadow-lg rounded-xl w-40 z-10">
+                                        <button 
+                                            className="w-max text-left px-4 py-3 rounded-t-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
+                                            onClick={() => console.log("Xoá đoạn chat")}
+                                        >
+                                            🗑️ Xoá đoạn chat
+                                        </button>
+                                        {conv.group && (
+                                        <button 
+                                            className="w-full text-left px-4 py-3 rounded-b-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
+                                            onClick={() => console.log("Rời nhóm")}
+                                        >
+                                            🚪 Rời nhóm
+                                        </button>
+                                        )}
+                                    </div>
+                                )}
                             </li>
                         </Link>
                     )
