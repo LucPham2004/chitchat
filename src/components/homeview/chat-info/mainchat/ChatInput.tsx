@@ -48,7 +48,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 
 
 	return (
-		<form className="relative flex flex-col p-2 w-full min-w-0" onSubmit={sendMessage}>
+		<form className="absolute bottom-1 flex flex-col p-2 w-full min-w-0" onSubmit={sendMessage}>
 
 			{/* File Preview */}
 			{files.length > 0 && (

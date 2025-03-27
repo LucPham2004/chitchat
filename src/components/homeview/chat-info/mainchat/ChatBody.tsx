@@ -17,9 +17,10 @@ interface MessagesProps {
     setMessages: React.Dispatch<React.SetStateAction<ChatResponse[]>>;
     conversationResponse: ConversationResponse;
     participants?: ChatParticipants[];
+    files?: File[];
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
@@ -153,7 +154,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     return (
         <div ref={chatContainerRef}
             className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-4 pt-2
-                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[70vh]' : 'max-h-[78vh] min-h-[62vh]'}
+                ${deviceType !== 'PC' ? 'max-h-[85vh] min-h-[70vh]' : 'max-h-[78vh] min-h-[78vh]'}
                 bg-cover bg-center`}
             style={{
                 backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
@@ -186,7 +187,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                     </div>
                 )
             })}
-            <div ref={chatEndRef} />
+            <div ref={chatEndRef} className={`${files && files?.length > 0 ? 'mb-28' : 'mb-6'}`}/>
         </div>
 
     )

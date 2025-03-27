@@ -174,6 +174,7 @@ const MainChat: React.FC<MainChatProps> = ({
                             setMessages={setMessages} 
                             conversationResponse={conversationResponse}
                             participants={participants}
+                            files={files}
                         />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
                             files={files} setFiles={setFiles} emoji={conversationResponse.emoji}/>
