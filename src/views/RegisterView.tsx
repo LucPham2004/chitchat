@@ -9,7 +9,7 @@ const RegisterView = () => {
 	const deviceType = useDeviceTypeByWidth();
 	const [firstName, setFirstName] = useState('');
 	const [lastName, setLastName] = useState('');
-	const [gender, setGender] = useState<Gender>();
+	const [gender, setGender] = useState<Gender>(Gender.MALE);
 	const [dob, setDob] = useState('');
 	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState(null);

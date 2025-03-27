@@ -12,8 +12,8 @@ import { useAuth } from "../../utilities/AuthContext";
 import { Account, GetAccount } from "../../types/backend";
 import { AxiosError } from "axios";
 import { callFetchAccount } from "../../services/AuthService";
-import { getOtherUserById, getUserById, updateUserImages } from "../../services/UserService";
-import { UserImageUpdateReq, UserResponse } from "../../types/User";
+import { getOtherUserById, getUserById, getUserFriends, updateUser, updateUserImages } from "../../services/UserService";
+import { Gender, UserDTO, UserImageUpdateReq, UserResponse, UserUpdateRequest } from "../../types/User";
 import { uploadUserImage } from "../../services/ImageService";
 import Avatar from "../common/Avatar";
 
@@ -33,7 +33,7 @@ const Profile = () => {
 
     const [showMenu, setShowMenu] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
-    const [showAvatarModal, setShowAvatarModal] = useState(false);
+    const [EditProfileModal, setEditProfileModal] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(user?.user.avatarUrl ? user?.user.avatarUrl : null);
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,6 +42,17 @@ const Profile = () => {
 
     const [userAccount, setUserAccount] = useState<UserResponse | null>(null);
     const [userProfile, setUserProfile] = useState<UserResponse | null>(null);
+
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [dob, setDob] = useState("");
+    const [gender, setGender] = useState("");
+    const [bio, setBio] = useState("");
+    const [job, setJob] = useState("");
+    const [location, setLocation] = useState("");
+
+    const [friends, setFriends] = useState<UserDTO[]>([]);
+
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -53,6 +64,8 @@ const Profile = () => {
                 setLoading(true);
                 const response = await getOtherUserById(user?.user.id, parseInt(user_id_param));
                 console.log(response);
+                const friendResponse = await getUserFriends(user.user.id, 0);
+                setFriends(friendResponse.result?.content || []);
                 if (response.result) {
                     if (parseInt(user_id_param) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
@@ -88,7 +101,7 @@ const Profile = () => {
             if (storedUser && storedUser !== "undefined" && user_id_param && parseInt(user_id_param) == user?.user.id) {
                 setUserAccount(JSON.parse(storedUser));
                 setLoading(false);
-            } 
+            }
             if (storedProfile && storedProfile !== "undefined" && user_id_param && parseInt(user_id_param) != user?.user.id) {
                 setUserProfile(JSON.parse(storedProfile));
                 setLoading(false);
@@ -115,7 +128,6 @@ const Profile = () => {
             document.title = "Chit Chat";
         }
     }, [userProfile]);
-    
 
     if (loading) return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
@@ -138,18 +150,7 @@ const Profile = () => {
     const goBack = () => {
         navigate(-1);
     };
-    const users: User[] = [
-        { id: 1, name: 'Alice', avatar: 'https://images.unsplash.com/photo-1501594907352-04cda38ebc29' },
-        { id: 2, name: 'Bob', avatar: 'https://images.unsplash.com/photo-1531251445707-1f000e1e87d0' },
-        { id: 3, name: 'Charlie', avatar: 'https://images.unsplash.com/photo-1552058544-f2b08422138a' },
-        { id: 4, name: 'David', avatar: 'https://images.unsplash.com/photo-1516534775068-ba3e7458af70' },
-        { id: 5, name: 'Emma', avatar: 'https://images.unsplash.com/photo-1523292562811-8fa7962a78c8' },
-        { id: 6, name: 'Charlie', avatar: 'https://images.unsplash.com/photo-1552058544-f2b08422138a' },
-        { id: 7, name: 'David', avatar: 'https://images.unsplash.com/photo-1516534775068-ba3e7458af70' },
-        { id: 8, name: 'Emma', avatar: 'https://images.unsplash.com/photo-1523292562811-8fa7962a78c8' },
-        { id: 9, name: 'Charlie', avatar: 'https://images.unsplash.com/photo-1552058544-f2b08422138a' },
-    ];
-    
+
     const handleCameraClick = () => {
         fileInputRef.current?.click();
     };
@@ -162,6 +163,38 @@ const Profile = () => {
             setPreviewUrl(url);
         }
     };
+
+    const handleUpdateProfile = async () => {
+        try {
+            if (user?.user.id) {
+                const request: UserUpdateRequest = {
+                    id: user?.user.id,
+                    firstName,
+                    lastName,
+                    dob: dob ? new Date(dob) : undefined,
+                    gender: gender || undefined,
+                    bio,
+                    location,
+                    job
+                };
+                console.log("Request:", request);
+
+                const response = await updateUser(request);
+                if (response.result) {
+                    alert("Cập nhật thành công!");
+                    setUserProfile(response.result);
+                    setUserAccount(response.result);
+                    setEditProfileModal(false);
+                } else {
+                    alert("Cập nhật thất bại!");
+                }
+            }
+        } catch (error) {
+            console.error("Lỗi khi cập nhật:", error);
+            alert("Có lỗi xảy ra, vui lòng thử lại!");
+        }
+    };
+
 
     const handleUpdateImages = async (isUpdateAvatar: boolean) => {
         try {
@@ -185,7 +218,7 @@ const Profile = () => {
             console.log("Cập nhật thành công:", response);
 
             // Cập nhật UI nếu cần
-            setShowAvatarModal(false);
+            setEditProfileModal(false);
             await fetchUser();
         } catch (error) {
             console.error("Lỗi khi cập nhật:", error);
@@ -219,7 +252,7 @@ const Profile = () => {
                     {/* Ảnh đại diện */}
                     <div className={`absolute bottom-0 left-8 rounded-full transform translate-y-1/2 border-4
                             ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}>
-                        
+
                         <Avatar avatarUrl={userProfile?.avatarUrl || '/user_default.avif'} width={40} height={40}></Avatar>
                     </div>
 
@@ -281,9 +314,9 @@ const Profile = () => {
                             ${deviceType == 'PC' ? 'max-w-[25%]' :
                                 deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
                             } `}>
-                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-2xl font-bold`}>{userProfile?.firstName + " " + userProfile?.lastName}</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userProfile?.job ? userProfile?.job : userProfile?.friendNum + " bạn bè"}</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-lg`}>{userProfile?.location || userProfile?.dob}</p>
+                            <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-3xl font-bold`}>{userProfile?.firstName + " " + userProfile?.lastName}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.job ? userProfile?.job : userProfile?.friendNum + " bạn bè"}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.location || userProfile?.dob}</p>
                         </div>
 
                         {deviceType == 'PC' &&
@@ -296,20 +329,21 @@ const Profile = () => {
 
                         {user_id_param && parseInt(user_id_param) != user?.user.id ? (
                             <div className="flex flex-col items-end gap-2 pt-4">
-                                {/* <Link to={`/conversation/`}></Link> */}
+                                <Link to={`/conversations/${userProfile?.conversationId}`}>
+                                    <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                                            ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                            ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                            : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                            hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
+                                            rounded-full shadow-md transition duration-200`}>
+                                        <IoChatbubblesSharp />
+                                        <p className="font-semibold">Gửi tin nhắn</p>
+                                    </button>
+                                </Link>
                                 <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                         ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                         ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
-                                                : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
-                                        hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                        rounded-full shadow-md transition duration-200`}>
-                                    <IoChatbubblesSharp />
-                                    <p className="font-semibold">Gửi tin nhắn</p>
-                                </button>
-                                <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
-                                        ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                        ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
-                                                : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                        : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                         hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
                                         rounded-full shadow-md transition duration-200`}>
                                     <PiHandWavingFill />
@@ -325,7 +359,7 @@ const Profile = () => {
                                 border-2 border-black text-white bg-black 
                                 hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
                                 shadow-md transition duration-200`}
-                                        onClick={() => setShowAvatarModal(true)}>
+                                        onClick={() => setEditProfileModal(true)}>
                                         <BiSolidEditAlt />
                                         <p className="font-semibold">Chỉnh sửa</p>
                                     </button>
@@ -359,25 +393,25 @@ const Profile = () => {
                         ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
                         <p className="font-semibold">Bạn có tổng cộng {userProfile?.friendNum} người bạn</p>
                         <div className="flex items-center -space-x-2">
-                            {users.map((user) => (
+                            {friends.map((user) => (
                                 <div key={user.id} className="relative group">
                                     <img
-                                        src={user.avatar}
-                                        alt={user.name}
+                                        src={user.avatarUrl ? user.avatarUrl : '/user_default.avif'}
+                                        alt={user.firstName}
                                         className="w-10 h-10 rounded-full border-2 border-white cursor-pointer 
                                         hover:scale-105 transition-transform"
                                     />
                                     {/* Tooltip */}
                                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 
                                         text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 
-                                        transition-opacity">
-                                        {user.name}
+                                        transition-opacity w-max">
+                                        {user.firstName + " " + user.lastName}
                                     </div>
                                 </div>
                             ))}
                         </div>
                         <div className="flex items-center gap-2">
-                            <p>Lionel Messi, Neymar.JR, Benzema và 950 người khác</p>
+                            <p>{friends[0].firstName + " " + friends[0].lastName + ", " + friends[1].firstName + " " + friends[1].lastName + `${friends.length - 2 > 0 ? " và " + `${friends.length - 2}` + " người khác" : ''}`}</p>
                             <Link to={`/profile/${user_id_param}/friends`}>
                                 <button className={`flex gap-2 items-center text-md min-w-max h-10 border-2 
                                 rounded-full shadow-md transition duration-200 px-3
@@ -477,48 +511,127 @@ const Profile = () => {
                 </div>
             </div>
 
-            {showAvatarModal && (
+            {EditProfileModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className={`relative bg-white dark:bg-[#1F1F1F] dark:text-gray-300 p-6 rounded-xl shadow-lg w-96`}>
-                        <h2 className="text-xl font-semibold mb-4 text-center">Cập nhật ảnh đại diện</h2>
+                    <div className={`relative p-6 rounded-xl shadow-lg w-[600px] 
+                            ${isDarkMode ? "bg-[#1F1F1F] text-gray-300" : "bg-white text-black"}`}
+                    >
+                        <h2 className="text-xl font-semibold mb-4 text-center">Cập nhật thông tin cá nhân</h2>
 
-                        {previewUrl ? (
-                            <div className="relative w-32 h-32 rounded-full mx-auto mb-4 cursor-pointer"
-                                    onClick={handleCameraClick}>
-                                <img src={previewUrl} alt="Preview" className="w-32 h-32 rounded-full object-cover" />
-                                <div className="absolute top-4 right-4 opacity-0 text-4xl text-gray-800 hover:opacity-60 
-                                    rounded-full p-8 bg-gray-300">
-                                    <IoCamera />
+                        <div className="flex items-center justify-center space-x-2 w-full">
+                            {/* Ảnh đại diện */}
+                            <div className="w-60 flex flex-col items-center justify-center">
+                                {previewUrl ? (
+                                    <div className="relative w-32 h-32 rounded-full mx-auto mb-4 cursor-pointer" onClick={handleCameraClick}>
+                                        <img src={previewUrl} alt="Preview" className="w-32 h-32 rounded-full object-cover" />
+                                        <div className="absolute top-4 right-4 opacity-0 text-4xl text-gray-800 hover:opacity-60 
+                                            rounded-full p-8 bg-gray-300">
+                                            <IoCamera />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div
+                                        className={`w-32 h-32 text-4xl rounded-full mx-auto mb-4 flex items-center justify-center cursor-pointer 
+                                            ${isDarkMode ? "bg-gray-700 text-gray-400" : "bg-gray-200 text-gray-600"}`}
+                                        onClick={handleCameraClick}
+                                    >
+                                        <span className="rounded-full p-8 bg-gray-300">
+                                            <IoCamera />
+                                        </span>
+                                    </div>
+                                )}
+                                <p>Ảnh đại diện</p>
+                                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" ref={fileInputRef} />
+                            </div>
+
+                            {/* Form cập nhật thông tin */}
+                            <div className="space-y-3 w-full">
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="text"
+                                        placeholder={userAccount?.firstName}
+                                        className={`w-full p-2 border rounded-md 
+                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder={userAccount?.lastName}
+                                        className={`w-full p-2 border rounded-md 
+                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                    />
                                 </div>
-                            </div>
-                        ) : (
-                            <div className="w-32 h-32 text-4xl text-gray-200 dark:text-black rounded-full 
-                                mx-auto mb-4 bg-gray-200 flex items-center justify-center cursor-pointer"
-                                onClick={handleCameraClick}>
-                                <span className="rounded-full p-8 bg-gray-300">
-                                    <IoCamera />
-                                </span>
-                            </div>
-                        )}
 
-                        <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" ref={fileInputRef}/>
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="date"
+                                        className={`w-full p-2 border rounded-md 
+                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        value={dob}
+                                        onChange={(e) => setDob(e.target.value)}
+                                    />
+                                    <select
+                                        className={`w-full p-2 border rounded-md 
+                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        value={gender}
+                                        onChange={(e) => setGender(e.target.value)}
+                                    >
+                                        <option value="">Chọn giới tính</option>
+                                        <option value="Male">Nam</option>
+                                        <option value="Female">Nữ</option>
+                                        <option value="Other">Khác</option>
+                                    </select>
+                                </div>
 
-                        <div className="flex justify-center space-x-2">
+                                <input
+                                    type="text"
+                                    placeholder={userAccount?.bio ? userAccount?.bio : "Tiểu sử (bio)"}
+                                    className={`w-full p-2 border rounded-md 
+                                        ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                    value={bio}
+                                    onChange={(e) => setBio(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder={userAccount?.job ? userAccount?.job : "Nghề nghiệp"}
+                                    className={`w-full p-2 border rounded-md 
+                                        ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                    value={job}
+                                    onChange={(e) => setJob(e.target.value)}
+                                />
+                                <input
+                                    type="text"
+                                    placeholder={userAccount?.location ? userAccount?.location : "Nơi sinh sống"}
+                                    className={`w-full p-2 border rounded-md 
+                                        ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                    value={location}
+                                    onChange={(e) => setLocation(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Nút cập nhật */}
+                        <div className="flex justify-center space-x-2 mt-4">
                             <button
                                 className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
-                                onClick={() => handleUpdateImages(true)}
+                                onClick={handleUpdateProfile}
                             >
                                 Cập nhật
                             </button>
                         </div>
-                        <button className={`absolute top-4 right-4 text-2xl text-gray-700 font-semibold rounded-full p-1
-                            ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
-                                : 'text-black bg-gray-100 hover:bg-gray-200'}`}
+
+                        {/* Nút đóng modal */}
+                        <button
+                            className={`absolute top-4 right-4 text-2xl font-semibold rounded-full p-1 
+                                ${isDarkMode ? "text-white bg-[#474747] hover:bg-[#5A5A5A]"
+                                    : "text-black bg-gray-100 hover:bg-gray-200"}`}
                             onClick={() => {
-                                setPreviewUrl(null);
-                                setSelectedFile(null);
-                                setShowAvatarModal(false);
-                            }}>
+                                setEditProfileModal(false);
+                            }}
+                        >
                             <IoClose />
                         </button>
                     </div>

@@ -72,7 +72,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 							: isFirstInGroup // Nếu là tin nhắn đầu trong chuỗi tin nhắn
 								? message.senderId === user?.user.id
 									? 'rounded-t-[20px] rounded-bl-[20px] rounded-br-[4px]' // Người dùng hiện tại
-									: 'rounded-t-[20px] rounded-br-[20px] rounded-bl-[4px] ms-10' // Người gửi khác
+									: 'rounded-t-[20px] rounded-br-[20px] rounded-bl-[4px] ms-10 mt-6' // Người gửi khác
 								: isLastInGroup // Nếu là tin nhắn cuối trong chuỗi tin nhắn
 									? message.senderId === user?.user.id
 										? 'rounded-b-[20px] rounded-tl-[20px] rounded-tr-[4px]' // Người dùng hiện tại
@@ -96,7 +96,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 				)}
 
 				{/* Show images/videos */}
-				{message.publicIds != null && (
+				{message.publicIds != null && message.publicIds != "" && (
 					<div className={`flex flex-col gap-[1px] max-w-[100%]
 					${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start gap-2'}`}>
 						{message.publicIds.map((publicId: string, index: number) => {

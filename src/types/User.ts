@@ -19,9 +19,10 @@ export interface UserUpdateRequest {
     firstName?: string;
     lastName?: string;
     dob?: Date;
-    gender?: Gender;
+    gender?: string;
     bio?: string;
     location?: string;
+    job?: string;
 }
 
 export interface UserImageUpdateReq {
@@ -61,6 +62,7 @@ export interface UserResponse {
          id: string;
          authority: string;
     };
+    conversationId: number;
     dob: string;
     createdAt: Date;
     updatedAt: Date;

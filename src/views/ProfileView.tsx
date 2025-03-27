@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Conversations from "../components/homeview/conversations/Conversations";
 import Profile from "../components/profile/Profile";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../utilities/ThemeContext";
+import { useAuth } from "../utilities/AuthContext";
 
 
 
 const ProfileView = () => {
+	const { user } = useAuth();
+  	const navigate = useNavigate();
 	const deviceType = useDeviceTypeByWidth();
 	const { isDarkMode } = useTheme();
+  
+	useEffect(() => {
+		if (!user) {
+			navigate("/login");
+		}
+	}, [user, navigate]);
 
 	return (
 		<div className={`${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'} flex justify-center items-center`}>

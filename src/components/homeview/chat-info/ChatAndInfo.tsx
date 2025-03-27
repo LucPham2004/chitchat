@@ -232,8 +232,8 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 <h2 className="text-lg font-bold mb-3">Thành viên</h2>
                 <div className="relative flex flex-col w-full">
                     {Participants?.map((participant) => (
-                        <div>
-                            <ParticipantCard key={participant.id} id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
+                        <div key={participant.id}>
+                            <ParticipantCard id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
 
                             {isUserMenuOpen && (
                                 <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">

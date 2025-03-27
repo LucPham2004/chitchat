@@ -115,8 +115,8 @@ const Accordion: React.FC<AccordionProps> = ({
             content: (
                 <div className="relative">
                     {participants?.map((participant) => (
-                        <div>
-                            <ParticipantCard key={participant.id} id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
+                        <div key={participant.id}>
+                            <ParticipantCard id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
 
                             {isUserMenuOpen && (
                                 <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">

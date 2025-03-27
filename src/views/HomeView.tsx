@@ -1,8 +1,10 @@
 import Conversations from "../components/homeview/conversations/Conversations";
 import ChatAndInfo from "../components/homeview/chat-info/ChatAndInfo";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../utilities/ThemeContext";
+import { useAuth } from "../utilities/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 
 export interface ChangeWidthProps {
@@ -11,9 +13,17 @@ export interface ChangeWidthProps {
 }
 
 const HomeView = () => {
+	const { user } = useAuth();
+  	const navigate = useNavigate();
 	const deviceType = useDeviceTypeByWidth();
 	const { isDarkMode } = useTheme();
 	const [isChangeWidth, setChangeWidth] = useState(false);
+  
+	useEffect(() => {
+		if (!user) {
+			navigate("/login");
+		}
+	}, [user, navigate]);
 
     const toggleChangeWidth = () => setChangeWidth(!isChangeWidth);
 
