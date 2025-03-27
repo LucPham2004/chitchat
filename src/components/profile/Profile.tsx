@@ -180,6 +180,7 @@ const Profile = () => {
                 console.log("Request:", request);
 
                 const response = await updateUser(request);
+                handleUpdateImages(true);
                 if (response.result) {
                     alert("Cập nhật thành công!");
                     setUserProfile(response.result);
@@ -411,7 +412,9 @@ const Profile = () => {
                             ))}
                         </div>
                         <div className="flex items-center gap-2">
-                            <p>{friends[0].firstName + " " + friends[0].lastName + ", " + friends[1].firstName + " " + friends[1].lastName + `${friends.length - 2 > 0 ? " và " + `${friends.length - 2}` + " người khác" : ''}`}</p>
+                            {friends.length > 2 && (
+                                <p>{friends[0].firstName + " " + friends[0].lastName + ", " + friends[1].firstName + " " + friends[1].lastName + `${friends.length - 2 > 0 ? " và " + `${friends.length - 2}` + " người khác" : ''}`}</p>
+                            )}
                             <Link to={`/profile/${user_id_param}/friends`}>
                                 <button className={`flex gap-2 items-center text-md min-w-max h-10 border-2 
                                 rounded-full shadow-md transition duration-200 px-3

@@ -9,7 +9,7 @@ import { useAuth } from "../../../../utilities/AuthContext"
 import { ChatResponse } from "../../../../types/Message";
 import { useParams } from "react-router-dom";
 import { useChatContext } from "../../../../utilities/ChatContext";
-import { deleteImage, uploadConversationImage } from "../../../../services/ImageService";
+import { deleteImage, uploadConversationImage, uploadFile } from "../../../../services/ImageService";
 import { uploadConversationVideo } from "../../../../services/VideoService";
 import { ChatParticipants } from "../../../../types/User";
 
@@ -99,26 +99,40 @@ const MainChat: React.FC<MainChatProps> = ({
 
         const uploadedPublicIds: string[] = [];
         const uploadedUrls: string[] = [];
+        const uploadedFileNames: string[] = [];
         const uploadedHeights: number[] = [];
         const uploadedWidths: number[] = [];
         const uploadedResourceTypes: string[] = [];
 
         try {
             for (const file of files) {
+                if(file.type.endsWith("pdf")) {
+                    alert("Chưa hỗ trợ định dạng file này!");
+                    return;
+                }
                 if(file.type.startsWith("video")) {
                     const uploadResult = await uploadConversationVideo(file, Number(conv_id));
                     uploadedPublicIds.push(uploadResult.public_id);
                     uploadedUrls.push(uploadResult.secure_url);
+                    uploadedFileNames.push(uploadResult.original_filename);
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
                     uploadedResourceTypes.push(uploadResult.resource_type);
-                }
-                if(file.type.startsWith("image")) {
+                } else if(file.type.startsWith("image")) {
                     const uploadResult = await uploadConversationImage(file, Number(conv_id));
                     uploadedPublicIds.push(uploadResult.public_id);
                     uploadedUrls.push(uploadResult.secure_url);
+                    uploadedFileNames.push(uploadResult.original_filename);
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
+                    uploadedResourceTypes.push(uploadResult.resource_type);
+                } else {
+                    const uploadResult = await uploadFile(file, Number(conv_id));
+                    uploadedPublicIds.push(uploadResult.public_id);
+                    uploadedUrls.push(uploadResult.secure_url);
+                    uploadedFileNames.push(uploadResult.original_filename);
+                    uploadedHeights.push(5);
+                    uploadedWidths.push(3);
                     uploadedResourceTypes.push(uploadResult.resource_type);
                 }
             }
@@ -131,10 +145,12 @@ const MainChat: React.FC<MainChatProps> = ({
                     content: message,
                     publicIds: uploadedPublicIds,
                     urls: uploadedUrls,
+                    fileNames: uploadedFileNames,
                     heights: uploadedHeights,
                     widths: uploadedWidths,
                     resourceTypes: uploadedResourceTypes
                 };
+                console.log(chatMessage);
 
                 if(!message && uploadedPublicIds.length == 0 && uploadedUrls.length == 0) return;
 
@@ -157,8 +173,11 @@ const MainChat: React.FC<MainChatProps> = ({
                 </div>
             ) : (
             <div className={`min-h-[96vh] flex flex-col items-center justify-center pe-1 pt-1 pb-0 
-                rounded-xl shadow-sm overflow-hidden
-                ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}>
+                rounded-xl shadow-sm overflow-hidden bg-cover bg-center
+                ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}
+                style={{
+                    backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
+                }}>
                 <>
                     <ChatHeader
                         toggleChangeWidth={toggleChangeWidth}
@@ -166,9 +185,8 @@ const MainChat: React.FC<MainChatProps> = ({
                         toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                         conversationResponse={conversationResponse}
                     />
-                    <div
-                        className="relative flex flex-col items-center justify-center w-full max-h-[87vh] min-h-[87vh] overflow-hidden"
-                    >
+                    <div className="relative flex flex-col items-center justify-start w-full 
+                        max-h-[87vh] min-h-[87vh] overflow-hidden">
                         <ChatBody 
                             messages={messages} 
                             setMessages={setMessages} 

@@ -131,7 +131,7 @@ const RegisterView = () => {
 								{/* <p className='text-sm text-red-600'>Username hoặc email đã tồn tại</p> */}
 								<input
 									type="text"
-									placeholder='Username hoặc email'
+									placeholder='Username'
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									required

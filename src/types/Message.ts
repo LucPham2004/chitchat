@@ -17,6 +17,7 @@ export interface ChatRequest {
 
     publicIds: string[];
     urls: string[];
+    fileNames: string[];
     heights: number[];
     widths: number[];
     resourceTypes: string[];
@@ -31,6 +32,7 @@ export interface ChatResponse {
 
     publicIds: string[];
     urls: string[];
+    fileNames: string[];
     heights: number[];
     widths: number[];
     resourceTypes: string[];

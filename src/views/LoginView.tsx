@@ -45,7 +45,7 @@ const LoginView = () => {
 				}
 				<div className={`${deviceType == 'PC' ? 'w-2/5' : 'w-full flex items-center justify-center'}`}>
 					<div className="p-8 rounded-lg w-full max-w-md">
-						<p className={`${deviceType == 'PC' ? 'text-5xl' : 'text-xl'} font-bold text-start text-gray-800 -mt-20 mb-16
+						<p className={`${deviceType == 'PC' ? 'text-5xl' : 'text-3xl'} font-bold text-start text-gray-800 -mt-20 mb-16
 							bg-gradient-to-br from-blue-500 to-pink-400 bg-clip-text text-transparent`}>
 							Nơi tuyệt vời để kết nối năm châu bốn bể
 						</p>

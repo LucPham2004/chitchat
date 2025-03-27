@@ -5,6 +5,7 @@ import { FaFaceGrinWide, FaVideo } from 'react-icons/fa6';
 import { IoIosImages, IoMdClose } from 'react-icons/io';
 import { PiPaperPlaneRightFill } from 'react-icons/pi';
 import { useTheme } from '../../../../utilities/ThemeContext';
+import { FaFileAlt } from 'react-icons/fa';
 
 interface ChatInputProps {
 	setMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -48,7 +49,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 
 
 	return (
-		<form className="absolute bottom-1 flex flex-col p-2 w-full min-w-0" onSubmit={sendMessage}>
+		<form className={`absolute bottom-0 flex flex-col p-2 pb-0 w-full min-w-0 min-h-[7vh]`} 
+			onSubmit={sendMessage}>
 
 			{/* File Preview */}
 			{files.length > 0 && (
@@ -56,7 +58,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 					ref={scrollRef}
 					onWheel={handleWheel}>
 					{files.map((file, index) => (
-						<div key={index} className="relative min-h-20 min-w-20 mt-4 mb-2">
+						<div key={index} className="relative min-h-12 min-w-20 mt-4 mb-2">
 							{file.type.startsWith('image/') ? (
 								<img
 									src={URL.createObjectURL(file)}
@@ -70,8 +72,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 								/>
 							) : (
 								<div className="flex items-center">
-									<FaVideo className="text-blue-500" />
-									<span className="ml-2">{file.name}</span>
+									<div className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
+                                        ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                                        <div className={`px-2 h-12 flex gap-2 items-center justify-center rounded-lg max-w-60
+                                            ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
+                                            <FaFileAlt className='text-2xl'/>
+											<p className='text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{file.name}</p>
+                                        </div>
+                                    </div>
 								</div>
 							)}
 							<button
@@ -87,7 +95,8 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 				</div>
 			)}
 
-			<div className='flex items-end gap-2 mt-2'>
+			<div className={`flex items-end gap-2 mt-2 py-2
+			${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}>
 				{/* File Upload Button */}
 				<label className={`cursor-pointer text-xl p-2 me-1 rounded-full
 				${isDarkMode ? 'hover:bg-[#5A5A5A] text-gray-300 hover:text-gray-200'
@@ -95,7 +104,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 					<input
 						type="file"
 						multiple
-						accept="image/*,video/*"
+						accept="*"
 						className="hidden"
 						onChange={handleFileChange}
 					/>

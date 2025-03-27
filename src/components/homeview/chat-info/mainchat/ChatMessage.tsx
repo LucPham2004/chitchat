@@ -1,8 +1,10 @@
+import { FaFileAlt } from "react-icons/fa";
 import { ConversationResponse } from "../../../../types/Conversation";
 import { ChatResponse } from "../../../../types/Message";
 import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { useTheme } from "../../../../utilities/ThemeContext";
+import { Link } from "react-router-dom";
 
 
 interface MessageProps {
@@ -16,7 +18,7 @@ interface MessageProps {
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
-	message, isFirstInGroup, isLastInGroup, isSingleMessage, 
+	message, isFirstInGroup, isLastInGroup, isSingleMessage,
 	isLastMessageByCurrentUser, conversationResponse,
 	participants
 }) => {
@@ -89,18 +91,19 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 						{isFirstInGroup && message.senderId !== user?.user.id && conversationResponse?.group &&
 							<div className={`absolute -top-5 left-1 text-xs w-max ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-								{isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}` }
+								{isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}`}
 							</div>
 						}
 					</div>
 				)}
 
-				{/* Show images/videos */}
+				{/* Show images/videos/files */}
 				{message.publicIds != null && message.publicIds != "" && (
 					<div className={`flex flex-col gap-[1px] max-w-[100%]
 					${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start gap-2'}`}>
 						{message.publicIds.map((publicId: string, index: number) => {
 							const url = message.urls[index];
+							const isImage = message.resourceTypes[index] === 'image';
 							const isVideo = isVideoUrl(url);
 							const aspectRatio = message.widths[index] / message.heights[index];
 							const widthPercentage = aspectRatio > 1.33 ? '80%' : `${aspectRatio < 0.75 ? '50%' : '60%'}`;
@@ -109,12 +112,32 @@ const ChatMessage: React.FC<MessageProps> = ({
 								<div key={publicId} className={`relative group w-[${widthPercentage}] max-w-[450px] min-w-[100px] cursor-pointer
           								${!isLastInGroup ? 'ms-10' : ''}`}>
 
-									{isVideo ? (
-										<video src={url} controls className="w-full h-auto rounded-xl"/>
-									) : (
+									{isVideo && (
+										<video src={url} controls className="w-full h-auto rounded-xl" />
+									)}
+
+									{isImage && (
 										<div>
-											<img loading="lazy" src={url} alt="A message media" className="w-full h-auto rounded-xl"/>
+											<img loading="lazy" src={url} alt="A message media" className="w-full h-auto rounded-xl" />
 											<div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-md"></div>
+										</div>
+									)}
+
+									{!isImage && !isVideo && (
+										<div className="w-full">
+											<a
+												href={message.urls[index].replace("/upload/", "/upload/fl_attachment/")} // Thêm `?fl_attachment=true` để ép tải xuống
+												download={message.fileNames[index]}
+												target="blank" // Gợi ý tên file khi tải xuống
+												className={`text-md font-medium 
+  													${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}
+											>
+												<div className={`p-2 w-full h-full flex items-center justify-center gap-2 rounded-lg
+													${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
+													<FaFileAlt className='text-2xl' />
+													<p className='text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{message.fileNames[index]}</p>
+												</div>
+											</a>
 										</div>
 									)}
 
@@ -127,7 +150,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			</div>
 
 			{isLastMessageByCurrentUser &&
-				<div className={`absolute -bottom-6 right-1 text-xs w-max
+				<div className={`absolute -bottom-4 right-1 text-xs w-max
 					${isDarkMode ? 'text-gray-200' : 'text-gray-600'}`}>Đã gửi</div>
 			}
 		</div>

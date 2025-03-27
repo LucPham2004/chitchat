@@ -93,12 +93,14 @@ const ConversationList: React.FC = () => {
 
                     if(!lastMessageData || lastMessageData.content == "") {
                         if(conv.lastMessage == null) {
-                            lastMessage = "Các bạn có thể trò chuyện với nhau";
+                            lastMessage = "Hãy trò chuyện với nhau";
                         } else if(conv.lastMessage.content == "") {
-                            if(conv.lastMessage.senderId == user?.user.id) {
-                                lastMessage = "Bạn đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
-                            } else {
-                                lastMessage = conv.name + " đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
+                            if(conv.lastMessage.urls) {
+                                if(conv.lastMessage.senderId == user?.user.id) {
+                                    lastMessage = "Bạn đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
+                                } else {
+                                    lastMessage = conv.name + " đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
+                                }
                             }
                         } else {
                             if(conv.lastMessage.senderId == user?.user.id) {
