@@ -37,6 +37,12 @@ export const getAllUsers = async (page: number = 0, size: number = 20) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/all', { params: { page, size } })).data;
 };
 
+// Search users
+export const searchUsers = async (userId: number, name: string, pageNum: number = 0) => {
+    return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/search/name', 
+        { params: { userId, name, pageNum } })).data;
+};
+
 // Get User's Friends
 export const getUserFriends = async (userId: number, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/user-service/users/get/friends', { params: { userId, pageNum } })).data;

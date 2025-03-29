@@ -218,10 +218,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 						</p>
 
 						{messageReactions.length > 0 && (
-							<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0`}
+							<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 p-0.25
+								${isDarkMode ? 'bg-[#303030]' : ''} rounded-full`}
 								onClick={handleDeleteMessageReaction}>
 								{messageReactions.map((reaction, index) => (
-									<span key={index} className="text-lg drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
+									<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
 								))}
 								<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
 							</div>
@@ -264,10 +265,10 @@ const ChatMessage: React.FC<MessageProps> = ({
 									{!isImage && !isVideo && (
 										<div className="w-full">
 											<a
-												href={message.urls[index].replace("/upload/", "/upload/fl_attachment/")} // Thêm `?fl_attachment=true` để ép tải xuống
+												href={message.urls[index].replace("/upload/", "/upload/fl_attachment/")}
 												download={message.fileNames[index]}
-												target="blank" // Gợi ý tên file khi tải xuống
-												className={`text-md font-medium 
+												target="blank" 
+												className={`text-md font-medium hover:brightness-110
   													${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}
 											>
 												<div className={`p-2 w-full h-full flex items-center justify-center gap-2 rounded-lg
@@ -280,10 +281,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 									)}
 
 									{messageReactions.length > 0 && (
-										<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0`}
+										<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 p-0.25
+											${isDarkMode ? 'bg-[#303030]' : ''} rounded-full`}
 											onClick={handleDeleteMessageReaction}>
 											{messageReactions.map((reaction, index) => (
-												<span key={index} className="text-lg drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
+												<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
 											))}
 											<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
 										</div>

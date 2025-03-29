@@ -9,7 +9,7 @@ import { useTheme } from "../../utilities/ThemeContext";
 import { useAuth } from "../../utilities/AuthContext";
 import FriendItemWithModal from "./friends/FriendItemWithModal";
 import { UserDTO } from "../../types/User";
-import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends } from "../../services/UserService";
+import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends, searchUsers } from "../../services/UserService";
 
 
 
@@ -35,6 +35,13 @@ const Friends = () => {
     };
 
     const isOtherUser = user_id_param != user?.user.id;
+
+    const handleUserSearch = async (keyword: string) => {
+        if(user?.user.id) {
+            const data = await searchUsers(user?.user.id, keyword, 0);
+            console.log("Users found:", data);
+        }
+      };
 
     const fetchFriendsData = async () => {
         if (!user) return;
@@ -179,7 +186,7 @@ const Friends = () => {
                     {friends.length > 0 && (
                         <div className="w-full">
                             <div className="flex justify-end">
-                                <SearchBar />
+                                <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} />
                             </div>
                         </div>
                     )}

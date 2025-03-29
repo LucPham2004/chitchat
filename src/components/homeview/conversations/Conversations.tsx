@@ -14,6 +14,7 @@ import { useAuth } from "../../../utilities/AuthContext";
 import Avatar from "../../common/Avatar";
 import { UserResponse } from "../../../types/User";
 import CreateNewChatModal from "./CreateNewChatModal";
+import { searchConversations } from "../../../services/ConversationService";
 
 const Conversations = () => {
     const {user} = useAuth();
@@ -31,6 +32,13 @@ const Conversations = () => {
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+    };
+
+    const handleConversationSearch = async (keyword: string) => {
+        if(user?.user.id) {
+            const data = await searchConversations(keyword, user?.user.id, 0);
+            console.log("Conversations found:", data.result);
+        }
     };
 
     useEffect(() => {
@@ -105,7 +113,7 @@ const Conversations = () => {
                 </div>
 
                 <div className="flex flex-col items-center w-full h-fit p-2 pe-4">
-                    <SearchBar />
+                    <SearchBar placeholder="Tìm kiếm hội thoại..." onSearch={handleConversationSearch} />
                 </div>
 
                 <div className="flex flex-col items-center w-full h-full py-1 pe-2 overflow-y-auto overflow-x-hidden">

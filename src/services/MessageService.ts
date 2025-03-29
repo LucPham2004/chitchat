@@ -12,8 +12,15 @@ export const getConversationMessages = async (conversationId: number, pageNum: n
 
 export const getUserMessages = async (senderId: number, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ChatResponse>>>(
-        `/chat-service/messages/get`,
+        `/chat-service/messages/get/user`,
         { params: { senderId, pageNum } }
+    )).data;
+};
+
+export const searchMessages = async (conversationId: number, keyword: string, pageNum: number) => {
+    return (await instance.get<ApiResponse<Page<ChatResponse>>>(
+        `/chat-service/messages/search`,
+        { params: { conversationId, keyword, pageNum } }
     )).data;
 };
 

@@ -15,6 +15,7 @@ import { useAuth } from "../../../../utilities/AuthContext";
 import { getMediasByConversationId } from "../../../../services/MediaService";
 import { MediaResponse } from "../../../../types/Media";
 import { ChatParticipants } from "../../../../types/User";
+import { searchMessages } from "../../../../services/MessageService";
 
 
 export interface ConversationInfoProps {
@@ -51,6 +52,13 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     const toggleUserMenu = () => {
         setIsUserMenuOpen(!isUserMenuOpen);
+    };
+
+    const handleMessageSearch = async (keyword: string) => {
+        if (conv_id) {
+            const data = await searchMessages(parseInt(conv_id), keyword, 0);
+            console.log("Messages found:", data.result);
+        }
     };
 
     const handleTabChange = (tab: any) => {
@@ -295,7 +303,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 </div>
 
                 <div className="p-2 pe-0 flex justify-center">
-                    
+
                     {loading ? (
                         <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
                             pb-0 rounded-xl border shadow-sm overflow-y-auto
@@ -303,9 +311,9 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
                         </div>
                     )
-                    : (
-                        renderTabContent()
-                    )}
+                        : (
+                            renderTabContent()
+                        )}
                 </div>
             </div>
         ) : (
