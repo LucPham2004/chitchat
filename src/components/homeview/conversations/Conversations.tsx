@@ -15,30 +15,46 @@ import Avatar from "../../common/Avatar";
 import { UserResponse } from "../../../types/User";
 import CreateNewChatModal from "./CreateNewChatModal";
 import { searchConversations } from "../../../services/ConversationService";
+import { ConversationResponse } from "../../../types/Conversation";
+import ConversationAvatar from "./ConversationAvatar";
 
 const Conversations = () => {
-    const {user} = useAuth();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const { user } = useAuth();
+    const { isDarkMode, toggleDarkMode } = useTheme();
 
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSettingModalOpen, setIsSettingModalOpen] = useState(false);
-    const toggleSettingModalOpen = () => setIsSettingModalOpen(!isSettingModalOpen);
     const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
 
+    const [searchedConversations, setSearchedConversations] = useState<ConversationResponse[] | null>(null);
 
     const LOCAL_STORAGE_KEY = 'user_account';
     const [userAccount, setUser] = useState<UserResponse | null>(null);
 
-    const { isDarkMode, toggleDarkMode } = useTheme();
+    const toggleSettingModalOpen = () => setIsSettingModalOpen(!isSettingModalOpen);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
     const handleConversationSearch = async (keyword: string) => {
-        if(user?.user.id) {
-            const data = await searchConversations(keyword, user?.user.id, 0);
-            console.log("Conversations found:", data.result);
+        if (user?.user.id) {
+            if (keyword.trim() === "") {
+                setSearchedConversations(null);
+                return;
+            }
+            try {
+                const data = await searchConversations(keyword, user.user.id, 0);
+                setSearchedConversations(data.result || []);
+                console.log("searched convs" + data.result);
+            } catch (error) {
+                console.error("Error searching conversations:", error);
+            }
         }
+    };
+
+    const handleClearSearch = () => {
+        setSearchedConversations(null);
     };
 
     useEffect(() => {
@@ -62,8 +78,8 @@ const Conversations = () => {
                     <div className="relative flex flex-row gap-4 items-center justify-end w-[65%]">
                         <button onClick={() => setIsNewChatModalOpen(true)}
                             className={`p-2 rounded-full text-xl 
-                            ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]' 
-                                : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                            ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]'
+                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                             <BsPencilSquare />
                         </button>
                         <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
@@ -79,7 +95,7 @@ const Conversations = () => {
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                         ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                             <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
-                                                {user?.user.firstName + " " + user?.user.lastName}
+                                            {user?.user.firstName + " " + user?.user.lastName}
                                         </li>
                                     </Link>
                                     <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
@@ -90,7 +106,7 @@ const Conversations = () => {
                                             setIsMenuOpen(false);
                                         }}>
                                         <button className={`p-2 rounded-full text-xl
-                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]' 
+                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]'
                                                 : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
                                             <IoSettings />
                                         </button>
@@ -100,7 +116,7 @@ const Conversations = () => {
                                     <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                         ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
                                         <button className={`p-2 rounded-full text-xl
-                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]' 
+                                            ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]'
                                                 : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
                                             <FiLogOut />
                                         </button>
@@ -113,11 +129,33 @@ const Conversations = () => {
                 </div>
 
                 <div className="flex flex-col items-center w-full h-fit p-2 pe-4">
-                    <SearchBar placeholder="Tìm kiếm hội thoại..." onSearch={handleConversationSearch} />
+                    <SearchBar placeholder="Tìm kiếm hội thoại..." onSearch={handleConversationSearch} onClear={handleClearSearch}/>
                 </div>
 
+                {/* Danh sách hội thoại */}
                 <div className="flex flex-col items-center w-full h-full py-1 pe-2 overflow-y-auto overflow-x-hidden">
-                    <ConversationList />
+                    {searchedConversations !== null ? (
+                        searchedConversations.length > 0 ? (
+                            <ul className="w-full">
+                                {searchedConversations.map((conv) => (
+                                    <Link to={`/conversations/${conv.id}`} key={conv.id} onClick={handleClearSearch}>
+                                        <li className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer
+                                                ${isDarkMode ? 'hover:bg-[#3A3A3A]' : 'hover:bg-gray-100'}`}>
+                                            <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []}
+                                                width={12} height={12}></ConversationAvatar>
+                                            <span className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                                                {conv.name}
+                                            </span>
+                                        </li>
+                                    </Link>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500 text-center">Không tìm thấy hội thoại nào.</p>
+                        )
+                    ) : (
+                        <ConversationList />
+                    )}
                 </div>
 
                 {/* Settings Modal */}
@@ -144,7 +182,7 @@ const Conversations = () => {
                                     ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}>
                                     <input type="radio" name="darkmode" value="on" className="w-6 h-6 cursor-pointer"
                                         checked={isDarkMode === false}
-                                        onChange={() => toggleDarkMode()}/>
+                                        onChange={() => toggleDarkMode()} />
                                 </div>
                             </label>
                             <label className={`flex gap-2 w-full rounded-lg p-2 ps-10 items-center justify-between 
@@ -155,7 +193,7 @@ const Conversations = () => {
                                     ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'} `}>
                                     <input type="radio" name="darkmode" value="off" className="w-6 h-6 cursor-pointer"
                                         checked={isDarkMode === true}
-                                        onChange={() => toggleDarkMode()}/>
+                                        onChange={() => toggleDarkMode()} />
                                 </div>
                             </label>
                         </div>

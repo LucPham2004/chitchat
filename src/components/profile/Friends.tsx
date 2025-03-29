@@ -24,6 +24,8 @@ const Friends = () => {
     const [pageNum, setPageNum] = useState(0);
     const [loading, setLoading] = useState(false);
 
+    const [searchedUsers, setSearchedUsers] = useState<UserDTO[] | null>(null);
+    const [clearInput, setclearInput] = useState(false);
 
     const toggleFriendMenuOpen = (id: number) => {
         setSelectedFriendId(prevId => (prevId === id ? null : id));
@@ -38,10 +40,26 @@ const Friends = () => {
 
     const handleUserSearch = async (keyword: string) => {
         if(user?.user.id) {
-            const data = await searchUsers(user?.user.id, keyword, 0);
-            console.log("Users found:", data);
+            if (keyword.trim() === "") {
+                setSearchedUsers(null);
+                return;
+            }
+            try {
+                const data = await searchUsers(user?.user.id, keyword, 0);
+                if (data?.result?.content) {
+                    setFriends(data.result?.content);
+                    console.log("Users found:", data);
+                }
+            } catch (error) {
+                console.error("Error searching conversations:", error);
+            }
         }
       };
+      
+    const handleClearSearch = () => {
+        setFriends([]);
+        fetchFriendsData();
+    };
 
     const fetchFriendsData = async () => {
         if (!user) return;
@@ -183,10 +201,10 @@ const Friends = () => {
                         </div>
                     )}
 
-                    {friends.length > 0 && (
+                    {friends.length > 0 && activeTab != 'friendRequests' && (
                         <div className="w-full">
                             <div className="flex justify-end">
-                                <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} />
+                                <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} onClear={handleClearSearch}/>
                             </div>
                         </div>
                     )}

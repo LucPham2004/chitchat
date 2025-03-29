@@ -1,6 +1,6 @@
 
 interface AvatarProps {
-    avatarUrl: string;
+    avatarUrl?: string;
     width: number;
     height: number;
 }

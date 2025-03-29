@@ -1,6 +1,6 @@
 import { FaArrowLeft, FaLink, FaUserCircle } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
-import { useEffect, useState } from "react";
+import { act, useEffect, useState } from "react";
 import { FaFileAlt } from "react-icons/fa";
 import { BsFillBellFill } from "react-icons/bs";
 import MediaGrid from "./MediaGrid";
@@ -16,6 +16,9 @@ import { getMediasByConversationId } from "../../../../services/MediaService";
 import { MediaResponse } from "../../../../types/Media";
 import { ChatParticipants } from "../../../../types/User";
 import { searchMessages } from "../../../../services/MessageService";
+import { ChatResponse } from "../../../../types/Message";
+import Avatar from "../../../common/Avatar";
+import SearchBar from "../../../common/SearchBar";
 
 
 export interface ConversationInfoProps {
@@ -43,6 +46,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [mediaList, setMediaList] = useState<MediaResponse[]>([]);
+    const [searchedMessages, setSearchedMessages] = useState<ChatResponse[] | null>(null);
 
     const [activeTab, setActiveTab] = useState('default'); // Tab mặc định
     const [isAnimating, setIsAnimating] = useState(false);
@@ -56,10 +60,33 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     const handleMessageSearch = async (keyword: string) => {
         if (conv_id) {
-            const data = await searchMessages(parseInt(conv_id), keyword, 0);
-            console.log("Messages found:", data.result);
+            if (keyword.trim() === "") {
+                setSearchedMessages(null);
+                return;
+            }
+            try {
+                setLoading(true);
+                const data = await searchMessages(parseInt(conv_id), keyword, 0);
+                if (data?.result?.content) {
+                    setSearchedMessages(data.result?.content);
+                    setLoading(false);
+                    console.log("Messages found:", data.result);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error("Error searching conversations:", error);
+                setLoading(false);
+            }
         }
     };
+    
+    const handleClearSearch = () => {
+        setSearchedMessages(null);
+    };
+
+    const isMatchingSender = (senderId: number) => {
+		return participants?.find(participant => participant.id === senderId);
+	}
 
     const handleTabChange = (tab: any) => {
         if (tab !== activeTab) {
@@ -69,7 +96,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             setTimeout(() => {
                 setActiveTab(tab);
                 setIsAnimating(false);
-            }, 100); // Thời gian chuyển đổi
+            }, 100);
         }
 
         console.log(conversationResponse);
@@ -113,6 +140,37 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     // Nội dung từng tab
     const renderTabContent = () => {
         switch (activeTab) {
+
+            case 'search':
+                return (
+                    <>
+                    {searchedMessages !== null ? (
+                            <ul className="w-full">
+                                {searchedMessages.map((message) => (
+                                    <Link to={``} key={message.id} onClick={handleClearSearch}>
+                                        <li className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer
+                                                ${isDarkMode ? 'hover:bg-[#3A3A3A]' : 'hover:bg-gray-100'}`}>
+                                            <Avatar avatarUrl={isMatchingSender(message.senderId)?.avatarUrl} width={12} height={12}></Avatar>
+                                            <div className="flex-1 max-w-[80%]">
+                                                <span className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                                                    {isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}`}
+                                                </span>
+                                                <p className={`text-[15px] truncate max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap
+                                                    ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                                                    {message.content}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    </Link>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-gray-500 text-center">Không tìm thấy tin nhắn nào.</p>
+                        )
+                    }
+                    </>
+                );
+
             case 'media':
                 return (
                     mediaList.length === 0 ? (
@@ -227,7 +285,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             <div className="flex flex-col items-center w-[70px] text-center">
                                 <button className={`p-2 text-xl rounded-full
                                     ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
-                                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}
+                                        onClick={() => setActiveTab('search')}>
                                     <IoSearch />
                                 </button>
                                 <p className="text-sm">Tìm kiếm</p>
@@ -254,7 +313,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     };
 
     return (
-        activeTab !== 'default' ? (
+        activeTab !== 'default' && activeTab != 'search' ? (
             <div className={`flex flex-col gap-4 min-w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
                 pt-1 px-3 rounded-xl border shadow-sm transition-transform duration-300 
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
@@ -317,6 +376,40 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 </div>
             </div>
         ) : (
+            activeTab == 'search' ? 
+            <div className={`flex flex-col gap-4 min-w-full min-h-[96vh] max-h-[96vh] overflow-y-auto 
+                pt-1 px-3 rounded-xl border shadow-sm transition-transform duration-300 
+                ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '-translate-x-full') : ''}
+                ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-800' : 'text-black bg-white border-gray-200'}`}
+            >
+                <div className="flex items-center gap-2 p-2">
+                    <button className={`flex items-center gap-2 p-2 text-left text-lg font-medium 
+                        rounded-full 
+                        ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'
+                            : 'text-gray-800 hover:bg-gray-100'}`}
+                        onClick={() => handleTabChange('default')}>
+                        <FaArrowLeft />
+                    </button>
+                    <p className="text-lg font-semibold">Tìm kiếm</p>
+                </div>
+                
+                <SearchBar placeholder="Tìm kiếm tin nhắn..." onSearch={handleMessageSearch} onClear={handleClearSearch}/>
+
+                <div className="p-2 pe-0 flex justify-center">
+
+                    {loading ? (
+                        <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+                            pb-0 rounded-xl border shadow-sm overflow-y-auto
+                            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+                            <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                        </div>
+                    )
+                        : (
+                            renderTabContent()
+                        )}
+                </div>
+            </div> 
+            :
             <div className={`min-w-full overflow-hidden rounded-xl
                 ${isAnimating ? (animationDirection === 'right' ? 'translate-x-full' : '') : ''}
                 ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>

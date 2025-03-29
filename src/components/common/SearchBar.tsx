@@ -1,21 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoMdClose } from "react-icons/io";
 import { useTheme } from '../../utilities/ThemeContext';
 
 
 interface SearchBarProps {
-	placeholder?: string;
-	onSearch: (keyword: string) => void;
-	debounceTime?: number;
+    placeholder?: string;
+    onSearch: (keyword: string) => void;
+    onClear?: () => void;  // Thêm prop onClear
+    debounceTime?: number;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-	placeholder,
-	onSearch,
-	debounceTime = 200,
+    placeholder,
+    onSearch,
+    onClear,  // Nhận prop onClear
+    debounceTime = 200,
 }) => {
-	const { isDarkMode } = useTheme();
-	const [keyword, setKeyword] = useState("");
+    const { isDarkMode } = useTheme();
+    const [keyword, setKeyword] = useState("");
+
+    const handleClearInput = () => {
+        setKeyword("");
+        onSearch("");
+        if (onClear) onClear();
+    };
 
 	useEffect(() => {
 		const handler = setTimeout(() => {
@@ -23,7 +31,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
 		}, debounceTime);
 
 		return () => clearTimeout(handler);
-	}, [keyword, onSearch, debounceTime]);
+	}, [keyword]);
 
 	return (
 		<form
@@ -44,6 +52,15 @@ const SearchBar: React.FC<SearchBarProps> = ({
 					${isDarkMode ? 'bg-[#3A3B3C] border-gray-900 text-gray-100'
 						: 'bg-gray-100 border-gray-200 text-gray-700'}
 				`} />
+			{keyword.length > 0 && (
+				<button
+					type="button"
+					className="ps-3 py-1 rounded-full text-xl me-2"
+					onClick={handleClearInput}
+				>
+					<IoMdClose /> 
+				</button>
+			)}
 		</form>
 	);
 };
