@@ -17,6 +17,7 @@ import { getConversationById, getParticipantsByConvId, updateConversationPartial
 import { ConversationResponse } from "../../../types/Conversation";
 import { ChatParticipants } from "../../../types/User";
 import { FiLogOut } from "react-icons/fi";
+import { useChatContext } from "../../../utilities/ChatContext";
 
 
 
@@ -27,6 +28,9 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const [Participants, setParticipants] = useState<ChatParticipants[] | undefined>();
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
+    
+    const {setIsDisplayMedia} = useChatContext();
+    const {setDisplayMediaUrl} = useChatContext();
 
     const [isPinnedMessageModalOpen, setIsPinnedMessageModalOpen] = useState(false);
     const togglePinnedMessageModalOpen = () => setIsPinnedMessageModalOpen(!isPinnedMessageModalOpen);
@@ -50,7 +54,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         setIsUserMenuOpen(!isUserMenuOpen);
     };
 
-    const pinnedMessages = pinnedMessagesData;
+    const pinnedMessages: any[] = [];
 
     useEffect(() => {
         setConversation(undefined);
@@ -146,7 +150,11 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                                     <p className="text-xs flex self-end">{message.timestamp}</p>
                                     <div key={i} className="p-2 pt-0 mb-1 w-fit">
                                         <ChatMessage message={[]}
-                                            isFirstInGroup={isFirstInGroup} isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage} />
+                                            isFirstInGroup={isFirstInGroup} 
+                                            isLastInGroup={isLastInGroup} 
+                                            isSingleMessage={isSingleMessage} 
+                                            setDisplayMediaUrl={setDisplayMediaUrl}
+                                            setIsDisplayMedia={setIsDisplayMedia}/>
                                     </div>
                                     <hr className="w-full"></hr>
                                 </div>
@@ -157,7 +165,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     <div className="flex flex-col gap-2 items-center justify-center px-16 py-40 w-max">
                         <img alt="no pinned message" src="/noPinnedImg.png" className="w-54 h-36" />
                         <p className="text-base font-semibold">Chưa ghim tin nhắn nào</p>
-                        <p className="text-gray-600 text-sm">Các tin nhắn được ghim trong đoạn chat này sẽ hiển thị ở đây</p>
+                        <p className="text-gray-400 text-sm">Các tin nhắn được ghim trong đoạn chat này sẽ hiển thị ở đây</p>
                     </div>)}
             </Modal>
 

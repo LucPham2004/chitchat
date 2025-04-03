@@ -12,7 +12,7 @@ import Accordion from "./Accordion";
 import ConversationAvatar from "../../conversations/ConversationAvatar";
 import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../../../../utilities/AuthContext";
-import { getMediasByConversationId } from "../../../../services/MediaService";
+import { getMediasByConversationId, getRawFilesByConversationId } from "../../../../services/MediaService";
 import { MediaResponse } from "../../../../types/Media";
 import { ChatParticipants } from "../../../../types/User";
 import { searchMessages } from "../../../../services/MessageService";
@@ -46,6 +46,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const [mediaList, setMediaList] = useState<MediaResponse[]>([]);
+    const [rawFileList, setRawFileList] = useState<MediaResponse[]>([]);
     const [searchedMessages, setSearchedMessages] = useState<ChatResponse[] | null>(null);
 
     const [activeTab, setActiveTab] = useState('default'); // Tab mặc định
@@ -119,7 +120,10 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         }
                         break;
                     case 'files':
-
+                        response = await getRawFilesByConversationId(parseInt(conv_id), 0);
+                        if (response.result) {
+                            setRawFileList(response.result.content);
+                        }
                         break;
                     case 'links':
 
@@ -185,7 +189,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 );
             case 'files':
                 return (
-                    fileList.length === 0 ? (
+                    rawFileList.length === 0 ? (
                         <div className="flex flex-col items-center justify-center text-center w-60 h-60">
                             <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
                                 Không có file nào</p>
@@ -193,19 +197,22 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 File các bạn trao đổi với nhau sẽ hiện ở đây</p>
                         </div>
                     ) :
-                        <div className="flex flex-col max-h-[74vh] overflow-y-auto rounded-lg">
-                            {fileList.map((file, index) => (
-                                <div key={index}>
-                                    <div className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
+                        <div className="flex flex-col items-start max-h-[74vh] w-full overflow-y-auto rounded-lg">
+                            {rawFileList.map((file, index) => (
+                                <a key={index} className="w-full" 
+                                    href={file.url.replace("/upload/", "/upload/fl_attachment/")}
+                                    download={file.fileName}
+                                    target="blank" >
+                                    <div className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium w-full
                                         ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                                        <div className={`text-lg px-2 h-12 flex items-center justify-center rounded-lg
+                                        <div className={`px-2 gap-2 h-12 flex items-center justify-center rounded-lg w-full
                                             ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
-                                            <FaFileAlt />
+                                            <FaFileAlt className="text-lg"/>
+                                            <p className="text-md w-full">{file.fileName}</p>
                                         </div>
-                                        <p>{file}</p>
                                     </div>
                                     <hr></hr>
-                                </div>
+                                </a>
                             ))}
                         </div>
                 );

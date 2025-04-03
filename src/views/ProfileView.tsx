@@ -5,6 +5,8 @@ import { Outlet, useNavigate } from "react-router-dom";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../utilities/ThemeContext";
 import { useAuth } from "../utilities/AuthContext";
+import { useChatContext } from "../utilities/ChatContext";
+import DisplayMedia from "../components/common/DisplayMedia";
 
 
 
@@ -13,6 +15,9 @@ const ProfileView = () => {
   	const navigate = useNavigate();
 	const deviceType = useDeviceTypeByWidth();
 	const { isDarkMode } = useTheme();
+	
+	const {isDisplayMedia, setIsDisplayMedia} = useChatContext();
+	const {displayMediaUrl} = useChatContext();
   
 	useEffect(() => {
 		if (!user) {
@@ -38,6 +43,9 @@ const ProfileView = () => {
 					<Outlet />
 				</div>
 			</div>
+            {isDisplayMedia && (
+                <DisplayMedia url={displayMediaUrl} setIsDisplayMedia={setIsDisplayMedia} />
+            )}
 		</div>
 	);
 }

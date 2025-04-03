@@ -3,12 +3,12 @@ import { useTheme } from "../../../utilities/ThemeContext";
 import { IoMdSunny } from "react-icons/io";
 import { FiLogOut } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
-import { GrSettingsOption } from "react-icons/gr";
 import { useAuth } from "../../../utilities/AuthContext";
 import { callLogout } from "../../../services/AuthService";
 import Avatar from "../../common/Avatar";
 import { useEffect, useState } from "react";
 import { UserResponse } from "../../../types/User";
+import { IoSettings } from "react-icons/io5";
 
 
 const Sidebar = () => {
@@ -77,7 +77,7 @@ const Sidebar = () => {
                 <button className={`p-3 rounded-lg text-xl
                     ${isDarkMode ? 'text-white hover:bg-[#545454]' 
                         : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
-                    <GrSettingsOption />
+                    <IoSettings />
                 </button>
 
                 <button className={`p-3 rounded-lg text-xl

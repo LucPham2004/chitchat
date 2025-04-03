@@ -10,6 +10,10 @@ type LastMessage = {
 type ChatContextType = {
     lastMessages: Record<string, LastMessage>;
     updateLastMessage: (conversationId: string, senderId: number, content: string, timestamp: string) => void;
+    displayMediaUrl: string | undefined;
+    setDisplayMediaUrl: (url: string | undefined) => void;
+    isDisplayMedia: boolean | null;
+    setIsDisplayMedia: (open: boolean | null) => void;
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -17,6 +21,8 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 // Provider để bọc toàn bộ ứng dụng
 export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [lastMessages, setLastMessages] = useState<Record<string, LastMessage>>({});
+    const [displayMediaUrl, setDisplayMediaUrl] = useState<string | undefined>(undefined);
+    const [isDisplayMedia, setIsDisplayMedia] = useState<boolean | null>(null);
 
     const updateLastMessage = (conversationId: string, senderId: number, content: string, timestamp: string) => {
         setLastMessages((prev) => ({
@@ -26,7 +32,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <ChatContext.Provider value={{ lastMessages, updateLastMessage }}>
+        <ChatContext.Provider value={{ 
+            lastMessages, updateLastMessage, 
+            displayMediaUrl, setDisplayMediaUrl,
+            isDisplayMedia, setIsDisplayMedia }}>
             {children}
         </ChatContext.Provider>
     );

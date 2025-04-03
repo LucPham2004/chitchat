@@ -9,6 +9,7 @@ import { getConversationMessages } from "../../../../services/MessageService";
 import { useParams } from "react-router-dom";
 import { useChatContext } from "../../../../utilities/ChatContext";
 import { ChatParticipants } from "../../../../types/User";
+import DisplayMedia from "../../../common/DisplayMedia";
 
 
 
@@ -25,6 +26,10 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
+
+    const {setIsDisplayMedia} = useChatContext();
+    const {setDisplayMediaUrl} = useChatContext();
+
     const chatEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -183,6 +188,8 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                             conversationResponse={conversationResponse} 
                             participants={participants}
                             onDeleteMessage={onDeleteMessage}
+                            setDisplayMediaUrl={setDisplayMediaUrl}
+                            setIsDisplayMedia={setIsDisplayMedia}
                             />
                     </div>
                 )

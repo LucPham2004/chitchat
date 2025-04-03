@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { deleteMessage } from "../../../../services/MessageService";
 import { createMessageMessageEmojiReaction, deleteMessageMessageEmojiReaction } from "../../../../services/MessageEmojiReactionService";
 import { MessageEmojiReaction } from "../../../../types/MessageEmojiReaction";
+import { Link } from "react-router-dom";
 
 
 interface MessageProps {
@@ -19,12 +20,15 @@ interface MessageProps {
 	conversationResponse?: ConversationResponse;
 	participants?: ChatParticipants[];
 	onDeleteMessage?: (id: number) => void;
+	setDisplayMediaUrl: (url: string) => void;
+	setIsDisplayMedia: (open: boolean) => void;
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
 	message, isFirstInGroup, isLastInGroup, isSingleMessage,
 	isLastMessageByCurrentUser, conversationResponse,
-	participants, onDeleteMessage
+	participants, onDeleteMessage, setDisplayMediaUrl,
+	setIsDisplayMedia
 }) => {
 
 	const { user } = useAuth();
@@ -248,7 +252,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 							const widthPercentage = aspectRatio > 1.33 ? '80%' : `${aspectRatio < 0.75 ? '50%' : '60%'}`;
 
 							return (
-								<div key={publicId} className={`relative group w-[${widthPercentage}] max-w-[450px] min-w-[100px] cursor-pointer
+								<div key={publicId} className={`relative w-[${widthPercentage}] max-w-[450px] min-w-[100px] cursor-pointer
           								${!isLastInGroup ? 'ms-10' : ''}`}>
 
 									{isVideo && (
@@ -256,9 +260,12 @@ const ChatMessage: React.FC<MessageProps> = ({
 									)}
 
 									{isImage && (
-										<div>
-											<img loading="lazy" src={url} alt="A message media" className="w-full h-auto rounded-xl" />
-											<div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 rounded-md"></div>
+										<div onClick={() => {
+												setDisplayMediaUrl(url);
+												setIsDisplayMedia(true);
+											}}>
+											<img loading="lazy" src={url} alt="A message media" className="w-full h-auto rounded-xl
+											hover:brightness-110" />
 										</div>
 									)}
 

@@ -5,6 +5,8 @@ import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../utilities/ThemeContext";
 import { useAuth } from "../utilities/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useChatContext } from "../utilities/ChatContext";
+import DisplayMedia from "../components/common/DisplayMedia";
 
 
 export interface ChangeWidthProps {
@@ -18,6 +20,9 @@ const HomeView = () => {
 	const deviceType = useDeviceTypeByWidth();
 	const { isDarkMode } = useTheme();
 	const [isChangeWidth, setChangeWidth] = useState(false);
+	
+	const {isDisplayMedia, setIsDisplayMedia} = useChatContext();
+	const {displayMediaUrl} = useChatContext();
   
 	useEffect(() => {
 		if (!user) {
@@ -49,6 +54,9 @@ const HomeView = () => {
 					<ChatAndInfo toggleChangeWidth={toggleChangeWidth} isChangeWidth={isChangeWidth}/>
 				</div>
 			</div>
+            {isDisplayMedia && (
+                <DisplayMedia url={displayMediaUrl} setIsDisplayMedia={setIsDisplayMedia} />
+            )}
 		</div>
 	);
 };

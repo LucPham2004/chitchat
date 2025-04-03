@@ -157,7 +157,7 @@ const ConversationList: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <div className={` absolute hidden gap-1 right-10 group-hover:flex`}>
+                                <div className={` absolute hidden gap-1 right-12 group-hover:flex`}>
                                     <button className={`p-2 rounded-full text-md border
                                             ${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#242424] hover:text-gray-200'
                                             : 'text-gray-300 border-gray-300 hover:text-gray-200'}`}

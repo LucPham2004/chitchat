@@ -16,6 +16,7 @@ import { getOtherUserById, getUserById, getUserFriends, updateUser, updateUserIm
 import { Gender, UserDTO, UserImageUpdateReq, UserResponse, UserUpdateRequest } from "../../types/User";
 import { uploadUserImage } from "../../services/ImageService";
 import Avatar from "../common/Avatar";
+import { useChatContext } from "../../utilities/ChatContext";
 
 interface User {
     id: number;
@@ -33,6 +34,8 @@ const Profile = () => {
 
     const [showMenu, setShowMenu] = useState(false);
     const [inputUrl, setInputUrl] = useState("");
+    const {setIsDisplayMedia} = useChatContext();
+    const {setDisplayMediaUrl} = useChatContext();
     const [EditProfileModal, setEditProfileModal] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(user?.user.avatarUrl ? user?.user.avatarUrl : null);
@@ -246,13 +249,21 @@ const Profile = () => {
                         <img
                             src={userProfile?.coverPhotoUrl}
                             alt="Cover"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover cursor-pointer"
+                            onClick={() => {
+                                setDisplayMediaUrl(userProfile?.coverPhotoUrl);
+                                setIsDisplayMedia(true);
+                            }}
                         />
                     </div>
 
                     {/* Ảnh đại diện */}
-                    <div className={`absolute bottom-0 left-8 rounded-full transform translate-y-1/2 border-4
-                            ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}>
+                    <div className={`absolute bottom-0 left-8 rounded-full transform translate-y-1/2 border-4 cursor-pointer
+                            ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}
+                            onClick={() => {
+                                setDisplayMediaUrl(userProfile?.avatarUrl);
+                                setIsDisplayMedia(true);
+                            }}>
 
                         <Avatar avatarUrl={userProfile?.avatarUrl || '/user_default.avif'} width={40} height={40}></Avatar>
                     </div>
