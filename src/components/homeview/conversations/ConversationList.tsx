@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { Link, useParams } from "react-router-dom";
 import { PiUserPlusBold } from "react-icons/pi";
-import { getJoinedConversationsById } from "../../../services/ConversationService";
+import { deleteConversationById, getJoinedConversationsById, updateConversation } from "../../../services/ConversationService";
 import { ConversationShortResponse } from "../../../types/Conversation";
 import { useAuth } from "../../../utilities/AuthContext";
 import { timeAgo } from "../../../utilities/timeAgo";
@@ -27,10 +27,10 @@ const ConversationList: React.FC = () => {
         setOpenMenuId((prev) => (prev === conversationId ? null : conversationId));
     };
 
-    const sortedConversations = [...conversations].sort((a, b) => 
+    const sortedConversations = [...conversations].sort((a, b) =>
         new Date(b.lastMessage?.createdAt || 0).getTime() - new Date(a.lastMessage?.createdAt || 0).getTime()
     );
-    
+
     const observer = useRef<IntersectionObserver | null>(null);
     const lastConversationRef = useCallback((node: HTMLLIElement | null) => {
         if (loading || !hasMore) return;
@@ -45,10 +45,10 @@ const ConversationList: React.FC = () => {
         if (node) observer.current.observe(node);
     }, [loading, hasMore]);
 
-	const isVideoUrl = (url: string): boolean => {
-		const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
-		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-	};
+    const isVideoUrl = (url: string): boolean => {
+        const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+        return videoExtensions.some(ext => url.toLowerCase().includes(ext));
+    };
 
 
     useEffect(() => {
@@ -84,7 +84,7 @@ const ConversationList: React.FC = () => {
         };
     }, [page]);
 
-    if(loading) return (
+    if (loading) return (
         <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
             pb-0 rounded-xl shadow-sm overflow-y-auto
             ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
@@ -101,19 +101,19 @@ const ConversationList: React.FC = () => {
                     let lastMessage = "";
                     const lastMessageTime = lastMessageData ? lastMessageData.timestamp : "";
 
-                    if(!lastMessageData || lastMessageData.content == "") {
-                        if(conv.lastMessage == null) {
+                    if (!lastMessageData || lastMessageData.content == "") {
+                        if (conv.lastMessage == null) {
                             lastMessage = "Hãy trò chuyện với nhau";
-                        } else if(conv.lastMessage.content == "") {
-                            if(conv.lastMessage.urls) {
-                                if(conv.lastMessage.senderId == user?.user.id) {
+                        } else if (conv.lastMessage.content == "") {
+                            if (conv.lastMessage.urls) {
+                                if (conv.lastMessage.senderId == user?.user.id) {
                                     lastMessage = "Bạn đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
                                 } else {
                                     lastMessage = conv.name + " đã gửi một " + `${isVideoUrl(conv.lastMessage.urls[conv.lastMessage.urls.length - 1]) ? "video" : "ảnh"}`;
                                 }
                             }
                         } else {
-                            if(conv.lastMessage.senderId == user?.user.id) {
+                            if (conv.lastMessage.senderId == user?.user.id) {
                                 lastMessage = "Bạn: " + conv.lastMessage.content;
                             } else {
                                 lastMessage = conv.lastMessage.content;
@@ -121,8 +121,8 @@ const ConversationList: React.FC = () => {
                         }
                     } else {
                         console.log(lastMessageData);
-                        if(lastMessageData.senderId == user?.user.id) {
-                            if(lastMessageData.content.startsWith("Bạn: ")) {
+                        if (lastMessageData.senderId == user?.user.id) {
+                            if (lastMessageData.content.startsWith("Bạn: ")) {
                                 lastMessage = lastMessageData.content;
                             } else {
                                 lastMessage = "Bạn: " + lastMessageData.content;
@@ -141,7 +141,7 @@ const ConversationList: React.FC = () => {
                                     ${isDarkMode ? 'text-white hover:bg-[#3A3A3A]' : 'text-black hover:bg-gray-100'}
                                     ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#303030]' : 'bg-gray-200' : ''}`}
                             >
-                                <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []} 
+                                <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []}
                                     width={12} height={12}></ConversationAvatar>
                                 <div className="flex-1 max-w-[80%] ms-4">
                                     <p className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
@@ -161,30 +161,42 @@ const ConversationList: React.FC = () => {
                                     <button className={`p-2 rounded-full text-md border
                                             ${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#242424] hover:text-gray-200'
                                             : 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                toggleMenu(conv.id);
-                                            }}
-                                        >
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            toggleMenu(conv.id);
+                                        }}
+                                    >
                                         <FaEllipsisH />
                                     </button>
                                 </div>
                                 {/* Menu */}
                                 {openMenuId === conv.id && (
                                     <div className="absolute top-10 right-0 mt-2 bg-white dark:bg-[#303030] shadow-lg rounded-xl w-40 z-10">
-                                        <button 
+                                        <button
                                             className="w-max text-left px-4 py-3 rounded-t-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
-                                            onClick={() => console.log("Xoá đoạn chat")}
+                                            onClick={async () => {
+                                                const confirmDelete = window.confirm("Bạn có chắc chắn muốn xoá đoạn chat này?");
+                                                if (confirmDelete) {
+                                                    await deleteConversationById(conv.id);
+                                                    console.log("Đã xoá đoạn chat thành công!");
+                                                }
+                                            }}
                                         >
                                             🗑️ Xoá đoạn chat
                                         </button>
                                         {conv.group && (
-                                        <button 
-                                            className="w-full text-left px-4 py-3 rounded-b-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
-                                            onClick={() => console.log("Rời nhóm")}
-                                        >
-                                            🚪 Rời nhóm
-                                        </button>
+                                            <button
+                                                className="w-full text-left px-4 py-3 rounded-b-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
+                                                onClick={async () => {
+                                                    if (user?.user.id && conv.participantIds) {
+                                                        const participantIds = conv.participantIds.filter(id => id !== user?.user.id);
+                                                        await updateConversation({ participantIds }, user?.user.id);
+                                                    }
+                                                    console.log("Đã cập nhật cuộc trò chuyện!");
+                                                }}
+                                            >
+                                                🚪 Rời nhóm
+                                            </button>
                                         )}
                                     </div>
                                 )}

@@ -4,6 +4,7 @@ import { useAuth } from "../../../utilities/AuthContext";
 import { UserDTO } from "../../../types/User";
 import { getUserFriends } from "../../../services/UserService";
 import { createConversation } from "../../../services/ConversationService";
+import { useTheme } from "../../../utilities/ThemeContext";
 
 type Props = {
     isOpen: boolean;
@@ -12,6 +13,7 @@ type Props = {
 
 const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
     const { user } = useAuth();
+    const { isDarkMode } = useTheme();
     const [friends, setFriends] = useState<UserDTO[]>([]);
     const [creating, setCreating] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -92,7 +94,10 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
                 <input
                     type="text"
                     placeholder="Tìm kiếm bạn bè..."
-                    className="w-full p-2 border rounded"
+                    className={`flex-grow px-4 py-2 focus:outline-none rounded-full
+                        ${isDarkMode ? 'bg-[#3A3B3C] border-gray-900 text-gray-100'
+                            : 'bg-gray-100 border-gray-200 text-gray-700'}
+                    `}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -102,18 +107,21 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
                     {filteredFriends.map((friend) => (
                         <div
                             key={friend.id}
-                            className="flex items-center gap-3 p-2 border rounded hover:bg-gray-100 transition cursor-pointer"
+                            className={`flex items-center gap-3 p-2 border rounded-lg transition cursor-pointer
+                                ${isDarkMode ? ' hover:bg-[#5A5A5A]' : ' hover:bg-gray-100'}`}
+                            onClick={() => handleSelectFriend(friend.id)}
                         >
                             <img
                                 src={friend.avatarUrl}
                                 alt={friend.firstName}
                                 className="w-10 h-10 rounded-full object-cover"
                             />
-                            <span className="flex-1">{friend.firstName + friend.lastName ? `${" " + friend.lastName}` : ''}</span>
+                            <span className="flex-1">{friend.firstName + " " + `${friend.lastName ? friend.lastName : ''}`}</span>
                             <input
+                                className="w-6 h-6"
                                 type="checkbox"
                                 checked={selectedFriendIds.includes(friend.id)}
-                                onChange={() => handleSelectFriend(friend.id)}
+                                onClick={(e) => e.stopPropagation()}
                             />
                         </div>
                     ))}

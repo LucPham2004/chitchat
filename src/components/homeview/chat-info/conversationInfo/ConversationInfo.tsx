@@ -44,7 +44,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
 
-    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
+
     const [mediaList, setMediaList] = useState<MediaResponse[]>([]);
     const [rawFileList, setRawFileList] = useState<MediaResponse[]>([]);
     const [searchedMessages, setSearchedMessages] = useState<ChatResponse[] | null>(null);
@@ -55,8 +56,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const toggleUserMenu = () => {
-        setIsUserMenuOpen(!isUserMenuOpen);
+    const toggleUserMenu = (participantId: number) => {
+        setSelectedParticipantId(prev => (prev === participantId ? null : participantId));
     };
 
     const handleMessageSearch = async (keyword: string) => {
@@ -103,7 +104,6 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
         console.log(conversationResponse);
     };
 
-    const fileList: string[] = [];
     const linkList: string[] = [];
 
     const fetchMediasFilesLinks = async () => {
@@ -149,25 +149,25 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 return (
                     <>
                     {searchedMessages !== null ? (
-                            <ul className="w-full">
-                                {searchedMessages.map((message) => (
-                                    <Link to={``} key={message.id} onClick={handleClearSearch}>
-                                        <li className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer
-                                                ${isDarkMode ? 'hover:bg-[#3A3A3A]' : 'hover:bg-gray-100'}`}>
-                                            <Avatar avatarUrl={isMatchingSender(message.senderId)?.avatarUrl} width={12} height={12}></Avatar>
-                                            <div className="flex-1 max-w-[80%]">
-                                                <span className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                                                    {isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}`}
-                                                </span>
-                                                <p className={`text-[15px] truncate max-w-[70%] overflow-hidden text-ellipsis whitespace-nowrap
-                                                    ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                                                    {message.content}
-                                                </p>
-                                            </div>
-                                        </li>
-                                    </Link>
-                                ))}
-                            </ul>
+                        <ul className="w-full">
+                            {searchedMessages.map((message) => (
+                                <Link to={``} key={message.id} onClick={handleClearSearch}>
+                                    <li className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer
+                                            ${isDarkMode ? 'hover:bg-[#3A3A3A]' : 'hover:bg-gray-100'}`}>
+                                        <Avatar avatarUrl={isMatchingSender(message.senderId)?.avatarUrl} width={12} height={12}></Avatar>
+                                        <div className="flex-1 max-w-[80%]">
+                                            <span className={`text-md font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                                                {isMatchingSender(message.senderId)?.firstName + `${isMatchingSender(message.senderId)?.lastName ? ' ' + isMatchingSender(message.senderId)?.lastName : ''}`}
+                                            </span>
+                                            <p className={`text-[13px] truncate overflow-hidden text-ellipsis whitespace-nowrap
+                                                ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
+                                                {message.content}
+                                            </p>
+                                        </div>
+                                    </li>
+                                </Link>
+                            ))}
+                        </ul>
                         ) : (
                             <p className="text-gray-500 text-center">Không tìm thấy tin nhắn nào.</p>
                         )
@@ -306,7 +306,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
                                 togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
                                 handleTabChange={handleTabChange}
-                                isUserMenuOpen={isUserMenuOpen}
+                                selectedParticipantId={selectedParticipantId}
                                 toggleUserMenu={toggleUserMenu}
                                 isGroup={conversationResponse?.group}
                                 emoji={conversationResponse?.emoji}
@@ -402,7 +402,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                 
                 <SearchBar placeholder="Tìm kiếm tin nhắn..." onSearch={handleMessageSearch} onClear={handleClearSearch}/>
 
-                <div className="p-2 pe-0 flex justify-center">
+                <div className="flex justify-center">
 
                     {loading ? (
                         <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center

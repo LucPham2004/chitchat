@@ -18,8 +18,8 @@ interface AccordionProps {
     toggleChangeConversationNameModalOpen: () => void;
     toggleChangeConversationEmojiModalOpen: () => void;
     handleTabChange: (tab: string) => void;
-    isUserMenuOpen: boolean;
-    toggleUserMenu: () => void;
+    selectedParticipantId: number | null;
+    toggleUserMenu: (id: number) => void;
     isGroup?: boolean | undefined;
     emoji?: string;
     participants?: ChatParticipants[];
@@ -36,7 +36,7 @@ const Accordion: React.FC<AccordionProps> = ({
     toggleChangeConversationNameModalOpen,
     toggleChangeConversationEmojiModalOpen,
     handleTabChange,
-    isUserMenuOpen,
+    selectedParticipantId,
     toggleUserMenu,
     isGroup,
     emoji,
@@ -81,14 +81,14 @@ const Accordion: React.FC<AccordionProps> = ({
                         </div>
                         <p>Đổi tên đoạn chat</p>
                     </button>
-
+{/* 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FaImage />
                         </div>
                         <p>Thay đổi ảnh</p>
-                    </button>
+                    </button> */}
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
@@ -98,14 +98,14 @@ const Accordion: React.FC<AccordionProps> = ({
                         </div>
                         <p>Thay đổi biểu tượng cảm xúc</p>
                     </button>
-
+{/* 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <PiTextAa />
                         </div>
                         <p>Chỉnh sửa biệt danh</p>
-                    </button>
+                    </button> */}
                 </div>
             ),
             hidden: hidden
@@ -116,34 +116,13 @@ const Accordion: React.FC<AccordionProps> = ({
                 <div className="relative">
                     {participants?.map((participant) => (
                         <div key={participant.id}>
-                            <ParticipantCard id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
-
-                            {isUserMenuOpen && (
-                                <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
-                                    <ul className="text-gray-700 p-1">
-                                        <Link to={`/profile/${participant.id}`}>
-                                            <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                                <img src={participant.avatarUrl} className="w-8 h-8 rounded-full" />
-                                                Xem trang cá nhân
-                                            </li>
-                                        </Link>
-                                        <hr></hr>
-                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                            <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-
-                                            </button>
-                                            Nhắn tin
-                                        </li>
-                                        <hr></hr>
-                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                            <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-                                                <FiLogOut />
-                                            </button>
-                                            Chặn
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
+                            <ParticipantCard 
+                                id={participant.id} 
+                                avatar={participant.avatarUrl} 
+                                name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} 
+                                toggleUserMenu={toggleUserMenu} 
+                                selectedParticipantId={selectedParticipantId}
+                            />
                         </div>
                     ))}
                 </div>

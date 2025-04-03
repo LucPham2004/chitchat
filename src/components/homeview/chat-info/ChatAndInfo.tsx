@@ -48,10 +48,10 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const [charCount, setCharCount] = useState<number>(0);
 
 
-    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+    const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
 
-    const toggleUserMenu = () => {
-        setIsUserMenuOpen(!isUserMenuOpen);
+    const toggleUserMenu = (participantId: number) => {
+        setSelectedParticipantId(prev => (prev === participantId ? null : participantId));
     };
 
     const pinnedMessages: any[] = [];
@@ -241,34 +241,12 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 <div className="relative flex flex-col w-full">
                     {Participants?.map((participant) => (
                         <div key={participant.id}>
-                            <ParticipantCard id={participant.id} avatar={participant.avatarUrl} name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`} toggleUserMenu={toggleUserMenu} />
-
-                            {isUserMenuOpen && (
-                                <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
-                                    <ul className="text-gray-700 p-1">
-                                        <Link to={`/profile/${participant.id}`}>
-                                            <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                                <img src={participant.avatarUrl} className="w-8 h-8 rounded-full" />
-                                                Xem trang cá nhân
-                                            </li>
-                                        </Link>
-                                        <hr></hr>
-                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                            <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-
-                                            </button>
-                                            Nhắn tin
-                                        </li>
-                                        <hr></hr>
-                                        <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
-                                            <button className="p-2 rounded-full text-black text-xl bg-gray-200 hover:bg-gray-200">
-                                                <FiLogOut />
-                                            </button>
-                                            Chặn
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
+                            <ParticipantCard 
+                                id={participant.id}
+                                avatar={participant.avatarUrl}
+                                name={participant.firstName + " " + `${participant.lastName ? participant.lastName : ''}`}
+                                toggleUserMenu={toggleUserMenu} 
+                                selectedParticipantId={selectedParticipantId}                            />
                         </div>
                     ))}
                 </div>
