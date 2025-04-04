@@ -25,12 +25,24 @@ export interface UserUpdateRequest {
     job?: string;
 }
 
-export interface UserImageUpdateReq {
+export interface UserUpdateImageRequest {
     id: number;
     avatarPublicId?: string;
     avatarUrl?: string;
     coverPhotoPublicId?: string;
     coverPhotoUrl?: string;
+}
+
+export interface UserUpdateLinksRequest {
+    id: number;
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    tiktok?: string;
+    youtube?: string;
+    linkedin?: string;
+    github?: string;
+    discord?: string;
 }
 
 export interface UserDTO {
@@ -63,6 +75,16 @@ export interface UserResponse {
          authority: string;
     };
     conversationId: number;
+    
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    tiktok?: string;
+    youtube?: string;
+    linkedin?: string;
+    github?: string;
+    discord?: string;
+    
     dob: string;
     createdAt: Date;
     updatedAt: Date;

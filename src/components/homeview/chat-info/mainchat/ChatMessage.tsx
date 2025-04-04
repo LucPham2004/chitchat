@@ -222,8 +222,8 @@ const ChatMessage: React.FC<MessageProps> = ({
 						</p>
 
 						{messageReactions.length > 0 && (
-							<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 p-0.25
-								${isDarkMode ? 'bg-[#303030]' : ''} rounded-full`}
+							<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 
+								${isDarkMode ? 'bg-[#303030]' : 'bg-[#444444]'} rounded-full`}
 								onClick={handleDeleteMessageReaction}>
 								{messageReactions.map((reaction, index) => (
 									<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
@@ -276,10 +276,10 @@ const ChatMessage: React.FC<MessageProps> = ({
 												download={message.fileNames[index]}
 												target="blank" 
 												className={`text-md font-medium hover:brightness-110
-  													${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}
+  													${isDarkMode ? 'text-gray-300' : 'text-gray-200'}`}
 											>
 												<div className={`p-2 w-full h-full flex items-center justify-center gap-2 rounded-lg
-													${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
+													${isDarkMode ? 'bg-[#474747]' : 'bg-[#5b5b5b]'}`}>
 													<FaFileAlt className='text-2xl' />
 													<p className='text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{message.fileNames[index]}</p>
 												</div>
@@ -289,7 +289,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 									{messageReactions.length > 0 && (
 										<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 p-0.25
-											${isDarkMode ? 'bg-[#303030]' : ''} rounded-full`}
+											${isDarkMode ? 'bg-[#303030]' : 'bg-[#444444]'} rounded-full`}
 											onClick={handleDeleteMessageReaction}>
 											{messageReactions.map((reaction, index) => (
 												<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>

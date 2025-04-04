@@ -1,4 +1,4 @@
-import { UserCreationRequest, UserUpdateRequest, UserResponse, UserDTO, UserImageUpdateReq } from '../types/User';
+import { UserCreationRequest, UserUpdateRequest, UserResponse, UserDTO, UserUpdateImageRequest, UserUpdateLinksRequest } from '../types/User';
 import { ApiResponse, Page } from '../types/backend';
 import instance from './Axios-customize';
 
@@ -23,8 +23,12 @@ export const updateUser = async (request: UserUpdateRequest) => {
     return (await instance.put<ApiResponse<UserResponse>>('/user-service/users/update', request)).data;
 };
 
-export const updateUserImages = async (request: UserImageUpdateReq) => {
+export const updateUserImages = async (request: UserUpdateImageRequest) => {
     return (await instance.put<ApiResponse<UserResponse>>('/user-service/users/update/images', request)).data;
+};
+
+export const updateUserLinks = async (request: UserUpdateLinksRequest) => {
+    return (await instance.put<ApiResponse<UserResponse>>('/user-service/users/update/links', request)).data;
 };
 
 // Delete User by ID

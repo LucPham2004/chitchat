@@ -8,6 +8,7 @@ import ProfileView from './views/ProfileView';
 import Friends from './components/profile/Friends';
 import Profile from './components/profile/Profile';
 import Redirect from './utilities/Redirect';
+import UpdateProfile from './components/profile/UpdateProfile';
 
 function App() {
   const router = createBrowserRouter([
@@ -31,6 +32,10 @@ function App() {
         {
           path: 'friends',
           element: <Friends />
+        },
+        {
+          path: 'update',
+          element: <UpdateProfile />
         }
       ]
     },
