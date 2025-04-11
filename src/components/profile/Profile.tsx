@@ -48,8 +48,6 @@ const Profile = () => {
                 setLoading(true);
                 const response = await getOtherUserById(user?.user.id, parseInt(user_id_param));
                 console.log(response);
-                const friendResponse = await getUserFriends(user.user.id, 0);
-                setFriends(friendResponse.result?.content || []);
                 if (response.result) {
                     if (parseInt(user_id_param) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
@@ -63,6 +61,9 @@ const Profile = () => {
                 } else {
                     throw new Error("User response result is undefined");
                 }
+                
+                const friendResponse = await getUserFriends(user.user.id, 0);
+                setFriends(friendResponse.result?.content || []);
 
                 if (!isMountedRef.current) return;
             } else {
@@ -147,6 +148,9 @@ const Profile = () => {
 
             const response = await updateUserImages(request);
             console.log("Cập nhật thành công:", response);
+            setShowMenu(false);
+            setInputUrl("");
+            setSelectedFile(null);
 
             await fetchUser();
         } catch (error) {

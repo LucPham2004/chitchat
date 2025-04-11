@@ -189,8 +189,11 @@ const ConversationList: React.FC = () => {
                                                 className="w-full text-left px-4 py-3 rounded-b-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
                                                 onClick={async () => {
                                                     if (user?.user.id && conv.participantIds) {
-                                                        const participantIds = conv.participantIds.filter(id => id !== user?.user.id);
-                                                        await updateConversation({ participantIds }, user?.user.id);
+                                                        const confirmDelete = window.confirm("Bạn có chắc chắn muốn rời khỏi đoạn chat này?");
+                                                        if (confirmDelete) {
+                                                            const participantIds = conv.participantIds.filter(id => id !== user?.user.id);
+                                                            await updateConversation({ participantIds }, user?.user.id);
+                                                        }
                                                     }
                                                     console.log("Đã cập nhật cuộc trò chuyện!");
                                                 }}

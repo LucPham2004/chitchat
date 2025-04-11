@@ -221,16 +221,24 @@ const ChatMessage: React.FC<MessageProps> = ({
 							{splitLongWords(message.content)}
 						</p>
 
-						{messageReactions.length > 0 && (
-							<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 
-								${isDarkMode ? 'bg-[#303030]' : 'bg-[#444444]'} rounded-full`}
-								onClick={handleDeleteMessageReaction}>
-								{messageReactions.map((reaction, index) => (
-									<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
-								))}
-								<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
-							</div>
-						)}
+						{messageReactions.length > 0 && (() => {
+							const uniqueEmojis = [...new Set(messageReactions.map(r => r.emoji))];
+
+							return (
+								<div
+									className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0
+										${isDarkMode ? 'bg-[#303030]' : 'bg-[#444444]'} rounded-full`}
+									onClick={handleDeleteMessageReaction}
+								>
+									{uniqueEmojis.map((emoji, index) => (
+										<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{emoji}</span>
+									))}
+									<p className={`text-gray-300 ${messageReactions.length > 1 ? "me-1" : ''}`}>
+										{messageReactions.length > 1 ? messageReactions.length : ''}
+									</p>
+								</div>
+							);
+						})()}
 
 						{isFirstInGroup && message.senderId !== user?.user.id && conversationResponse?.group &&
 							<div className={`absolute -top-5 left-1 text-xs w-max ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
@@ -286,17 +294,24 @@ const ChatMessage: React.FC<MessageProps> = ({
 											</a>
 										</div>
 									)}
+									{messageReactions.length > 0 && (() => {
+										const uniqueEmojis = [...new Set(messageReactions.map(r => r.emoji))];
 
-									{messageReactions.length > 0 && (
-										<div className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 p-0.25
-											${isDarkMode ? 'bg-[#303030]' : 'bg-[#444444]'} rounded-full`}
-											onClick={handleDeleteMessageReaction}>
-											{messageReactions.map((reaction, index) => (
-												<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{reaction.emoji}</span>
-											))}
-											<p>{messageReactions.length > 1 ? messageReactions.length : ''}</p>
-										</div>
-									)}
+										return (
+											<div
+												className={`absolute -bottom-4 flex gap-[1px] mt-1 cursor-pointer z-40 right-0 p-0.25
+													${isDarkMode ? 'bg-[#303030]' : 'bg-[#444444]'} rounded-full`}
+												onClick={handleDeleteMessageReaction}
+											>
+												{uniqueEmojis.map((emoji, index) => (
+													<span key={index} className="text-md drop-shadow-[2px_2px_2px_black]">{emoji}</span>
+												))}
+												<p className={`text-gray-300 ${messageReactions.length > 1 ? "me-1" : ''}`}>
+													{messageReactions.length > 1 ? messageReactions.length : ''}
+												</p>
+											</div>
+										);
+									})()}
 								</div>
 							);
 						})}
@@ -324,7 +339,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 				</button>
 
 				{/* Popup emoji */}
-				{activeEmojiPicker == message.id && (
+				{activeEmojiPicker === message.id && activeMenuMessage !== message.id && (
 					<div className="absolute -right-24 bottom-5 mb-2 p-2 bg-white dark:bg-[#1F1F1F]
 						shadow-md rounded-full flex gap-0.5 z-40">
 						{emojis.map((emoji, index) => (

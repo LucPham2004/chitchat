@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import ParticipantCard from "./ParticipantCard";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { ChatParticipants } from "../../../../types/User";
+import { useAuth } from "../../../../utilities/AuthContext";
+import { updateConversation } from "../../../../services/ConversationService";
 
 
 interface AccordionProps {
@@ -42,9 +44,10 @@ const Accordion: React.FC<AccordionProps> = ({
     emoji,
     participants
 }) => {
+    const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const hidden = false;
-    const [openIndices, setOpenIndices] = useState<number[]>([3]);
+    const [openIndices, setOpenIndices] = useState<number[]>([2]);
 
     const toggleAccordion = (index: number) => {
         setOpenIndices((prev) =>
@@ -55,20 +58,20 @@ const Accordion: React.FC<AccordionProps> = ({
     };
 
     const sections: AccordionItem[] = [
-        {
-            title: 'Thông tin về đoạn chat',
-            content: (
-                <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
-                    onClick={togglePinnedMessageModalOpen}>
-                    <div className={`rounded-full p-1 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                        <TiPin />
-                    </div>
-                    <p>Xem tin nhắn đã ghim</p>
-                </button>
-            ),
-            hidden: hidden
-        },
+        // {
+        //     title: 'Thông tin về đoạn chat',
+        //     content: (
+        //         <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+        //             rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+        //             onClick={togglePinnedMessageModalOpen}>
+        //             <div className={`rounded-full p-1 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
+        //                 <TiPin />
+        //             </div>
+        //             <p>Xem tin nhắn đã ghim</p>
+        //         </button>
+        //     ),
+        //     hidden: hidden
+        // },
         {
             title: 'Tuỳ chỉnh đoạn chat',
             content: (
@@ -168,7 +171,7 @@ const Accordion: React.FC<AccordionProps> = ({
             title: 'Quyền riêng tư và hỗ trợ',
             content: (
                 <div>
-
+{/* 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
@@ -183,10 +186,21 @@ const Accordion: React.FC<AccordionProps> = ({
                             <ImBlocked />
                         </div>
                         <p>Chặn</p>
-                    </button>
+                    </button> */}
 
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                        rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                        onClick={async () => {
+                                    if (user?.user.id && participants) {
+                                        const confirmDelete = window.confirm("Bạn có chắc chắn muốn rời khỏi đoạn chat này?");
+                                        if (confirmDelete) {
+                                            const updatedParticipants = participants.filter(participant => participant.id !== user?.user.id);
+                                            const participantIds = updatedParticipants.map(participant => participant.id);
+                                            await updateConversation({ participantIds }, user?.user.id);
+                                        }
+                                    }
+                                    console.log("Đã cập nhật cuộc trò chuyện!");
+                                }}>
                         <div className={`rounded-full p-2 text-xl ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <FiLogOut />
                         </div>

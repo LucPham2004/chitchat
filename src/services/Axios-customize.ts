@@ -35,7 +35,10 @@ instance.interceptors.request.use(function (config) {
     );
 
     if (!shouldExcludeToken && typeof window !== "undefined" && window.localStorage.getItem('access_token')) {
-        config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
+        const token = window.localStorage.getItem('access_token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token.trim()}`;
+        }
     }
     
     if (!config.headers.Accept && config.headers["Content-Type"]) {

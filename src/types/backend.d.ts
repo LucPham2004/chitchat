@@ -42,7 +42,7 @@ export interface User {
 export interface GetAccount extends Omit<Account, "access_token"> { }
 
 export interface Account {
-     access_token: string | undefined;
+     access_token: string ;
      user: {
           id: number;
           email: string;
