@@ -148,7 +148,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             case 'search':
                 return (
                     <>
-                    {searchedMessages !== null ? (
+                    {searchedMessages !== null && searchedMessages.length > 0 ? (
                         <ul className="w-full">
                             {searchedMessages.map((message) => (
                                 <Link to={``} key={message.id} onClick={handleClearSearch}>

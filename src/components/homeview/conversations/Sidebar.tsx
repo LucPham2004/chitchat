@@ -13,6 +13,7 @@ import { IoSettings } from "react-icons/io5";
 
 const Sidebar = () => {
     const {user, setUser} = useAuth();
+	const { logout } = useAuth();
     const navigate = useNavigate();
     const { isDarkMode, toggleDarkMode } = useTheme();
     const LOCAL_STORAGE_KEY = 'user_account';
@@ -21,9 +22,7 @@ const Sidebar = () => {
     const handleLogout = async () => {
         try {
             await callLogout();
-            localStorage.removeItem("user_account");
-            localStorage.removeItem("user");
-            setUser(null);
+            logout();
             navigate("/login");
         } catch (error) {
             console.error("Lỗi khi logout:", error);
@@ -74,11 +73,11 @@ const Sidebar = () => {
                     {isDarkMode ? <IoMdSunny /> : <FaMoon />}
                 </button>
 
-                <button className={`p-3 rounded-lg text-xl
+                {/* <button className={`p-3 rounded-lg text-xl
                     ${isDarkMode ? 'text-white hover:bg-[#545454]' 
                         : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
                     <IoSettings />
-                </button>
+                </button> */}
 
                 <button className={`p-3 rounded-lg text-xl
                     ${isDarkMode ? 'text-white hover:bg-[#545454]' 

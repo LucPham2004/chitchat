@@ -54,6 +54,8 @@ export interface UserDTO {
     avatarUrl: string;
     friendNum?: number;
     mutualFriendsNum?: number | null;
+
+    conversationId?: number;
 }
 
 export interface UserResponse {
@@ -89,6 +91,7 @@ export interface UserResponse {
     createdAt: Date;
     updatedAt: Date;
     gender?: Gender;
+    friend: boolean;
     friendNum: number;
     mutualFriendsNum?: number | null;
 }

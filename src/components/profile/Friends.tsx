@@ -191,7 +191,7 @@ const Friends = () => {
                 </div> */}
             </div>
             <div className="min-h-[86vh] max-h-[90vh] overflow-y-auto">
-                <div className="w-full flex items-center justify-center gap-4 flex-wrap p-4">
+                <div className="w-full flex items-center justify-start gap-4 flex-wrap p-4">
 
                     {loading && (
                         <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
@@ -222,7 +222,7 @@ const Friends = () => {
                         />
                     ))
                     : (
-                        <div className="flex flex-col justify-center items-center border-t border-gray-400 mt-2">
+                        <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
                             <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                 Bạn hiện chưa có bạn bè. Hãy tìm kiếm và bắt đầu các cuộc trò chuyện
@@ -243,7 +243,7 @@ const Friends = () => {
                         />
                     ))
                     : (
-                        <div className="flex flex-col justify-center items-center border-t border-gray-400 mt-2">
+                        <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
                             <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                 Bạn không có lời mời kết bạn nào
@@ -277,7 +277,7 @@ const Friends = () => {
                         />
                     ))
                     : (
-                        <div className="flex flex-col justify-center items-center border-t border-gray-400 mt-2">
+                        <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
                             <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                 Các bạn không có bạn chung nào

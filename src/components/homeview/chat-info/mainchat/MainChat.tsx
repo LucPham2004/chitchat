@@ -164,8 +164,11 @@ const MainChat: React.FC<MainChatProps> = ({
         return (
             !conversationResponse ? (
                 <div className={`min-h-[96vh] max-h-[96vh]  w-full flex items-center justify-center
-                    pb-0 rounded-xl border shadow-sm overflow-y-auto
-                    ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+                    pb-0 rounded-xl shadow-sm overflow-y-auto
+                    ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}
+                    style={{
+                        backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
+                    }}>
                     <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
                 </div>
             ) : (

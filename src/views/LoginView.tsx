@@ -56,7 +56,7 @@ const LoginView = () => {
 							<div>
 								<input
 									type="username"
-									placeholder='Username hoặc email hoặc số điện thoại'
+									placeholder='Username'
 									value={username}
 									onChange={(e) => setUsername(e.target.value)}
 									required

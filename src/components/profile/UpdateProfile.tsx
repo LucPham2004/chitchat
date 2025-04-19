@@ -275,10 +275,8 @@ const UpdateProfile: React.FC = ({ }) => {
                         <button
                             onClick={handleCameraClick}
                             className={`flex items-center justify-center gap-2 py-2 px-4 h-fit rounded-full
-                                ${isDarkMode ? 'border-white' : 'border-white'}
-                                border-2 border-black text-white bg-blue-500 
-                                hover:bg-gradient-to-r from-blue-700 to-blue-600 hover:text-white 
-                                shadow-md transition duration-200`}>
+                                ${isDarkMode ? 'border-white text-white' : 'border-black text-black'}
+                                border-2 hover:text-blue-500 shadow-md transition duration-200`}>
                             <BiSolidEditAlt />
                             <p className="font-semibold">Đổi ảnh đại diện</p>
                         </button>

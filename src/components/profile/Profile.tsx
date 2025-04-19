@@ -8,7 +8,7 @@ import { FaXTwitter } from "react-icons/fa6";
 import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../utilities/ThemeContext";
 import { useAuth } from "../../utilities/AuthContext";
-import { getOtherUserById, getUserFriends, updateUser, updateUserImages } from "../../services/UserService";
+import { getMutualFriends, getOtherUserById, getUserFriends, updateUser, updateUserImages } from "../../services/UserService";
 import { UserDTO, UserUpdateImageRequest, UserResponse, UserUpdateRequest } from "../../types/User";
 import { uploadUserImage } from "../../services/ImageService";
 import Avatar from "../common/Avatar";
@@ -61,9 +61,14 @@ const Profile = () => {
                 } else {
                     throw new Error("User response result is undefined");
                 }
-                
-                const friendResponse = await getUserFriends(user.user.id, 0);
-                setFriends(friendResponse.result?.content || []);
+
+                if(parseInt(user_id_param) == user.user.id) {
+                    const friendResponse = await getUserFriends(user.user.id, 0);
+                    setFriends(friendResponse.result?.content || []);
+                } else {
+                    const mutualFriendResponse = await getMutualFriends(user.user.id, parseInt(user_id_param), 0);
+                    setFriends(mutualFriendResponse.result?.content || []);
+                }
 
                 if (!isMountedRef.current) return;
             } else {
@@ -302,6 +307,8 @@ const Profile = () => {
                                         <p className="font-semibold">Gửi tin nhắn</p>
                                     </button>
                                 </Link>
+
+                                {!userProfile?.friend && (
                                 <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                         ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                         ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
@@ -311,6 +318,7 @@ const Profile = () => {
                                     <PiHandWavingFill />
                                     <p className="font-semibold px-0.5">Gửi kết bạn</p>
                                 </button>
+                                )}
                             </div>
                         )
                             : (
@@ -326,7 +334,7 @@ const Profile = () => {
                                             <p className="font-semibold">Chỉnh sửa</p>
                                         </button>
                                     </Link>
-                                    <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
+                                    {/* <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
                                         ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
                                         ${isDarkMode ? 'border-white' : 'border-black'}
                                         border-2 border-black text-black bg-white 
@@ -334,7 +342,7 @@ const Profile = () => {
                                         rounded-full shadow-md transition duration-200`}>
                                         <IoSettings />
                                         <p className="font-semibold px-0.5">Cài đặt</p>
-                                    </button>
+                                    </button> */}
                                 </div>
                             )}
                     </div>
@@ -354,14 +362,20 @@ const Profile = () => {
                     <div className={`flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
                          border-2 
                         ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
-                        <p className="font-semibold">Bạn có tổng cộng {userProfile?.friendNum} người bạn</p>
+                        {user_id_param && parseInt(user_id_param) == user?.user.id 
+                        ? (
+                            <p className="font-semibold">Bạn có tổng cộng {userProfile?.friendNum} người bạn</p>
+                        ) 
+                        : (
+                            <p className="font-semibold">Các bạn có {friends.length} bạn chung</p>
+                        )}
                         <div className="flex items-center -space-x-2">
                             {friends.map((user) => (
                                 <div key={user.id} className="relative group">
                                     <img
                                         src={user.avatarUrl ? user.avatarUrl : '/user_default.avif'}
                                         alt={user.firstName}
-                                        className="w-10 h-10 rounded-full border-2 border-white cursor-pointer 
+                                        className="w-10 h-10 rounded-full border-2 border-white cursor-pointer object-cover
                                         hover:scale-105 transition-transform"
                                     />
                                     {/* Tooltip */}
@@ -384,7 +398,13 @@ const Profile = () => {
                                         ? 'border-white text-gray-300 bg-[#1F1F1F] hover:border-blue-400 hover:text-blue-400'
                                         : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
                                     }`}>
-                                    <p>Bạn bè</p>
+                                    {user_id_param && parseInt(user_id_param) == user?.user.id 
+                                    ? (
+                                        <p>Bạn bè</p>
+                                    ) 
+                                    : (
+                                        <p>Xem bạn chung</p>
+                                    )}
                                     <FaArrowRight />
                                 </button>
                             </Link>

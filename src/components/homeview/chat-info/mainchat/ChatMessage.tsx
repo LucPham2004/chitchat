@@ -257,7 +257,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 							const isImage = message.resourceTypes[index] === 'image';
 							const isVideo = isVideoUrl(url);
 							const aspectRatio = message.widths[index] / message.heights[index];
-							const widthPercentage = aspectRatio > 1.33 ? '80%' : `${aspectRatio < 0.75 ? '50%' : '60%'}`;
+							const widthPercentage = aspectRatio > 1.33 ? '80%' : `${aspectRatio < 0.75 ? '40%' : '60%'}`;
 
 							return (
 								<div key={publicId} className={`relative w-[${widthPercentage}] max-w-[450px] min-w-[100px] cursor-pointer

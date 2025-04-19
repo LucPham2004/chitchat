@@ -29,6 +29,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
             </div>
             <div className="flex items-center justify-center gap-2">
                 {deviceType == 'PC' &&
+                <Link to={`/conversations/${friend.conversationId}`}>
                 <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit border-2 
                     rounded-full shadow-md transition duration-200
                     ${isDarkMode 
@@ -38,6 +39,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
                     <IoChatbubblesSharp />
                     <p className="text-sm font-semibold">Nhắn tin</p>
                 </button>
+                </Link>
                 }
                 <button className={`rounded-full p-2 text-center text-2xl font-semibold border
                     ${isOpen ? 'bg-[#474747]' : ''}
