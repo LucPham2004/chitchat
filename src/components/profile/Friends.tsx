@@ -194,10 +194,39 @@ const Friends = () => {
                 <div className="w-full flex items-center justify-start gap-4 flex-wrap p-4">
 
                     {loading && (
-                        <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+                        <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center gap-4
                             pb-0 rounded-xl border shadow-sm overflow-y-auto
                             ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
-                            <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+                            <div className={`flex items-center justify-between gap-4 p-2 border rounded-lg shadow-sm animate-pulse
+                                ${isDarkMode ? 'border-gray-600 bg-[#1F1F1F]' : 'border-gray-100 bg-white'}
+                                w-full max-w-[500px]
+                            `}>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-24 h-24 rounded-lg bg-gray-400 dark:bg-[#5A5A5A]"></div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="h-6 w-40 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
+                                        <div className="h-4 w-24 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="h-10 w-10 bg-gray-300 dark:bg-[#5A5A5A] rounded-full"></div>
+                                </div>
+                            </div>
+                            <div className={`flex items-center justify-between gap-4 p-2 border rounded-lg shadow-sm animate-pulse
+                                ${isDarkMode ? 'border-gray-600 bg-[#1F1F1F]' : 'border-gray-100 bg-white'}
+                                w-full max-w-[500px]
+                            `}>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-24 h-24 rounded-lg bg-gray-400 dark:bg-[#5A5A5A]"></div>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="h-6 w-40 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
+                                        <div className="h-4 w-24 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <div className="h-10 w-10 bg-gray-300 dark:bg-[#5A5A5A] rounded-full"></div>
+                                </div>
+                            </div>
                         </div>
                     )}
 
