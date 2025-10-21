@@ -32,6 +32,8 @@ export interface ChatResponse {
     conversationId: number;
     senderId: number;
     recipientId: number[];
+
+    senderName: string;
     content: string;
 
     reactions: MessageEmojiReaction[];
@@ -46,4 +48,7 @@ export interface ChatResponse {
     isRead: boolean;
     createdAt: string;
     updatedAt: string;
+
+    type?: 'message' | 'CALL_REQUEST' | 'CALL_ACCEPT' | 'CALL_REJECT' | 'CALL_END';
+    callType?: 'video' | 'audio';
 }

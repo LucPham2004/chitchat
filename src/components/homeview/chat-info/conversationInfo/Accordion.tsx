@@ -13,6 +13,7 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { updateConversation } from "../../../../services/ConversationService";
+import { conversations } from "../../../../FakeData";
 
 
 interface AccordionProps {
@@ -208,7 +209,7 @@ const Accordion: React.FC<AccordionProps> = ({
                     </button>
                 </div>
             ),
-            hidden: hidden
+            hidden: !isGroup
         }
     ];
 

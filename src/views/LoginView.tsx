@@ -19,7 +19,7 @@ const LoginView = () => {
 			if (response.data.code === 1000 && response.data.result) {
 				const account: Account = response.data.result;
 				login(account);
-				window.location.href = '/';
+				deviceType == 'Mobile'? window.location.href = '/mobile': window.location.href = '/'
 			} else {
 				alert('Đăng nhập thất bại: ' + response.data.message);
 			}
@@ -39,8 +39,8 @@ const LoginView = () => {
 				{deviceType == 'PC' && 
 					<div className='w-3/5 flex items-center justify-center relative'>
 						<div className="absolute -translate-y-1/4 translate-x-2/3 bg-[url('/ChatSample.png')] 
-							w-[360px] h-[340px] bg-cover bg-center shadow-xl rounded-xl"></div>
-						<div className="bg-[url('/profileImage.png')] w-[480px] h-[290px] bg-cover bg-center shadow-xl rounded-xl"></div>
+							w-[290px] h-[260px]  bg-cover bg-center shadow-xl rounded-xl"></div>
+						<div className="bg-[url('/profileImage.png')] w-[360px] h-[220px] md:w-[480px] md:h-[290px] bg-cover bg-center shadow-xl rounded-xl"></div>
 					</div>
 				}
 				<div className={`${deviceType == 'PC' ? 'w-2/5' : 'w-full flex items-center justify-center'}`}>

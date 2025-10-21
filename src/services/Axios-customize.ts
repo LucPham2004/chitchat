@@ -22,14 +22,14 @@ const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null | undefined> => {
     return await mutex.runExclusive(async () => {
-        const res = await instance.get<ApiResponse<AccessTokenResponse>>('/auth-service/auth/refresh');
+        const res = await instance.get<ApiResponse<AccessTokenResponse>>('/auth/refresh');
         if (res && res.data) return res.data?.result?.access_token;
         else return null;
     });
 };
 
 instance.interceptors.request.use(function (config) {
-    const excludedEndpoints = ['/auth-service/auth/login', '/auth-service/auth/register', '/auth-service/auth/logout', '/auth-service/auth/account'];
+    const excludedEndpoints = ['/auth/login', '/auth/register', '/auth/logout', '/auth/account', '/auth/refresh'];
     const shouldExcludeToken = excludedEndpoints.some(endpoint =>
         config.url?.endsWith(endpoint)
     );
@@ -60,24 +60,42 @@ instance.interceptors.response.use(
             window.location.href ="/login";
         }
 
-        if (error.config && error.response
-            && +error.response.status === 401
-            && error.config.url !== '/auth-service/auth/login'
-            && !error.config.headers[NO_RETRY_HEADER]
-        ) {
-            const access_token = await handleRefreshToken();
-            error.config.headers[NO_RETRY_HEADER] = 'true'
-            if (access_token) {
-                error.config.headers['Authorization'] = `Bearer ${access_token}`;
-                localStorage.setItem('access_token', access_token)
-                return instance.request(error.config);
-            }
+        
+    const originalRequest = error.config;
+
+    // Nếu bị 401 và không phải refresh thì thử refresh
+    if (
+      error.response.status === 401 &&
+      originalRequest.url !== '/auth/login' &&
+      originalRequest.url !== '/auth/refresh' &&
+      !originalRequest.headers[NO_RETRY_HEADER]
+    ) {
+      try {
+        const access_token = await handleRefreshToken();
+        if (access_token) {
+          originalRequest.headers[NO_RETRY_HEADER] = 'true';
+          originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
+          localStorage.setItem('access_token', access_token);
+          return instance(originalRequest);
         }
+      } catch (e) {
+        // Refresh fail => redirect
+        window.location.href = "/login";
+      }
+    }
+
+    // Nếu chính refresh token request bị 401 thì redirect luôn
+    if (
+      error.response.status === 401 &&
+      originalRequest.url === '/auth/refresh'
+    ) {
+      window.location.href = "/login";
+    }
 
         if (
             error.config && error.response
             && +error.response.status === 400
-            && error.config.url === '/auth-service/auth/refresh'
+            && error.config.url === '/auth/refresh'
             && location.pathname.startsWith("/admin")
         ) {
             const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";

@@ -5,6 +5,7 @@ import { UserDTO } from "../../../types/User";
 import { getUserFriends } from "../../../services/UserService";
 import { createConversation } from "../../../services/ConversationService";
 import { useTheme } from "../../../utilities/ThemeContext";
+import Avatar from "../../common/Avatar";
 
 type Props = {
     isOpen: boolean;
@@ -112,7 +113,7 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
                             onClick={() => handleSelectFriend(friend.id)}
                         >
                             <img
-                                src={friend.avatarUrl}
+                                src={friend.avatarUrl ?? '/user_default.avif'}
                                 alt={friend.firstName}
                                 className="w-10 h-10 rounded-full object-cover"
                             />
@@ -121,7 +122,6 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
                                 className="w-6 h-6"
                                 type="checkbox"
                                 checked={selectedFriendIds.includes(friend.id)}
-                                onClick={(e) => e.stopPropagation()}
                             />
                         </div>
                     ))}

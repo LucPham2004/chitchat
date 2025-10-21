@@ -96,7 +96,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 			)}
 
 			<div className={`flex items-end gap-2 mt-2 py-2
-			${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}>
+			`}>
 				{/* File Upload Button */}
 				<label className={`cursor-pointer text-xl p-2 me-1 rounded-full
 				${isDarkMode ? 'hover:bg-[#5A5A5A] text-gray-300 hover:text-gray-200'

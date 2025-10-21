@@ -1,7 +1,7 @@
 import { IoCamera, IoChatbubblesSharp, IoClose, IoLogoYoutube, IoSettings } from "react-icons/io5";
 import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
-import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok } from "react-icons/fa";
+import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok, FaUserFriends } from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
@@ -13,6 +13,7 @@ import { UserDTO, UserUpdateImageRequest, UserResponse, UserUpdateRequest } from
 import { uploadUserImage } from "../../services/ImageService";
 import Avatar from "../common/Avatar";
 import { useChatContext } from "../../utilities/ChatContext";
+import { sendFriendRequest } from "../../services/FriendshipService";
 
 
 const LOCAL_STORAGE_KEY = 'user_account';
@@ -47,7 +48,6 @@ const Profile = () => {
             if (user?.user.id && user_id_param) {
                 setLoading(true);
                 const response = await getOtherUserById(user?.user.id, parseInt(user_id_param));
-                console.log(response);
                 if (response.result) {
                     if (parseInt(user_id_param) == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
@@ -163,10 +163,21 @@ const Profile = () => {
         }
     };
 
+    const handleSendRequest = async (userId: number) => {
+        try {
+            console.log("clicked")
+            if (!user) return;
+            const res = await sendFriendRequest(user?.user.id, userId);
+            console.log("Yêu cầu kết bạn đã được gửi: ", res);
+        } catch (error) {
+            console.error("Lỗi khi gửi yêu cầu kết bạn: ", error);
+        }
+    };
+
     if (loading) return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
             pb-0 rounded-xl border shadow-sm overflow-y-auto
-            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+            ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
         </div>
     );
@@ -174,15 +185,16 @@ const Profile = () => {
     if (error) return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
             pb-0 rounded-xl border shadow-sm overflow-y-auto
-            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+            ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <p className="text-red-500 text-lg font-semibold">Lỗi tải dữ liệu, xin vui lòng thử lại sau</p>
         </div>
     );
 
     return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex
+        <div className={`overflow-hidden w-full flex
             pb-0 rounded-xl border shadow-sm overflow-y-auto
-            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+            ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
+            ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="relative flex flex-col w-full min-h-full">
                 <div className="absolute top-3 left-4 z-10">
                     <button className={`p-2 rounded-full text-xl
@@ -209,7 +221,7 @@ const Profile = () => {
 
                     {/* Ảnh đại diện */}
                     <div className={`absolute bottom-0 left-8 rounded-full transform translate-y-1/2 border-4 cursor-pointer
-                            ${isDarkMode ? 'border-[#1F1F1F]' : 'border-white'}`}
+                            ${isDarkMode ? 'border-[#161618]' : 'border-white'}`}
                             onClick={() => {
                                 setDisplayMediaUrl(userProfile?.avatarUrl);
                                 setIsDisplayMedia(true);
@@ -275,15 +287,14 @@ const Profile = () => {
                     </div>
                 </div>
 
-                <div className="mb-5">
+                <div className="">
                     <div className={`flex ${deviceType == 'Mobile' ? 'flex-col' : 'flex-row'} justify-between p-8 pb-2`}>
                         <div className={`flex flex-col items-start mt-12 
                             ${deviceType == 'PC' ? 'max-w-[25%]' :
                                 deviceType == 'Mobile' ? 'max-w-[100%]' : 'max-w-[60%]'
                             } `}>
                             <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-3xl font-bold`}>{userProfile?.firstName + " " + userProfile?.lastName}</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.job ? userProfile?.job : userProfile?.friendNum + " bạn bè"}</p>
-                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.location || userProfile?.dob}</p>
+                            <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.friendNum + " bạn bè"}</p>
                         </div>
 
                         {deviceType == 'PC' &&
@@ -296,10 +307,13 @@ const Profile = () => {
 
                         {user_id_param && parseInt(user_id_param) != user?.user.id ? (
                             <div className="flex flex-col items-end gap-2 pt-4">
-                                <Link to={`/conversations/${userProfile?.conversationId}`}>
+                                <Link to={`${deviceType == 'Mobile' 
+                                    ? `/mobile/conversations/${userProfile?.conversationId}`
+                                    : `/conversations/${userProfile?.conversationId}`}`}
+                                    className="w-full">
                                     <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                            ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                            ${isDarkMode ? 'border-white bg-[#161618] text-blue-400'
                                             : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                             hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
                                             rounded-full shadow-md transition duration-200`}>
@@ -308,13 +322,35 @@ const Profile = () => {
                                     </button>
                                 </Link>
 
-                                {!userProfile?.friend && (
-                                <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
+                                {friends.length > 0 && (
+                                <Link to={`${deviceType == 'Mobile'
+                                    ? `/mobile/profile/${user_id_param}/friends`
+                                    : `/profile/${user_id_param}/friends`}`}
+                                    className="w-full min-w-[130px]">
+                                    <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit min-w-[130px]
                                         ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                        ${isDarkMode ? 'border-white bg-[#1F1F1F] text-blue-400'
+                                        ${isDarkMode ? 'border-white bg-[#161618] text-blue-400'
+                                            : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
+                                            hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
+                                            rounded-full shadow-md transition duration-200`}>
+                                        <FaUserFriends />
+                                        <p className="font-semibold px-0.5">Xem bạn chung</p>
+                                    </button>
+                                </Link>
+                                )}
+
+                                {!userProfile?.friend && (
+                                <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit w-full
+                                        ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                        ${isDarkMode ? 'border-white bg-[#161618] text-blue-400'
                                         : 'border-black bg-white text-blue-700 '} border-2 border-blue-700
                                         hover:bg-gradient-to-r from-blue-500 to-purple-400 hover:text-white 
-                                        rounded-full shadow-md transition duration-200`}>
+                                        rounded-full shadow-md transition duration-200`}
+                                        onClick={() => {
+                                            if(userProfile != null) {
+                                                handleSendRequest(userProfile?.id)
+                                            }
+                                        }}>
                                     <PiHandWavingFill />
                                     <p className="font-semibold px-0.5">Gửi kết bạn</p>
                                 </button>
@@ -323,45 +359,77 @@ const Profile = () => {
                         )
                             : (
                                 <div className="flex flex-col items-end gap-2 pt-4">
-                                    <Link to={`/profile/${user_id_param}/update`}>
+                                    <Link to={`${deviceType == 'Mobile'
+                                        ? `/mobile/profile/${user_id_param}/update`
+                                        : `/profile/${user_id_param}/update`} `}
+                                        className="w-full">
                                         <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                            ${isDarkMode ? 'border-white' : 'border-black'}
-                                            border-2 border-black text-white bg-black 
-                                            hover:bg-gradient-to-r from-white to-gray-200 hover:text-black 
-                                            shadow-md transition duration-200`}>
+                                            ${isDarkMode 
+                                                ? `border-white text-white bg-black 
+                                                    hover:bg-gradient-to-r from-white to-gray-300 hover:text-black` 
+                                                : `border-black text-black bg-white 
+                                                    hover:bg-gradient-to-r from-black to-[#515151] hover:text-white`}
+                                            border-2 shadow-md transition duration-200`}>
                                             <BiSolidEditAlt />
                                             <p className="font-semibold">Chỉnh sửa</p>
                                         </button>
                                     </Link>
-                                    {/* <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
-                                        ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
-                                        ${isDarkMode ? 'border-white' : 'border-black'}
-                                        border-2 border-black text-black bg-white 
-                                        hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                        rounded-full shadow-md transition duration-200`}>
-                                        <IoSettings />
-                                        <p className="font-semibold px-0.5">Cài đặt</p>
-                                    </button> */}
+                                    <Link to={`${deviceType == 'Mobile'
+                                        ? `/mobile/profile/${user_id_param}/friends`
+                                        : `/profile/${user_id_param}/friends`}`}
+                                        className="w-full min-w-[130px]">
+                                        <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit min-w-[130px]
+                                            ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                            ${isDarkMode 
+                                                ? `border-white text-white bg-black 
+                                                    hover:bg-gradient-to-r from-white to-gray-300 hover:text-black` 
+                                                : `border-black text-black bg-white 
+                                                    hover:bg-gradient-to-r from-black to-[#515151] hover:text-white`}
+                                            border-2 shadow-md transition duration-200`}>
+                                            <FaUserFriends />
+                                            <p className="font-semibold px-0.5">Bạn bè</p>
+                                        </button>
+                                    </Link>
+                                    {/* <Link to={`${deviceType == 'Mobile'
+                                        ? `/mobile/profile/${user_id_param}/friends`
+                                        : `/profile/${user_id_param}/friends`}`}
+                                        className="w-full">
+                                        <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
+                                            ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
+                                            ${isDarkMode ? 'border-white' : 'border-black'}
+                                            border-2 border-black text-black bg-white 
+                                            hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
+                                            rounded-full shadow-md transition duration-200`}>
+                                            <FaUserFriends />
+                                            <p className="font-semibold px-0.5">Bạn bè</p>
+                                        </button>
+                                    </Link> */}
                                 </div>
                             )}
                     </div>
                 </div>
 
-                <div className={`flex items-center justify-between gap-8 px-8 py-2
+                <div className={`flex items-center justify-between gap-8 md:px-8 py-2
                     ${deviceType !== 'PC' ? 'flex-col' : 'flex-row'} `}>
 
                     {deviceType !== 'PC' &&
-                        <div className="flex flex-row gap-4 items-center justify-center max-w-[80%] max-h-[136px]">
+                        <div className="flex flex-row gap-4 items-center justify-center max-w-[90%] max-h-[136px]">
                             <p className={`${isDarkMode ? 'text-gray-300' : 'text-gray-800'} text-center text-xl font-satisfy`}>
                                 {userProfile?.bio}
                             </p>
                         </div>
                     }
 
-                    <div className={`flex flex-col items-start justify-between gap-3 max-w-[420px] p-2 rounded-xl 
-                         border-2 
-                        ${isDarkMode ? 'text-gray-300 bg-[#1F1F1F] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
+                    <div className={`flex flex-col items-start justify-between gap-1 w-[80%] max-w-[360px] p-4 pb-4 rounded-xl border-2 
+                        ${isDarkMode ? 'text-gray-300 bg-[#161618] border-gray-400' : 'bg-blue-50 border-blue-400'}`}>
+
+                        <p className={`${isDarkMode ? 'text-gray-200' : 'text-gray-800'} text-xl font-bold`}>Giới thiệu</p>
+
+                        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.job ? `Nghề nghiệp: ${userProfile?.job}` : ""}</p>
+                        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.location? `Nơi sống: ${userProfile?.location}` : ""}</p>
+                        <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.dob? `Ngày sinh: ${userProfile?.dob}` : ""}</p>
+                        
                         {user_id_param && parseInt(user_id_param) == user?.user.id 
                         ? (
                             <p className="font-semibold">Bạn có tổng cộng {userProfile?.friendNum} người bạn</p>
@@ -387,15 +455,17 @@ const Profile = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2">
                             {friends.length > 1 && (
                                 <p>{friends[0].firstName + " " + friends[0].lastName + ", " + friends[1].firstName + " " + friends[1].lastName + `${friends.length - 2 > 0 ? " và " + `${friends.length - 2}` + " người khác" : ''}`}</p>
                             )}
-                            <Link to={`/profile/${user_id_param}/friends`}>
+                            <Link to={`${deviceType == 'Mobile'
+                                ? `/mobile/profile/${user_id_param}/friends`
+                                : `/profile/${user_id_param}/friends`}`}>
                                 <button className={`flex gap-2 items-center text-md min-w-max h-10 border-2 
                                 rounded-full shadow-md transition duration-200 px-3
                                 ${isDarkMode
-                                        ? 'border-white text-gray-300 bg-[#1F1F1F] hover:border-blue-400 hover:text-blue-400'
+                                        ? 'border-white text-gray-300 bg-[#161618] hover:border-blue-400 hover:text-blue-400'
                                         : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
                                     }`}>
                                     {user_id_param && parseInt(user_id_param) == user?.user.id 
@@ -408,7 +478,7 @@ const Profile = () => {
                                     <FaArrowRight />
                                 </button>
                             </Link>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex flex-row gap-3 justify-evenly flex-wrap max-w-[300px]">
@@ -417,13 +487,13 @@ const Profile = () => {
                             { icon: <FaInstagramSquare />, link: userAccount?.instagram, color: "border-pink-600 text-pink-500 hover:bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 hover:text-white" },
                             { icon: <FaLinkedin />, link: userAccount?.linkedin, color: "border-blue-600 text-blue-500 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white" },
                             { icon: <FaTiktok />, link: userAccount?.tiktok, color: `hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
-                                ${isDarkMode ? 'bg-[#1F1F1F] text-gray-300 border-gray-500 hover:border-gray-300'
+                                ${isDarkMode ? 'bg-[#161618] text-gray-300 border-gray-500 hover:border-gray-300'
                                             : 'bg-white text-gray-700 border-gray-700'}` },
                             { icon: <FaXTwitter />, link: userAccount?.twitter, color: "border-blue-600 text-blue-500 hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white" },
                             { icon: <IoLogoYoutube />, link: userAccount?.youtube, color: "border-red-500 text-red-500 hover:bg-gradient-to-r from-red-500 to-red-600 hover:text-white" },
                             { icon: <FaDiscord />, link: userAccount?.discord, color: "border-blue-700 text-blue-500 hover:bg-gradient-to-r from-blue-600 to-blue-700 hover:text-white" },
                             { icon: <FaGithub />, link: userAccount?.github, color: `hover:bg-gradient-to-r from-gray-700 to-gray-800 hover:text-white
-                                ${isDarkMode ? 'bg-[#1F1F1F] text-gray-300 border-gray-500 hover:border-gray-300'
+                                ${isDarkMode ? 'bg-[#161618] text-gray-300 border-gray-500 hover:border-gray-300'
                                             : 'bg-white text-gray-700 border-gray-700'}` },
                         ].map(({ icon, link, color }, index) => (
                             <div key={index} className="w-[60px] flex items-center justify-center">
@@ -431,7 +501,7 @@ const Profile = () => {
                                     <a href={link} target="_blank" rel="noopener noreferrer" className="w-fit">
                                         <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
                                             border-2 rounded-full shadow-md transition duration-200 ${color}
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}
                                             cursor-pointer`}>
                                             {icon}
                                         </button>
@@ -439,7 +509,7 @@ const Profile = () => {
                                 ) : (
                                     <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
                                         border-2 rounded-full shadow-md transition duration-200 ${color}
-                                        ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}
+                                        ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}
                                         cursor-default`}>
                                         {icon}
                                     </button>

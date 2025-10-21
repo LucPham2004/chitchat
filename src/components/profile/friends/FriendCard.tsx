@@ -21,9 +21,19 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
             ${isDarkMode ? 'border-gray-600' : 'border-gray-100'}
         `}>
             <div className="flex items-center gap-4">
-                <img src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} alt={friend.firstName + " " + friend.lastName} className="w-24 h-24 rounded-lg object-cover" />
+                <Link to={`${deviceType == 'Mobile' 
+                        ? `/mobile/profile/${friend.id}`
+                        : `/profile/${friend.id}`}`} >
+                <img 
+                    src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} 
+                    alt={friend.firstName + " " + friend.lastName} 
+                    className="w-24 h-24 rounded-lg object-cover" />
+                </Link>
                 <div className={`flex flex-col items-start  ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
-                    <Link to={`/profile/${friend.id}`} className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
+                    <Link to={`${deviceType == 'Mobile' 
+                        ? `/mobile/profile/${friend.id}`
+                        : `/profile/${friend.id}`}`} 
+                        className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
                     <p className="text-sm font-semibold">{friend.mutualFriendsNum} bạn chung</p>
                 </div>
             </div>
@@ -33,7 +43,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
                 <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit border-2 
                     rounded-full shadow-md transition duration-200
                     ${isDarkMode 
-                    ? 'border-blue-400 text-gray-200 bg-[#1F1F1F] hover:text-blue-300' 
+                    ? 'border-blue-400 text-gray-200 bg-[#161618] hover:text-blue-300' 
                     : 'border-blue-400 text-blue-700 bg-white hover:bg-gradient-to-r from-blue-500 to-blue-400 hover:text-white '}
                     `}>
                     <IoChatbubblesSharp />

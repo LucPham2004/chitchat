@@ -39,7 +39,7 @@ const Sidebar = () => {
     return (
         <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden min-w-[10%] flex flex-col gap-4 
             py-2 items-center justify-between rounded-xl
-            ${isDarkMode ? 'bg-[#1A1A1A] text-gray-300' : 'bg-gray-100 text-black'}`}>
+            ${isDarkMode ? ' text-gray-300' : 'text-black'}`}>
             
             <div className="flex flex-col items-center gap-2">
                 <Link to={`/profile/${user?.user.id}`}>
@@ -50,14 +50,14 @@ const Sidebar = () => {
 {/*                 
                 <button className={`p-3 rounded-lg text-xl 
                     ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
-                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                        : 'text-black  hover:bg-gray-200'}`}>
                     <BsChatDots />
                 </button> */}
                 
                 <Link to={`/profile/${user?.user.id}/friends`}>
                     <button className={`p-3 rounded-lg text-xl 
                         ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
-                            : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                            : 'text-black  hover:bg-gray-200'}`}>
                         <FaUserFriends />
                     </button>
                 </Link>
@@ -68,20 +68,20 @@ const Sidebar = () => {
             <div className="flex flex-col items-center gap-2">
                 <button className={` rounded-lg 
                     ${isDarkMode ? 'text-yellow-400 text-xl p-3 hover:bg-[#5A5A5A]' 
-                        : 'text-yellow-400 text-2xl p-2.5 bg-gray-100 hover:bg-gray-200'}`}
+                        : 'text-yellow-400 text-2xl p-2.5  hover:bg-gray-200'}`}
                         onClick={toggleDarkMode}>
                     {isDarkMode ? <IoMdSunny /> : <FaMoon />}
                 </button>
 
                 {/* <button className={`p-3 rounded-lg text-xl
                     ${isDarkMode ? 'text-white hover:bg-[#545454]' 
-                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                        : 'text-black  hover:bg-gray-200'}`}>
                     <IoSettings />
                 </button> */}
 
                 <button className={`p-3 rounded-lg text-xl
                     ${isDarkMode ? 'text-white hover:bg-[#545454]' 
-                        : 'text-black bg-gray-100 hover:bg-gray-200'}`}
+                        : 'text-black  hover:bg-gray-200'}`}
                         onClick={handleLogout} >
                     <FiLogOut />
                 </button>

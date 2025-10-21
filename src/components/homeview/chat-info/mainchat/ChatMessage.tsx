@@ -64,7 +64,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 	};
 
 	const isVideoUrl = (url: string): boolean => {
-		const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+		const videoExtensions = ['.mp4', '.webm', '.mov', '.mkv'];
 		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
 	};
 
@@ -136,7 +136,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
 				<img
-					src={isMatchingSender(message.senderId)?.avatarUrl}
+					src={isMatchingSender(message.senderId)?.avatarUrl || '/user_default.avif'}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="avatar"
 				/>
@@ -154,7 +154,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Popup emoji */}
 				{activeEmojiPicker === message.id && activeMenuMessage !== message.id && (
-					<div className="absolute -left-28 bottom-5 mb-2 p-2 bg-white dark:bg-[#1F1F1F] 
+					<div className="absolute -left-28 bottom-5 mb-2 p-2 bg-white dark:bg-[#161618] 
 						shadow-md rounded-full flex gap-0.5 z-40">
 						{emojis.map((emoji, index) => (
 							<button key={index} className="text-2xl hover:scale-110 transition"
@@ -176,8 +176,8 @@ const ChatMessage: React.FC<MessageProps> = ({
 				</button>
 
 				{/* Menu xóa tin nhắn - chỉ hiển thị nếu tin nhắn này được chọn */}
-				{activeMenuMessage === message.id && activeEmojiPicker !== message.id && (
-					<div className="absolute -right-12 bottom-6 mb-2 p-2 bg-white dark:bg-[#1F1F1F] shadow-md rounded-lg z-40">
+				{message.senderId === user?.user.id && activeMenuMessage === message.id && activeEmojiPicker !== message.id && (
+					<div className="absolute -right-12 bottom-6 mb-2 p-2 bg-white dark:bg-[#161618] shadow-md rounded-lg z-40">
 						<button
 							className="flex items-center text-sm w-max gap-2 p-1 text-red-500 hover:text-red-700"
 							onClick={handleDeleteMessage}
@@ -202,11 +202,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 							: `${isDarkMode ? 'bg-[#27221B] text-gray-300 px-3' : 'bg-[#F3F3F3] px-3'} `} `}
 					
 					${isSingleMessage // Nếu là tin nhắn đơn
-							? message.senderId === user?.user.id ? 'rounded-[20px]' : 'rounded-[20px] mt-6'
+							? message.senderId === user?.user.id ? 'rounded-[20px]' : `rounded-[20px]`
 							: isFirstInGroup // Nếu là tin nhắn đầu trong chuỗi tin nhắn
 								? message.senderId === user?.user.id
 									? 'rounded-t-[20px] rounded-bl-[20px] rounded-br-[4px]' // Người dùng hiện tại
-									: 'rounded-t-[20px] rounded-br-[20px] rounded-bl-[4px] ms-10 mt-6' // Người gửi khác
+									: 'rounded-t-[20px] rounded-br-[20px] rounded-bl-[4px] ms-10' // Người gửi khác
 								: isLastInGroup // Nếu là tin nhắn cuối trong chuỗi tin nhắn
 									? message.senderId === user?.user.id
 										? 'rounded-b-[20px] rounded-tl-[20px] rounded-tr-[4px]' // Người dùng hiện tại
@@ -250,7 +250,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Show images/videos/files */}
 				{message.publicIds != null && message.publicIds != "" && (
-					<div className={`flex flex-col gap-[1px] max-w-[100%]
+					<div className={`flex flex-col gap-[1px] 
 					${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start gap-2'}`}>
 						{message.publicIds.map((publicId: string, index: number) => {
 							const url = message.urls[index];
@@ -344,7 +344,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Popup emoji */}
 				{activeEmojiPicker === message.id && activeMenuMessage !== message.id && (
-					<div className="absolute -right-24 bottom-5 mb-2 p-2 bg-white dark:bg-[#1F1F1F]
+					<div className="absolute -right-24 bottom-5 mb-2 p-2 bg-white dark:bg-[#161618]
 						shadow-md rounded-full flex gap-0.5 z-40">
 						{emojis.map((emoji, index) => (
 							<button key={index} className="text-2xl hover:scale-110 transition"

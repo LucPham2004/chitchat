@@ -9,12 +9,14 @@ import { timeAgo } from "../../../utilities/timeAgo";
 import { useChatContext } from "../../../utilities/ChatContext";
 import ConversationAvatar from "./ConversationAvatar";
 import { FaEllipsisH } from "react-icons/fa";
+import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 
 
 const ConversationList: React.FC = () => {
     const { isDarkMode } = useTheme();
     const { user } = useAuth();
     const { conv_id } = useParams();
+    const deviceType = useDeviceTypeByWidth();
     const [conversations, setConversations] = useState<ConversationShortResponse[]>([]);
     const [page, setPage] = useState<number>(0);
     const { lastMessages } = useChatContext();
@@ -58,7 +60,6 @@ const ConversationList: React.FC = () => {
             setLoading(true);
             try {
                 const response = await getJoinedConversationsById(user.user.id, page);
-                console.log(response);
                 if (!isMounted) return;
 
                 const newConversations = response.result?.content ?? [];
@@ -87,7 +88,7 @@ const ConversationList: React.FC = () => {
 
     return (
         <div className={`w-full rounded-lg 
-            ${isDarkMode ? 'bg-[#1F1F1F] text-gray-100 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
+            ${isDarkMode ? ' text-gray-100 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
             <ul className="w-full">
                 {sortedConversations.map((conv, index) => {
                     const lastMessageData = lastMessages[conv.id];
@@ -113,7 +114,6 @@ const ConversationList: React.FC = () => {
                             }
                         }
                     } else {
-                        console.log(lastMessageData);
                         if (lastMessageData.senderId == user?.user.id) {
                             if (lastMessageData.content.startsWith("Bạn: ")) {
                                 lastMessage = lastMessageData.content;
@@ -126,13 +126,16 @@ const ConversationList: React.FC = () => {
                     }
 
                     return (
-                        <Link to={`/conversations/${conv.id}`} key={conv.id}>
+                        <Link to={`${deviceType == 'Mobile' 
+                                ? `/mobile/conversations/${conv.id}`
+                                : `/conversations/${conv.id}`}`} 
+                            key={conv.id}>
                             <li
                                 key={conv.id}
                                 ref={index === conversations.length - 1 ? lastConversationRef : null}
                                 className={`relative flex items-center p-2.5 rounded-lg cursor-pointer group
-                                    ${isDarkMode ? 'text-white hover:bg-[#3A3A3A]' : 'text-black hover:bg-gray-100'}
-                                    ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#303030]' : 'bg-gray-200' : ''}`}
+                                    ${isDarkMode ? 'text-white hover:bg-[#28282A]' : 'text-black hover:bg-gray-100'}
+                                    ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#2e2e2e]' : 'bg-gray-200' : ''}`}
                             >
                                 <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []}
                                     width={12} height={12}></ConversationAvatar>
@@ -191,7 +194,7 @@ const ConversationList: React.FC = () => {
                                                     console.log("Đã cập nhật cuộc trò chuyện!");
                                                 }}
                                             >
-                                                🚪 Rời nhóm
+                                                🚪 Rời cuộc trò chuyện
                                             </button>
                                         )}
                                     </div>
@@ -209,10 +212,12 @@ const ConversationList: React.FC = () => {
                             ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                             Hãy tìm kiếm bạn bè để bắt đầu các cuộc trò chuyện
                         </p>
-                        <Link to={`/profile/${user?.user.id}/friends`}>
+                        <Link to={`${deviceType == 'Mobile' 
+                            ? `/mobile/profile/${user?.user.id}/friends`
+                            : `/profile/${user?.user.id}/friends` }`}>
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit rounded-full
-                                ${isDarkMode ? 'border-white text-white bg-[#474747] hover:bg-[#5A5A5A]'
-                                    : 'border-black text-gray-800 bg-gray-200 hover:bg-gray-300'}
+                                ${isDarkMode ? 'border-white text-white hover:bg-[#2e2e2e]'
+                                    : 'border-black text-gray-800 hover:bg-gray-200'}
                                 border-2 shadow-md transition duration-200`}>
                                 <PiUserPlusBold />
                                 <p className="font-semibold">Tìm bạn bè</p>

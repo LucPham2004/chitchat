@@ -31,71 +31,49 @@ const MainChat: React.FC<MainChatProps> = ({
     const { user } = useAuth();
     const { conv_id } = useParams();
     const { isDarkMode } = useTheme();
-    const { updateLastMessage } = useChatContext();
+
+    const { 
+        sendMessage: sendWebSocketMessage, 
+        subscribeToConversation, 
+        isConnected
+    } = useChatContext();
 
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<ChatResponse[]>([]);
     const [files, setFiles] = useState<File[]>([]);
-    const stompClientRef = useRef<any>(null);
 
     const isVideoUrl = (url: string): boolean => {
-		const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
-		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-	};
+        const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+        return videoExtensions.some(ext => url.toLowerCase().includes(ext));
+    };
 
     useEffect(() => {
         document.title = conversationResponse?.name + " | Chit Chat" || "Chit Chat";
     }, []);
-    
+
     useEffect(() => {
         setMessages([]);
     }, [conv_id]);
 
     useEffect(() => {
-        if (!conversationResponse || !conv_id) return;
+        if (!user?.user.id) return;
 
-        // Ngắt kết nối WebSocket cũ nếu có
-        if (stompClientRef.current && stompClientRef.current.connected) {
-            console.log("Disconnecting WebSocket...");
-            stompClientRef.current.disconnect();
-        }
-
-        // Tạo một kết nối WebSocket mới
-        const stompClient = Stomp.client("ws://localhost:8888/chat-service/ws");
-        stompClientRef.current = stompClient;
-
-        stompClient.connect({}, (frame: any) => {
-            console.log("Connected to WebSocket", frame);
-
-            // Lắng nghe tin nhắn của cuộc trò chuyện mới
-            stompClient.subscribe(`/topic/conversation/${conv_id}`, (message: any) => {
-                const receivedMessage = JSON.parse(message.body);
-                console.log(receivedMessage)
-                setMessages((prev) => [...prev, receivedMessage]);
-
-                if(receivedMessage.urls.length > 0) {
-                    updateLastMessage(conv_id, receivedMessage.senderId, `${receivedMessage.senderId == user?.user.id ? "Bạn" : conversationResponse.name}` + " đã gửi một " + `${isVideoUrl(receivedMessage.urls[receivedMessage.urls.length - 1]) ? "video" : "ảnh"}`, new Date().toISOString());
-                } else {
-                    updateLastMessage(conv_id, receivedMessage.senderId, `${receivedMessage.senderId == user?.user.id ? "Bạn: " + receivedMessage.content : receivedMessage.content}`, new Date().toISOString());
-                }
-            });
-        }, (error: any) => {
-            console.error("WebSocket connection failed: ", error);
+        const unsubscribe = subscribeToConversation(user?.user.id, (receivedMessage) => {
+            console.log('Message received in conversation:', receivedMessage);
+            
+            setMessages((prev) => [...prev, receivedMessage]);
         });
 
-        return () => {
-            // Ngắt kết nối khi component unmount
-            if (stompClientRef.current && stompClientRef.current.connected) {
-                console.log("Disconnecting WebSocket...");
-                stompClientRef.current.disconnect();
-            }
-        };
-    }, [conversationResponse?.id, conv_id]); // Lắng nghe sự thay đổi của `conv_id`
-
-
+        return unsubscribe;
+    }, [conv_id, subscribeToConversation]);
 
     const sendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+
+        if (!isConnected) {
+            alert("Kết nối WebSocket không khả dụng. Vui lòng thử lại sau.");
+            return;
+        }
 
         const uploadedPublicIds: string[] = [];
         const uploadedUrls: string[] = [];
@@ -105,17 +83,19 @@ const MainChat: React.FC<MainChatProps> = ({
         const uploadedResourceTypes: string[] = [];
 
         try {
+            // File upload logic (giữ nguyên)
             for (const file of files) {
-                if(file.type.endsWith("pdf")) {
+                if (file.type.endsWith("pdf")) {
                     alert("Chưa hỗ trợ định dạng file này!");
                     return;
                 }
+                
                 let uploadResult;
-                if(file.type.startsWith("video")) {
+                if (file.type.startsWith("video")) {
                     uploadResult = await uploadConversationVideo(file, Number(conv_id));
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
-                } else if(file.type.startsWith("image")) {
+                } else if (file.type.startsWith("image")) {
                     uploadResult = await uploadConversationImage(file, Number(conv_id));
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
@@ -124,14 +104,14 @@ const MainChat: React.FC<MainChatProps> = ({
                     uploadedHeights.push(5);
                     uploadedWidths.push(3);
                 }
-                
+
                 uploadedPublicIds.push(uploadResult.public_id);
                 uploadedUrls.push(uploadResult.secure_url);
                 uploadedFileNames.push(uploadResult.original_filename);
                 uploadedResourceTypes.push(uploadResult.resource_type);
             }
 
-            if ((message.trim() || files.length > 0) && stompClientRef.current && conversationResponse) {
+            if ((message.trim() || files.length > 0) && conversationResponse) {
                 const chatMessage = {
                     conversationId: conv_id,
                     senderId: user?.user.id,
@@ -144,39 +124,41 @@ const MainChat: React.FC<MainChatProps> = ({
                     widths: uploadedWidths,
                     resourceTypes: uploadedResourceTypes
                 };
-                console.log(chatMessage);
 
-                if(!message && uploadedPublicIds.length == 0 && uploadedUrls.length == 0) return;
+                if (!message && uploadedPublicIds.length === 0 && uploadedUrls.length === 0) return;
 
-                stompClientRef.current.send("/app/chat.sendMessage", {}, JSON.stringify(chatMessage));
-                setMessage('');
-                setFiles([]);
+                const success = sendWebSocketMessage(chatMessage);
+                if (success) {
+                    setMessage('');
+                    setFiles([]);
+                } else {
+                    alert("Không thể gửi tin nhắn. Vui lòng thử lại.");
+                }
             }
-         } catch (error) {
-                console.error('Error creating post:', error);
-            }
-        };
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert("Có lỗi xảy ra khi gửi tin nhắn.");
+        }
+    };
 
-        const handleDeleteMessage = (messageId: number) => {
-            setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
-        };
+    const handleDeleteMessage = (messageId: number) => {
+        setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
+    };
 
-        return (
-            !conversationResponse ? (
-                <div className={`min-h-[96vh] max-h-[96vh]  w-full flex items-center justify-center
+    return (
+        !conversationResponse ? (
+            <div className={`min-h-[96vh] max-h-[96vh]  w-full flex items-center justify-center
                     pb-0 rounded-xl shadow-sm overflow-y-auto
-                    ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}
-                    style={{
-                        backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
-                    }}>
-                    <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
-                </div>
-            ) : (
+                    `}
+                >
+                <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
+            </div>
+        ) : (
             <div className={`min-h-[96vh] flex flex-col items-center justify-center pe-1 pt-1 pb-0 
                 rounded-xl shadow-sm bg-cover bg-center
-                ${isDarkMode ? 'bg-black ' : 'bg-[#FF9E3B]'}`}
+                `}
                 style={{
-                    backgroundImage: `url(${isDarkMode ? '/convBgDark.jpg' : '/convBg.jpg'})`,
+                    backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : '/sky-bg.jpg'})`,
                 }}>
                 <>
                     <ChatHeader
@@ -187,23 +169,23 @@ const MainChat: React.FC<MainChatProps> = ({
                     />
                     <div className="relative flex flex-col items-center justify-start w-full 
                         max-h-[87vh] min-h-[87vh] ">
-                        <ChatBody 
-                            messages={messages} 
-                            setMessages={setMessages} 
+                        <ChatBody
+                            messages={messages}
+                            setMessages={setMessages}
                             conversationResponse={conversationResponse}
                             participants={participants}
                             files={files}
                             onDeleteMessage={handleDeleteMessage}
                         />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
-                            files={files} setFiles={setFiles} emoji={conversationResponse.emoji}/>
+                            files={files} setFiles={setFiles} emoji={conversationResponse.emoji} />
                     </div>
                 </>
             </div>
-            )
-        );
+        )
+    );
 
-    }
+}
 
-    export default MainChat
+export default MainChat
 

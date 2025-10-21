@@ -11,7 +11,7 @@ const DisplayMedia: React.FC<DisplayMediaProps> = ({ url, setIsDisplayMedia }) =
     const { isDarkMode } = useTheme();
 
     const isVideoUrl = (url: string): boolean => {
-        const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
+        const videoExtensions = ['.mp4', '.webm', '.mov', '.mkv'];
         return videoExtensions.some(ext => url.toLowerCase().includes(ext));
     };
 

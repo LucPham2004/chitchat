@@ -1,4 +1,4 @@
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaBars } from "react-icons/fa";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import FriendCard from "./friends/FriendCard";
 import SearchBar from "../common/SearchBar";
@@ -10,12 +10,14 @@ import { useAuth } from "../../utilities/AuthContext";
 import FriendItemWithModal from "./friends/FriendItemWithModal";
 import { UserDTO } from "../../types/User";
 import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends, searchUsers } from "../../services/UserService";
+import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
 
 
 
 const Friends = () => {
     const { user } = useAuth();
     const { user_id_param } = useParams();
+    const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
     const [activeTab, setActiveTab] = useState(user_id_param == user?.user.id ? 'allFriends' : 'mutualFriends');
     const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
@@ -23,6 +25,7 @@ const Friends = () => {
     const [friends, setFriends] = useState<UserDTO[]>([]);
     const [pageNum, setPageNum] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [showMenu, setShowMenu] = useState(false);
 
     const [searchedUsers, setSearchedUsers] = useState<UserDTO[] | null>(null);
     const [clearInput, setclearInput] = useState(false);
@@ -39,7 +42,7 @@ const Friends = () => {
     const isOtherUser = user_id_param != user?.user.id;
 
     const handleUserSearch = async (keyword: string) => {
-        if(user?.user.id) {
+        if (user?.user.id) {
             if (keyword.trim() === "") {
                 setSearchedUsers(null);
                 return;
@@ -54,8 +57,8 @@ const Friends = () => {
                 console.error("Error searching conversations:", error);
             }
         }
-      };
-      
+    };
+
     const handleClearSearch = () => {
         setFriends([]);
         fetchFriendsData();
@@ -127,13 +130,14 @@ const Friends = () => {
     const cardComponent = getCardComponent(activeTab);
 
     return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-col
-            pb-0 rounded-xl bordershadow-sm overflow-y-auto
-            ${isDarkMode ? 'bg-[#1F1F1F] text-gray-300 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
+        <div className={`overflow-hidden w-full flex flex-col pb-0 rounded-xl bordershadow-sm overflow-y-auto
+            ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
+            ${isDarkMode ? 'bg-[#161618] text-gray-300 border-gray-900' : 'bg-white text-black border-gray-200'}`}
+            onClick={() => setShowMenu(!showMenu)}>
 
             <div className={`sticky top-0 z-10 w-full flex px-4 pt-2
-                    items-center justify-center border-b-2
-                    ${isDarkMode ? 'bg-[#1F1F1F] text-gray-300 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
+                    items-center justify-end md:justify-center border-b-2
+                    ${isDarkMode ? 'bg-[#161618] text-gray-300 border-gray-900' : 'bg-white text-black border-gray-200'}`}>
                 <div className="absolute top-3 left-4 z-10">
                     <button className={`p-2 rounded-full text-xl
                     ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
@@ -143,52 +147,118 @@ const Friends = () => {
                     </button>
                 </div>
 
-                {!isOtherUser ? (
-                    <div className="flex flex-row items-center justify-center rounded-md ms-[40px]">
-                        <button className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
-                            ${activeTab === 'allFriends' ?
-                                isDarkMode ? 'text-gray-100 border-blue-600' : 'border-blue-600'
-                                : isDarkMode ? 'text-gray-400 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
+
+                {/* ✅ MOBILE: Nút menu */}
+                {!isOtherUser && (
+                    <div className="flex md:hidden items-center justify-center">
+                        <button
+                            onClick={() => setShowMenu(!showMenu)}
+                            className={`p-2 rounded-md text-md font-semibold flex items-center gap-2
+                                ${isDarkMode ? 'bg-[#2C2C2C] text-gray-200' : 'bg-gray-100 text-black'}`}
+                        >
+                            <FaBars />
+                            <span>Danh mục</span>
+                        </button>
+
+                        {/* Dropdown menu */}
+                        {showMenu && (
+                            <div
+                                className={`absolute top-[60px] right-4 rounded-lg shadow-lg border
+                                    ${isDarkMode ? 'bg-[#1E1E1E] border-gray-700 text-gray-200' : 'bg-white border-gray-200 text-black'}`}
+                            >
+                                {[
+                                    { key: 'allFriends', label: 'Tất cả bạn bè' },
+                                    { key: 'friendRequests', label: 'Lời mời kết bạn' },
+                                    { key: 'findFriends', label: 'Tìm bạn bè' },
+                                ].map(tab => (
+                                    <button
+                                        key={tab.key}
+                                        onClick={() => {
+                                            setActiveTab(tab.key);
+                                            setSelectedFriendId(null);
+                                            setShowMenu(false);
+                                        }}
+                                        className={`block w-full px-4 py-2 text-left hover:bg-gray-200 dark:hover:bg-[#333]
+                                            ${activeTab === tab.key ? 'font-semibold text-blue-600' : ''}`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {/* ✅ DESKTOP: Tabs như cũ */}
+                {!isOtherUser && (
+                    <div className="hidden md:flex flex-row items-center justify-center rounded-md ms-[40px]">
+                        <button
+                            className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
+                                ${activeTab === 'allFriends'
+                                    ? isDarkMode
+                                        ? 'text-gray-100 border-blue-600'
+                                        : 'border-blue-600'
+                                    : isDarkMode
+                                        ? 'text-gray-400 hover:bg-[#5A5A5A]'
+                                        : 'text-black hover:bg-gray-200'}`}
                             onClick={() => {
                                 setActiveTab('allFriends');
                                 setSelectedFriendId(null);
-                            }}>
+                            }}
+                        >
                             Tất cả bạn bè
                         </button>
-                        <button className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
-                            ${activeTab === 'friendRequests' ?
-                                isDarkMode ? 'text-gray-100 border-blue-600' : 'border-blue-600'
-                                : isDarkMode ? 'text-gray-400 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
+                        <button
+                            className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
+                                ${activeTab === 'friendRequests'
+                                    ? isDarkMode
+                                        ? 'text-gray-100 border-blue-600'
+                                        : 'border-blue-600'
+                                    : isDarkMode
+                                        ? 'text-gray-400 hover:bg-[#5A5A5A]'
+                                        : 'text-black hover:bg-gray-200'}`}
                             onClick={() => {
                                 setActiveTab('friendRequests');
                                 setSelectedFriendId(null);
-                            }}>
+                            }}
+                        >
                             Lời mời kết bạn
                         </button>
-                        <button className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
-                            ${activeTab === 'findFriends' ?
-                                isDarkMode ? 'text-gray-100 border-blue-600' : 'border-blue-600'
-                                : isDarkMode ? 'text-gray-400 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
+                        <button
+                            className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
+                                ${activeTab === 'findFriends'
+                                    ? isDarkMode
+                                        ? 'text-gray-100 border-blue-600'
+                                        : 'border-blue-600'
+                                    : isDarkMode
+                                        ? 'text-gray-400 hover:bg-[#5A5A5A]'
+                                        : 'text-black hover:bg-gray-200'}`}
                             onClick={() => {
                                 setActiveTab('findFriends');
                                 setSelectedFriendId(null);
-                            }}>
+                            }}
+                        >
                             Tìm bạn bè
                         </button>
                     </div>
-                ) : (
-                    <button className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
-                            ${activeTab === 'findFriends' ?
-                            isDarkMode ? 'text-gray-100 border-blue-600' : 'border-blue-600'
-                            : isDarkMode ? 'text-gray-400 hover:bg-[#5A5A5A]' : 'text-black hover:bg-gray-200'}`}
-                        onClick={() => setActiveTab('mutualFriends')}>
+                )}
+
+                {/* Khi là trang khác user */}
+                {isOtherUser && (
+                    <button
+                        className={`w-max h-fit py-3 px-4 text-md font-semibold rounded-t-lg border-b-[3px]
+                            ${activeTab === 'mutualFriends'
+                                ? isDarkMode
+                                    ? 'text-gray-100 border-blue-600'
+                                    : 'border-blue-600'
+                                : isDarkMode
+                                    ? 'text-gray-400 hover:bg-[#5A5A5A]'
+                                    : 'text-black hover:bg-gray-200'}`}
+                        onClick={() => setActiveTab('mutualFriends')}
+                    >
                         Bạn chung
                     </button>
                 )}
-
-                {/* <div className="w-[300px] absolute top-3 right-4">
-                    <SearchBar />
-                </div> */}
             </div>
             <div className="min-h-[86vh] max-h-[90vh] overflow-y-auto">
                 <div className="w-full flex items-center justify-start gap-4 flex-wrap p-4">
@@ -196,9 +266,9 @@ const Friends = () => {
                     {loading && (
                         <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center gap-4
                             pb-0 rounded-xl border shadow-sm overflow-y-auto
-                            ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900' : 'bg-white border-gray-200'}`}>
+                            ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
                             <div className={`flex items-center justify-between gap-4 p-2 border rounded-lg shadow-sm animate-pulse
-                                ${isDarkMode ? 'border-gray-600 bg-[#1F1F1F]' : 'border-gray-100 bg-white'}
+                                ${isDarkMode ? 'border-gray-600 bg-[#161618]' : 'border-gray-100 bg-white'}
                                 w-full max-w-[500px]
                             `}>
                                 <div className="flex items-center gap-4">
@@ -213,7 +283,7 @@ const Friends = () => {
                                 </div>
                             </div>
                             <div className={`flex items-center justify-between gap-4 p-2 border rounded-lg shadow-sm animate-pulse
-                                ${isDarkMode ? 'border-gray-600 bg-[#1F1F1F]' : 'border-gray-100 bg-white'}
+                                ${isDarkMode ? 'border-gray-600 bg-[#161618]' : 'border-gray-100 bg-white'}
                                 w-full max-w-[500px]
                             `}>
                                 <div className="flex items-center gap-4">
@@ -233,7 +303,7 @@ const Friends = () => {
                     {friends.length > 0 && activeTab != 'friendRequests' && (
                         <div className="w-full">
                             <div className="flex justify-end">
-                                <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} onClear={handleClearSearch}/>
+                                <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} onClear={handleClearSearch} />
                             </div>
                         </div>
                     )}
@@ -250,14 +320,14 @@ const Friends = () => {
                             CardComponent={cardComponent}
                         />
                     ))
-                    : (
-                        <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
-                            <p className={`text-center text-md font-semibold py-4 px-10
+                        : (
+                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                                <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                                Bạn hiện chưa có bạn bè. Hãy tìm kiếm và bắt đầu các cuộc trò chuyện
-                            </p>
-                        </div>
-                    ))}
+                                    Bạn hiện chưa có bạn bè. Hãy tìm kiếm và bắt đầu các cuộc trò chuyện
+                                </p>
+                            </div>
+                        ))}
 
                     {/* Friend requests */}
                     {activeTab == 'friendRequests' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
@@ -271,17 +341,17 @@ const Friends = () => {
                             CardComponent={cardComponent}
                         />
                     ))
-                    : (
-                        <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
-                            <p className={`text-center text-md font-semibold py-4 px-10
+                        : (
+                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                                <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                                Bạn không có lời mời kết bạn nào
-                            </p>
-                        </div>
-                    ))}
+                                    Bạn không có lời mời kết bạn nào
+                                </p>
+                            </div>
+                        ))}
 
                     {/* Find friends */}
-                    {activeTab == 'findFriends' && friends.map((friend, index) => (
+                    {activeTab == 'findFriends' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
                         <FriendItemWithModal
                             key={friend.id}
                             friend={friend}
@@ -291,7 +361,15 @@ const Friends = () => {
                             isDarkMode={isDarkMode}
                             CardComponent={cardComponent}
                         />
-                    ))}
+                    ))
+                        : (
+                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                                <p className={`text-center text-md font-semibold py-4 px-10
+                                                ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
+                                    Danh sách rỗng
+                                </p>
+                            </div>
+                        ))}
 
                     {/* Mutual friends */}
                     {activeTab == 'mutualFriends' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
@@ -305,14 +383,14 @@ const Friends = () => {
                             CardComponent={cardComponent}
                         />
                     ))
-                    : (
-                        <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
-                            <p className={`text-center text-md font-semibold py-4 px-10
+                        : (
+                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                                <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                                Các bạn không có bạn chung nào
-                            </p>
-                        </div>
-                    ))}
+                                    Các bạn không có bạn chung nào
+                                </p>
+                            </div>
+                        ))}
                 </div>
             </div>
         </div>

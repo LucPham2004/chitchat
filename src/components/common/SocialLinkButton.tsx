@@ -19,7 +19,7 @@ const SocialLinkButton: React.FC<SocialLinkButtonProps> = ({
             <button
                 className={`flex items-center gap-2 py-2 px-4 h-fit w-fit text-xl
                 border-2 rounded-full shadow-md transition duration-100
-                ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}
+                ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}
                 text-${textColor} border-${borderColor} 
                 hover:bg-gradient-to-r from-${bgColorFrom} to-${bgColorTo} hover:text-white`}
             >

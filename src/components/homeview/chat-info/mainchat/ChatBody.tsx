@@ -9,7 +9,6 @@ import { getConversationMessages } from "../../../../services/MessageService";
 import { useParams } from "react-router-dom";
 import { useChatContext } from "../../../../utilities/ChatContext";
 import { ChatParticipants } from "../../../../types/User";
-import DisplayMedia from "../../../common/DisplayMedia";
 
 
 
@@ -105,7 +104,6 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
             setIsFetching(true);
             try {
                 const response = await getConversationMessages(conversationResponse.id, 0);
-                console.log("Initial messages:", response);
 
                 if (response.result && response.result.content.length > 0) {
                     const newMessages = response.result?.content.reverse() || [];
@@ -115,7 +113,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                     if(conv_id) {
                         const lastMessages = newMessages;
                         const lastMessage = lastMessages[lastMessages.length - 1];
-                        updateLastMessage(conv_id, lastMessage.senderId, lastMessage.content, lastMessage.createdAt);
+                        updateLastMessage(parseInt(conv_id), lastMessage.senderId, lastMessage.content, lastMessage.createdAt);
                     }
                 } else {
                     setHasMore(false);
@@ -151,7 +149,11 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     // Chỉ tự động cuộn xuống khi chat ở dưới cùng và có tin nhắn mới
     useEffect(() => {
         if (isAtBottom) {
-            setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 500);
+            if(messages.at(messages.length)?.fileNames[0]) {
+                setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 300);
+            } else {
+                setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 10);
+            }
         }
     }, [messages]);
 

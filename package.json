@@ -22,6 +22,7 @@
     "react-icons": "^5.4.0",
     "react-intersection-observer": "^9.15.1",
     "react-router-dom": "^7.1.1",
+    "simple-peer": "^9.11.1",
     "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3"
   },
@@ -30,6 +31,7 @@
     "@types/node": "^22.10.5",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@types/simple-peer": "^9.11.8",
     "@types/sockjs-client": "^1.5.4",
     "@types/stompjs": "^2.3.9",
     "@vitejs/plugin-react": "^4.3.4",

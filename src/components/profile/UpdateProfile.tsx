@@ -9,12 +9,14 @@ import { FaArrowLeft, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLink
 import { useNavigate, useParams } from "react-router-dom";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
+import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
 
 
 const UpdateProfile: React.FC = ({ }) => {
     const { user } = useAuth();
     const { user_id_param } = useParams();
     const { isDarkMode } = useTheme();
+    const deviceType = useDeviceTypeByWidth();
 
     const [userAccount, setUserAccount] = useState<UserResponse | null>(null);
     const [userProfile, setUserProfile] = useState<UserResponse | null>(null);
@@ -39,7 +41,7 @@ const UpdateProfile: React.FC = ({ }) => {
     const [discord, setDiscord] = useState("");
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(user?.user.avatarUrl ? user?.user.avatarUrl : null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(user?.user.avatarUrl ? user?.user.avatarUrl : userAccount ? userAccount.avatarUrl : null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleCameraClick = () => {
@@ -74,7 +76,6 @@ const UpdateProfile: React.FC = ({ }) => {
                 if (response.result) {
                     await handleUpdateImages(true);
                     await handleUpdateLinks();
-                    alert("Cập nhật thành công!");
                     setUserProfile(response.result);
                     setUserAccount(response.result);
                 } else {
@@ -221,14 +222,17 @@ const UpdateProfile: React.FC = ({ }) => {
     };
 
     return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex
+        <div className={`overflow-hidden w-full flex
                 pb-0 rounded-xl border shadow-sm overflow-y-auto
-                ${isDarkMode ? 'bg-[#1F1F1F] border-gray-900 text-gray-300' : 'bg-white border-gray-200 text-black'}`}>
-            <div className="relative flex flex-col items-center w-full min-h-[96vh] max-h-[96vh] pt-0">
+                ${deviceType == 'Mobile' ? 'max-h-[100vh]' : 'min-h-[96vh] max-h-[96vh]'}
+                ${isDarkMode ? 'bg-[#161618] border-gray-900 text-gray-300' : 'bg-white border-gray-200 text-black'}`}>
+            <div className={`relative flex flex-col items-center w-full pt-0
+                ${deviceType == 'Mobile' ? 'max-h-[100vh]' : 'min-h-[96vh] max-h-[96vh]'}`}>
 
-                <div className={`sticky top-0 z-50 min-w-full w-full pt-4 pb-6 flex items-center justify-center border-b mb-4
-                    ${isDarkMode ? "bg-[#1F1F1F] border-gray-600" : "bg-white border-gray-300"}`}>
-                    <div className="absolute top-4 left-4 z-10">
+                <div className={`sticky top-0 z-50 min-w-full w-full pt-4 pb-6 flex border-b mb-4
+                    ${deviceType == 'Mobile' ? 'justify-between px-2' : 'items-center justify-center'}
+                    ${isDarkMode ? "bg-[#161618] border-gray-600" : "bg-white border-gray-300"}`}>
+                    <div className={`top-4 left-4 z-10 ${deviceType == 'Mobile' ? '' : 'absolute'}`}>
                         <button className={`p-2 rounded-full text-xl
                         ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
                                 : 'text-black bg-gray-200 hover:bg-gray-100'}`}
@@ -236,9 +240,12 @@ const UpdateProfile: React.FC = ({ }) => {
                             <FaArrowLeft />
                         </button>
                     </div>
-                    <h2 className="self-center text-xl font-semibold text-center">Cập nhật thông tin cá nhân</h2>
+                    <h2 className={`self-center md:text-xl sx:text-md font-semibold text-center
+                        ${deviceType == 'Mobile' ? '' : ''}`}>
+                        {deviceType == 'Mobile' ? 'Cập nhật thông tin' : 'Cập nhật thông tin cá nhân'}
+                    </h2>
                     {/* Nút cập nhật */}
-                    <div className="absolute top-4 right-4 z-10 flex justify-center">
+                    <div className={`top-4 right-4 z-10 flex justify-center ${deviceType == 'Mobile' ? '' : 'absolute'}`}>
                         <button
                             className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700"
                             onClick={handleUpdateProfile}
@@ -248,16 +255,17 @@ const UpdateProfile: React.FC = ({ }) => {
                     </div>
                 </div>
 
-                <div className={`relative p-6 rounded-xl w-[800px] 
-                    ${isDarkMode ? "bg-[#1F1F1F] text-gray-300" : "bg-white text-black"}`}>
+                <div className={`relative p-6 rounded-xl w-full max-w-[800px] 
+                    ${isDarkMode ? "bg-[#161618] text-gray-300" : "bg-white text-black"}`}>
 
                     {/* Ảnh đại diện */}
-                    <div className="w-full flex items-center justify-between border-b border-gray-300 px-20 pb-4 mb-4">
+                    <div className="w-full flex items-center justify-center md:justify-between border-b border-gray-300 px-20 pb-4 mb-4">
                         {previewUrl ? (
                             <div className="relative w-32 h-32 rounded-full mb-4 cursor-pointer" onClick={handleCameraClick}>
                                 <img src={previewUrl} alt="Preview" className="w-32 h-32 rounded-full object-cover" />
-                                <div className="absolute top-4 right-4 opacity-0 text-4xl text-gray-800 hover:opacity-60 
-                                        rounded-full p-8 bg-gray-300">
+                                <div className={`absolute top-4 right-4 opacity-0 text-4xl text-gray-800  
+                                        rounded-full p-8 bg-gray-300
+                                        ${deviceType == 'Mobile' ? 'opacity-60' : 'hover:opacity-60'}`}>
                                     <IoCamera />
                                 </div>
                             </div>
@@ -272,6 +280,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                 </span>
                             </div>
                         )}
+                        {deviceType !== 'Mobile' && (
                         <button
                             onClick={handleCameraClick}
                             className={`flex items-center justify-center gap-2 py-2 px-4 h-fit rounded-full
@@ -280,6 +289,7 @@ const UpdateProfile: React.FC = ({ }) => {
                             <BiSolidEditAlt />
                             <p className="font-semibold">Đổi ảnh đại diện</p>
                         </button>
+                        )}
                         <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" ref={fileInputRef} />
                     </div>
 
@@ -287,14 +297,14 @@ const UpdateProfile: React.FC = ({ }) => {
 
                         {/* Form cập nhật thông tin */}
                         <div className="space-y-3 w-full">
-                            <div className="flex items-center space-x-2">
+                            <div className="flex flex-col md:flex-row items-center md:space-x-2 space-y-2 md:space-y-0">
                                 <div className="w-full">
                                     <label className="block text-sm font-medium mb-2">Họ đệm</label>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.firstName}
                                         className={`w-full p-2 border rounded-md 
-                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                            ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                         value={firstName}
                                         onChange={(e) => setFirstName(e.target.value)}
                                     />
@@ -305,7 +315,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                         type="text"
                                         placeholder={userAccount?.lastName}
                                         className={`w-full p-2 border rounded-md 
-                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                            ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                         value={lastName}
                                         onChange={(e) => setLastName(e.target.value)}
                                     />
@@ -318,7 +328,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                     <input
                                         type="date"
                                         className={`w-full p-2 border rounded-md 
-                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                            ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                         value={dob}
                                         onChange={(e) => setDob(e.target.value)}
                                     />
@@ -327,7 +337,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                     <label className="block text-sm font-medium mb-2">Giới tính</label>
                                     <select
                                         className={`w-full p-2 border rounded-md 
-                                            ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                            ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                         value={gender}
                                         onChange={(e) => setGender(e.target.value)}
                                     >
@@ -345,7 +355,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                     rows={3}
                                     placeholder={userAccount?.bio ? userAccount?.bio : "Tiểu sử (bio)"}
                                     className={`w-full p-2 border rounded-md 
-                                        ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                     value={bio}
                                     onChange={(e) => setBio(e.target.value)}
                                 />
@@ -357,7 +367,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                     type="text"
                                     placeholder={userAccount?.job ? userAccount?.job : "Nghề nghiệp"}
                                     className={`w-full p-2 border rounded-md 
-                                        ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                     value={job}
                                     onChange={(e) => setJob(e.target.value)}
                                 />
@@ -369,7 +379,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                     type="text"
                                     placeholder={userAccount?.location ? userAccount?.location : "Nơi sinh sống"}
                                     className={`w-full p-2 border rounded-md 
-                                        ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
+                                        ${isDarkMode ? "bg-[#161618] text-white border-gray-600" : "bg-white text-black border-gray-300"}`}
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
                                 />
@@ -378,25 +388,25 @@ const UpdateProfile: React.FC = ({ }) => {
                     </div>
                     
                     <div className="flex flex-col items-center justify-center gap-4 w-full">
-                        <h2 className="self-center text-lg font-semibold text-center">Liên kết mạng xã hội</h2>
+                        <h2 className="self-center text-lg font-semibold text-center">Cập nhật liên kết mạng xã hội</h2>
                         {/* Form cập nhật link social media */}
                         <div className="space-y-3 w-full">
                             {/* <h2 className="text-lg font-semibold mb-6 text-center">Liên kết mạng xã hội</h2> */}
-                            <div className="flex items-center space-x-2">
+                            <div className="flex flex-col md:flex-row items-center md:space-x-2 space-y-2 md:space-y-0">
                                 <div className={`w-full border rounded-full relative
                                     ${isDarkMode ? "border-gray-600" : "border-gray-300"}`}>
                                     <button className={`absolute flex items-center gap-2 p-2 h-fit w-fit text-xl
                                             border-[2.8px] border-blue-600 text-blue-600 
                                             hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
                                             rounded-full transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}`}>
                                         <FaFacebook />
                                     </button>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.facebook ? userAccount?.facebook : "Facebook"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={facebook}
                                         onChange={(e) => setFacebook(e.target.value)}
@@ -408,35 +418,35 @@ const UpdateProfile: React.FC = ({ }) => {
                                             border-[2.8px] border-blue-600 text-blue-600 
                                             hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
                                             rounded-full transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}`}>
                                         <FaXTwitter />
                                     </button>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.twitter ? userAccount?.twitter : "Twitter"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={twitter}
                                         onChange={(e) => setTwitter(e.target.value)}
                                     />
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex flex-col md:flex-row items-center md:space-x-2 space-y-2 md:space-y-0">
                                 <div className={`w-full border rounded-full relative
                                     ${isDarkMode ? "border-gray-600" : "border-gray-300"}`}>
                                     <button className={`absolute flex items-center gap-2 p-2 h-fit w-fit text-xl
                                             border-[2.8px] border-pink-600 text-pink-500 
                                             hover:bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 hover:text-white 
                                             rounded-full transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}`}>
                                         <FaInstagramSquare />
                                     </button>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.instagram ? userAccount?.instagram : "Instagram"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={instagram}
                                         onChange={(e) => setInstagram(e.target.value)}
@@ -448,35 +458,35 @@ const UpdateProfile: React.FC = ({ }) => {
                                             border-[2.8px] border-red-500 text-red-500 
                                             hover:bg-gradient-to-r from-red-500 to-red-600 hover:text-white 
                                             rounded-full transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}`}>
                                         <IoLogoYoutube />
                                     </button>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.youtube ? userAccount?.youtube : "Youtube"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={youtube}
                                         onChange={(e) => setYoutube(e.target.value)}
                                     />
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex flex-col md:flex-row items-center md:space-x-2 space-y-2 md:space-y-0">
                                 <div className={`w-full border rounded-full relative
                                     ${isDarkMode ? "border-gray-600" : "border-gray-300"}`}>
                                     <button className={`absolute flex items-center gap-2 p-2 h-fit w-fit text-xl
                                             border-[2.8px] border-blue-600 text-blue-600 
                                             hover:bg-gradient-to-r from-blue-500 to-blue-600 hover:text-white 
                                             rounded-full transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}`}>
                                         <FaLinkedin />
                                     </button>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.linkedin ? userAccount?.linkedin : "Linkedin"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={linkedin}
                                         onChange={(e) => setLinkedin(e.target.value)}
@@ -488,27 +498,27 @@ const UpdateProfile: React.FC = ({ }) => {
                                             border-[2.8px] border-blue-700 text-blue-700 
                                             hover:bg-gradient-to-r from-blue-700 to-blue-800 hover:text-white 
                                             rounded-full transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F]' : 'bg-white'}`}>
+                                            ${isDarkMode ? 'bg-[#161618]' : 'bg-white'}`}>
                                         <FaDiscord />
                                     </button>
                                     <input
                                         type="text"
                                         placeholder={userAccount?.discord ? userAccount?.discord : "Discord"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={discord}
                                         onChange={(e) => setDiscord(e.target.value)}
                                     />
                                 </div>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex flex-col md:flex-row items-center md:space-x-2 space-y-2 md:space-y-0">
                                 <div className={`w-full border rounded-full relative
                                     ${isDarkMode ? "border-gray-600" : "border-gray-300"}`}>
                                     <button className={`absolute flex items-center gap-2 p-2 h-fit w-fit text-xl
                                             border-[2.8px] hover:bg-gradient-to-r from-black to-gray-800 hover:text-white 
                                             rounded-full shadow-md transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300'
+                                            ${isDarkMode ? 'bg-[#161618] text-gray-400 border-gray-600 hover:border-gray-300'
                                             : 'bg-white text-gray-700 border-gray-700'}`}>
                                         <FaTiktok />
                                     </button>
@@ -516,7 +526,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                         type="text"
                                         placeholder={userAccount?.tiktok ? userAccount?.tiktok : "Tiktok"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={tiktok}
                                         onChange={(e) => setTiktok(e.target.value)}
@@ -527,7 +537,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                     <button className={`absolute flex items-center gap-2 p-2 h-fit w-fit text-xl
                                             border-[2.8px] hover:bg-gradient-to-r from-gray-700 to-gray-800 hover:text-white 
                                             rounded-full shadow-md transition duration-200
-                                            ${isDarkMode ? 'bg-[#1F1F1F] text-gray-400 border-gray-600 hover:border-gray-300'
+                                            ${isDarkMode ? 'bg-[#161618] text-gray-400 border-gray-600 hover:border-gray-300'
                                             : 'bg-white text-gray-700 border-gray-700'}`}>
                                         <FaGithub />
                                     </button>
@@ -535,7 +545,7 @@ const UpdateProfile: React.FC = ({ }) => {
                                         type="text"
                                         placeholder={userAccount?.github ? userAccount?.github : "Github"}
                                         className={`w-full p-2 ps-12 border rounded-full
-                                                ${isDarkMode ? "bg-[#1F1F1F] text-white border-gray-600" 
+                                                ${isDarkMode ? "bg-[#161618] text-white border-gray-600" 
                                                     : "bg-white text-black border-gray-300"}`}
                                         value={github}
                                         onChange={(e) => setGithub(e.target.value)}

@@ -38,13 +38,12 @@ const RegisterView = () => {
 
 			if(response.data.code === 1000 && response.data.result) {
 				
-				alert("Đăng ký thành công!");
 				const response = await callLogin(username, password);
 				console.log('Login response:', response.data);
 				if (response.data.code === 1000 && response.data.result) {
 					const account: Account = response.data.result;
 					login(account);
-					window.location.href = `/profile/${account.user.id}`;
+					deviceType == 'Mobile'? window.location.href = '/mobile': window.location.href = '/'
 				} else {
 					alert('Đăng nhập thất bại: ' + response.data.message);
 				}

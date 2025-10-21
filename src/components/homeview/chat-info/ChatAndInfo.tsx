@@ -3,20 +3,16 @@ import ConversationInfo from "./conversationInfo/ConversationInfo";
 import MainChat from "./mainchat/MainChat";
 import { ChangeWidthProps } from "../../../views/HomeView";
 import Modal from "../../common/Modal";
-import { conversations, pinnedMessagesData } from "../../../FakeData";
 import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
 import ParticipantCard from "./conversationInfo/ParticipantCard";
-import { Link, useParams } from "react-router-dom";
-import { IoChatbubblesSharp } from "react-icons/io5";
-import { ImBlocked } from "react-icons/im";
+import { useParams } from "react-router-dom";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
 import { getConversationById, getParticipantsByConvId, updateConversationPartially } from "../../../services/ConversationService";
 import { ConversationResponse } from "../../../types/Conversation";
 import { ChatParticipants } from "../../../types/User";
-import { FiLogOut } from "react-icons/fi";
 import { useChatContext } from "../../../utilities/ChatContext";
 
 
@@ -64,9 +60,6 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                 if (conv_id && user?.user.id) {
                     const response = await getConversationById(parseInt(conv_id), user?.user.id);
                     const participants = await getParticipantsByConvId(parseInt(conv_id));
-
-                    console.log("Participants:", participants);
-                    console.log(response);
                     if (response.result) {
                         setConversation(response.result);
                         setParticipants(participants.result);
@@ -92,7 +85,6 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         try {
             if (conv_id && user?.user.id) {
                 const response = await updateConversationPartially({ emoji }, parseInt(conv_id), user?.user.id);
-                console.log(response);
                 setIsChangeConversationEmojiModalOpen(false);
             }
         } catch (error) {
@@ -102,21 +94,23 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
 
 
     return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex flex-row items-center rounded-xl
-            pb-0 ${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-gray-100'}`}>
-            <div className={`transition-all duration-100 
-                ${deviceType !== 'PC'
-                    ? isChangeWidth ? 'w-0' : 'w-full'
-                    : isChangeWidth ? 'w-full' : 'w-[66%] me-4'
-                }`}>
-                <MainChat
-                    toggleChangeWidth={toggleChangeWidth}
-                    isChangeWidth={isChangeWidth}
-                    toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
-                    conversationResponse={Conversation}
-                    participants={Participants}
-                />
-            </div>
+        <div className={`${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-full'} w-full flex flex-row items-center rounded-xl
+            pb-0 `}>
+            {!(deviceType == 'Mobile' && isChangeWidth) && (
+                <div className={`transition-all duration-100 
+                    ${deviceType !== 'PC'
+                        ? isChangeWidth ? 'w-0' : 'w-full'
+                        : isChangeWidth ? 'w-full' : 'w-[66%] me-4'
+                    }`}>
+                    <MainChat
+                        toggleChangeWidth={toggleChangeWidth}
+                        isChangeWidth={isChangeWidth}
+                        toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
+                        conversationResponse={Conversation}
+                        participants={Participants}
+                    />
+                </div>
+            )}
             <div className={`transition-all duration-100 
                 ${deviceType !== 'PC'
                     ? isChangeWidth ? 'w-full' : 'w-0'
@@ -182,10 +176,10 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     <div className="relative w-full">
                         <div className="absolute flex flex-row justify-between items-center w-full p-2">
                             <p className="text-blue-600 text-xs">Tên đoạn chat</p>
-                            <p className={`text-xs ${charCount > 255 ? 'text-red-500' : 'text-gray-800'}`}>{charCount} / 255</p>
+                            <p className={`text-xs ${charCount > 255 ? 'text-red-500' : 'text-gray-500'}`}>{charCount} / 255</p>
                         </div>
                         <input type="text" className={`w-full p-2 pt-8 border border-gray-200 rounded-lg 
-                            focus:border-blue-500 ${isDarkMode ? 'text-gray-800' : 'text-gray-600'}`} placeholder={Conversation?.name}
+                            focus:border-blue-500 ${isDarkMode ? 'text-gray-300 bg-[#3C3C3C]' : 'text-gray-600 bg-white'}`} placeholder={Conversation?.name}
                             value={inputValue}
                             onChange={(e) => {
                                 const value = e.target.value;
@@ -198,13 +192,13 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     <div className="flex items-center justify-between gap-2 mt-2 w-full">
                         <button className={`flex items-center justify-center gap-2 w-full p-1 text-md font-medium rounded-lg 
                             ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]'
-                                : 'text-gray-800 hover:bg-gray-100'}`}
+                                : 'text-gray-800 bg-gray-200 hover:bg-gray-300'}`}
                             onClick={() => setIsChangeConversationNameModalOpen(false)}>
                             Huỷ
                         </button>
                         <button className={`flex items-center justify-center gap-2 w-full p-1 text-md font-medium rounded-lg 
                             ${isDarkMode ? 'text-gray-200 bg-[#555555] hover:bg-[#5A5A5A]'
-                                : 'text-gray-800 hover:bg-gray-100'}
+                                : 'text-gray-800 bg-gray-200 hover:bg-gray-300'}
                             ${charCount < 1 ? 'cursor-not-allowed' : ''}`}
                             onClick={async () => {
                                 if (charCount < 1) return;
