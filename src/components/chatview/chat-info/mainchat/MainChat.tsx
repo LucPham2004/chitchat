@@ -70,7 +70,7 @@ const MainChat: React.FC<MainChatProps> = ({
     const sendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!isConnected) {
+        if (!isConnected || !conv_id) {
             alert("Kết nối WebSocket không khả dụng. Vui lòng thử lại sau.");
             return;
         }
@@ -92,15 +92,15 @@ const MainChat: React.FC<MainChatProps> = ({
                 
                 let uploadResult;
                 if (file.type.startsWith("video")) {
-                    uploadResult = await uploadConversationVideo(file, Number(conv_id));
+                    uploadResult = await uploadConversationVideo(file, conv_id);
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
                 } else if (file.type.startsWith("image")) {
-                    uploadResult = await uploadConversationImage(file, Number(conv_id));
+                    uploadResult = await uploadConversationImage(file, conv_id);
                     uploadedHeights.push(uploadResult.height);
                     uploadedWidths.push(uploadResult.width);
                 } else {
-                    uploadResult = await uploadFile(file, Number(conv_id));
+                    uploadResult = await uploadFile(file, conv_id);
                     uploadedHeights.push(5);
                     uploadedWidths.push(3);
                 }
@@ -141,7 +141,7 @@ const MainChat: React.FC<MainChatProps> = ({
         }
     };
 
-    const handleDeleteMessage = (messageId: number) => {
+    const handleDeleteMessage = (messageId: string) => {
         setMessages((prevMessages) => prevMessages.filter((msg) => msg.id !== messageId));
     };
 

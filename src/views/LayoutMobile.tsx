@@ -6,6 +6,7 @@ import { useChatContext } from "../utilities/ChatContext";
 import DisplayMedia from "../components/common/DisplayMedia";
 import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
+import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 
 export interface ChangeWidthProps {
     toggleChangeWidth: () => void;
@@ -15,6 +16,7 @@ export interface ChangeWidthProps {
 const LayoutMobile = () => {
     const { user } = useAuth();
     const { showIncomingCallModal } = useChatContext();
+	const deviceType = useDeviceTypeByWidth();
     const navigate = useNavigate();
     const { isDarkMode } = useTheme();
     
@@ -23,8 +25,12 @@ const LayoutMobile = () => {
   
     useEffect(() => {
         if (!user) {
-            navigate("/login");
+            navigate("/");
         }
+
+		if(deviceType != 'Mobile') {
+			navigate("/");
+		}
         
         if (location.pathname === '/' && user?.user.id) {
             navigate(`/mobile/profile/${user.user.id}`, { replace: true });
@@ -44,7 +50,7 @@ const LayoutMobile = () => {
             {isDisplayMedia && (
                 <DisplayMedia url={displayMediaUrl} setIsDisplayMedia={setIsDisplayMedia} />
             )}
-            <GlobalNotifications />
+            {/* <GlobalNotifications /> */}
             {showIncomingCallModal && (
                 <IncomingCallModal />
             )}

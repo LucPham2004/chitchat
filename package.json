@@ -11,20 +11,27 @@
   },
   "dependencies": {
     "@stomp/stompjs": "^7.0.1",
+    "@tsparticles/engine": "^3.9.1",
     "antd": "^5.23.0",
     "async-mutex": "^0.5.0",
     "axios": "^1.7.9",
     "cloudinary": "^2.5.1",
     "crypto": "^1.0.1",
     "emoji-picker-react": "^4.12.0",
+    "framer-motion": "^12.23.24",
+    "lucide-react": "^0.548.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-hot-toast": "^2.6.0",
     "react-icons": "^5.4.0",
     "react-intersection-observer": "^9.15.1",
     "react-router-dom": "^7.1.1",
+    "react-tsparticles": "^2.12.2",
     "simple-peer": "^9.11.1",
     "sockjs-client": "^1.6.1",
-    "stompjs": "^2.3.3"
+    "stompjs": "^2.3.3",
+    "tsparticles": "^3.9.1",
+    "tsparticles-engine": "^2.12.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

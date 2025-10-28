@@ -170,7 +170,7 @@ const UpdateProfile: React.FC = ({ }) => {
     const fetchUser = async () => {
         try {
             if (user?.user.id && user_id_param) {
-                const response = await getOtherUserById(user?.user.id, parseInt(user_id_param));
+                const response = await getOtherUserById(user?.user.id, user_id_param);
                 console.log(response);
                 if (response.result) {
                     localStorage.setItem('user_account', JSON.stringify(response.result));
@@ -199,10 +199,10 @@ const UpdateProfile: React.FC = ({ }) => {
         const fetchData = async () => {
             const storedUser = localStorage.getItem('user_account');
             const storedProfile = localStorage.getItem("user_profile");
-            if (storedUser && storedUser !== "undefined" && user_id_param && parseInt(user_id_param) == user?.user.id) {
+            if (storedUser && storedUser !== "undefined" && user_id_param && user_id_param == user?.user.id) {
                 setUserAccount(JSON.parse(storedUser));
             }
-            if (storedProfile && storedProfile !== "undefined" && user_id_param && parseInt(user_id_param) != user?.user.id) {
+            if (storedProfile && storedProfile !== "undefined" && user_id_param && user_id_param != user?.user.id) {
                 setUserProfile(JSON.parse(storedProfile));
             } else {
                 await fetchUser();

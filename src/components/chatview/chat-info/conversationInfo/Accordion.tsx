@@ -1,19 +1,13 @@
 import { ReactNode, useState } from "react";
 import AccordionItem from "./AccordionItem";
-import { BsFillBellSlashFill } from "react-icons/bs";
 import { FaPenNib, FaImage, FaFileAlt, FaLink } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
-import { ImBlocked } from "react-icons/im";
 import { IoImages } from "react-icons/io5";
-import { PiTextAa } from "react-icons/pi";
-import { TiPin } from "react-icons/ti";
-import { Link } from "react-router-dom";
 import ParticipantCard from "./ParticipantCard";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { updateConversation } from "../../../../services/ConversationService";
-import { conversations } from "../../../../FakeData";
 
 
 interface AccordionProps {
@@ -21,8 +15,8 @@ interface AccordionProps {
     toggleChangeConversationNameModalOpen: () => void;
     toggleChangeConversationEmojiModalOpen: () => void;
     handleTabChange: (tab: string) => void;
-    selectedParticipantId: number | null;
-    toggleUserMenu: (id: number) => void;
+    selectedParticipantId: string | null;
+    toggleUserMenu: (id: string) => void;
     isGroup?: boolean | undefined;
     emoji?: string;
     participants?: ChatParticipants[];

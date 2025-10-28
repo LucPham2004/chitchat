@@ -20,17 +20,17 @@ const ChatHeader: React.FC<MainChatProps> = ({
     const deviceType = useDeviceTypeByWidth();
 
     const handleCallAudio = () => {
-        const callUrl = `${window.location.origin}/call`;
+        const callUrl = `${window.location.origin}/call?r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
         deviceType !== 'Mobile' 
         ? window.open(callUrl, "_blank", "width=600,height=400")
-        : window.location.href = '/call';
+        : window.location.href = `${callUrl}`;
     };
 
     const handleCallVideo = () => {
-        const callUrl = `${window.location.origin}/call`;
+        const callUrl = `${window.location.origin}/call?r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
         deviceType !== 'Mobile' 
         ? window.open(callUrl, "_blank", "width=600,height=400")
-        : window.location.href = '/call';
+        : window.location.href = `${callUrl}`;
     };
 
     return (
@@ -57,7 +57,7 @@ const ChatHeader: React.FC<MainChatProps> = ({
                     } else {
                         window.location.href = `${deviceType == 'Mobile' 
                             ? `/mobile/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`
-                            : `/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`}`;
+                            : `/d/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`}`;
                     }
 
                 }}>

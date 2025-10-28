@@ -1,8 +1,8 @@
 import { FaArrowLeft, FaBars } from "react-icons/fa";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { data, Link, useNavigate, useParams } from "react-router-dom";
 import FriendCard from "./friends/FriendCard";
 import SearchBar from "../common/SearchBar";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import FriendRequestCard from "./friends/FriendRequestCard";
 import UserCard from "./friends/UserCard";
 import { useTheme } from "../../utilities/ThemeContext";
@@ -20,17 +20,21 @@ const Friends = () => {
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
     const [activeTab, setActiveTab] = useState(user_id_param == user?.user.id ? 'allFriends' : 'mutualFriends');
-    const [selectedFriendId, setSelectedFriendId] = useState<number | null>(null);
+    const [selectedFriendId, setSelectedFriendId] = useState<string | null>(null);
 
     const [friends, setFriends] = useState<UserDTO[]>([]);
-    const [pageNum, setPageNum] = useState(0);
+    const [friendRequests, setFriendRequests] = useState<UserDTO[]>([]);
+    const [friendSuggests, setFriendSuggests] = useState<UserDTO[]>([]);
+
+    const [pageInfoMap, setPageInfoMap] = useState<Record<string, any>>({});
+    const [pageNumMap, setPageNumMap] = useState<Record<string, number>>({});
+
     const [loading, setLoading] = useState(false);
     const [showMenu, setShowMenu] = useState(false);
 
-    const [searchedUsers, setSearchedUsers] = useState<UserDTO[] | null>(null);
-    const [clearInput, setclearInput] = useState(false);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-    const toggleFriendMenuOpen = (id: number) => {
+    const toggleFriendMenuOpen = (id: string) => {
         setSelectedFriendId(prevId => (prevId === id ? null : id));
     };
     const navigate = useNavigate();
@@ -44,13 +48,28 @@ const Friends = () => {
     const handleUserSearch = async (keyword: string) => {
         if (user?.user.id) {
             if (keyword.trim() === "") {
-                setSearchedUsers(null);
                 return;
             }
             try {
-                const data = await searchUsers(user?.user.id, keyword, 0);
-                if (data?.result?.content) {
-                    setFriends(data.result?.content);
+                const res = await searchUsers(user?.user.id, keyword, 0);
+                if (res?.result?.content) {
+                    
+                const data = res?.result?.content ?? [];
+                    switch (activeTab) {
+                        case 'allFriends':
+                            setFriends(prev => (0 === 0 ? data : [...prev, ...data]));
+                            break;
+                        case 'friendRequests':
+                            setFriendRequests(prev => (0 === 0 ? data : [...prev, ...data]));
+                            break;
+                        case 'findFriends':
+                            setFriendSuggests(prev => (0 === 0 ? data : [...prev, ...data]));
+                            break;
+                        case 'mutualFriends':
+                            setFriends(prev => (0 === 0 ? data : [...prev, ...data]));
+                            break;
+                    }
+                    setPageInfoMap(prev => ({ ...prev, [activeTab]: 0 }));
                     console.log("Users found:", data);
                 }
             } catch (error) {
@@ -61,57 +80,105 @@ const Friends = () => {
 
     const handleClearSearch = () => {
         setFriends([]);
-        fetchFriendsData();
+        fetchFriendsData(activeTab, 0);
     };
 
-    const fetchFriendsData = async () => {
+    const fetchFriendsData = async (tab: string, page: number) => {
         if (!user) return;
+        if (loading) return;
+
+        const tabPageInfo = pageInfoMap[tab];
+        if (tabPageInfo && page + 1 > tabPageInfo.totalPages) return;
+
         setLoading(true);
         try {
             let res;
-
-            switch (activeTab) {
+            switch (tab) {
                 case 'allFriends':
-                    res = await getUserFriends(user.user.id, pageNum);
+                    res = await getUserFriends(user.user.id, page);
                     break;
                 case 'friendRequests':
-                    res = await getUserFriendRequests(user.user.id, pageNum);
+                    res = await getUserFriendRequests(user.user.id, page);
                     break;
                 case 'findFriends':
-                    res = await getSuggestedFriends(user.user.id, pageNum);
+                    res = await getSuggestedFriends(user.user.id, page);
                     break;
                 case 'mutualFriends':
                     if (user_id_param) {
-                        res = await getMutualFriends(user.user.id, parseInt(user_id_param), pageNum);
+                        res = await getMutualFriends(user.user.id, user_id_param, page);
                     }
                     break;
-                default:
-                    res = await getUserFriends(user.user.id, pageNum);
             }
 
-            console.log(res)
+            const data = res?.result?.content ?? [];
+            const newPage = res?.result?.page;
 
-            if (res?.result?.content) {
-                setFriends(res.result.content);
-            } else {
-                setFriends([]);
+            setPageInfoMap(prev => ({ ...prev, [tab]: newPage }));
+            setPageNumMap(prev => ({ ...prev, [tab]: page }));
+
+            switch (tab) {
+                case 'allFriends':
+                    setFriends(prev => (page === 0 ? data : [...prev, ...data]));
+                    break;
+                case 'friendRequests':
+                    setFriendRequests(prev => (page === 0 ? data : [...prev, ...data]));
+                    break;
+                case 'findFriends':
+                    setFriendSuggests(prev => (page === 0 ? data : [...prev, ...data]));
+                    break;
+                case 'mutualFriends':
+                    setFriends(prev => (page === 0 ? data : [...prev, ...data]));
+                    break;
             }
-        } catch (error) {
-            console.error("Failed to fetch friends data:", error);
-            setFriends([]);
+        } catch (err) {
+            console.error("Failed to fetch friends data:", err);
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchFriendsData();
-    }, [activeTab, pageNum, user_id_param]);
+        const currentList =
+            activeTab === 'allFriends'
+                ? friends
+                : activeTab === 'friendRequests'
+                    ? friendRequests
+                    : activeTab === 'findFriends'
+                        ? friendSuggests
+                        : friends;
+
+        if (!currentList || currentList.length === 0) {
+            fetchFriendsData(activeTab, 0);
+        }
+    }, [activeTab, user_id_param]);
 
     useEffect(() => {
         document.title = "Bạn bè | Chit Chat";
     }, []);
 
+    useEffect(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+
+        const handleScroll = () => {
+            const tabPageInfo = pageInfoMap[activeTab];
+            const tabPageNum = pageNumMap[activeTab] ?? 0;
+
+            if (
+                !loading &&
+                tabPageInfo &&
+                tabPageInfo.totalPages &&
+                tabPageNum + 1 < tabPageInfo.totalPages &&
+                container.scrollTop + container.clientHeight >= container.scrollHeight - 100
+            ) {
+                const nextPage = tabPageNum + 1;
+                fetchFriendsData(activeTab, nextPage);
+            }
+        };
+
+        container.addEventListener("scroll", handleScroll);
+        return () => container.removeEventListener("scroll", handleScroll);
+    }, [loading, pageInfoMap, pageNumMap, activeTab]);
 
     const getCardComponent = (activeTab: string) => {
         switch (activeTab) {
@@ -260,47 +327,13 @@ const Friends = () => {
                     </button>
                 )}
             </div>
-            <div className="min-h-[86vh] max-h-[90vh] overflow-y-auto">
+            <div
+                ref={scrollContainerRef}
+                className="min-h-[86vh] max-h-[90vh] overflow-y-auto"
+            >
                 <div className="w-full flex items-center justify-start gap-4 flex-wrap p-4">
 
-                    {loading && (
-                        <div className={`max-h-[96vh] overflow-hidden w-full flex items-center justify-center gap-4
-                            pb-0 rounded-xl border shadow-sm overflow-y-auto
-                            ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
-                            <div className={`flex items-center justify-between gap-4 p-2 border rounded-lg shadow-sm animate-pulse
-                                ${isDarkMode ? 'border-gray-600 bg-[#161618]' : 'border-gray-100 bg-white'}
-                                w-full max-w-[500px]
-                            `}>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-24 h-24 rounded-lg bg-gray-400 dark:bg-[#5A5A5A]"></div>
-                                    <div className="flex flex-col gap-2">
-                                        <div className="h-6 w-40 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
-                                        <div className="h-4 w-24 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="h-10 w-10 bg-gray-300 dark:bg-[#5A5A5A] rounded-full"></div>
-                                </div>
-                            </div>
-                            <div className={`flex items-center justify-between gap-4 p-2 border rounded-lg shadow-sm animate-pulse
-                                ${isDarkMode ? 'border-gray-600 bg-[#161618]' : 'border-gray-100 bg-white'}
-                                w-full max-w-[500px]
-                            `}>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-24 h-24 rounded-lg bg-gray-400 dark:bg-[#5A5A5A]"></div>
-                                    <div className="flex flex-col gap-2">
-                                        <div className="h-6 w-40 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
-                                        <div className="h-4 w-24 bg-gray-300 dark:bg-[#5A5A5A] rounded"></div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <div className="h-10 w-10 bg-gray-300 dark:bg-[#5A5A5A] rounded-full"></div>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {friends.length > 0 && activeTab != 'friendRequests' && (
+                    {((friends.length > 0 && activeTab != 'friendRequests') || activeTab == 'findFriends') && (
                         <div className="w-full">
                             <div className="flex justify-end">
                                 <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} onClear={handleClearSearch} />
@@ -321,7 +354,7 @@ const Friends = () => {
                         />
                     ))
                         : (
-                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                            <div className="flex flex-col justify-center items-center w-full border-gray-400 ">
                                 <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                     Bạn hiện chưa có bạn bè. Hãy tìm kiếm và bắt đầu các cuộc trò chuyện
@@ -330,7 +363,7 @@ const Friends = () => {
                         ))}
 
                     {/* Friend requests */}
-                    {activeTab == 'friendRequests' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
+                    {activeTab == 'friendRequests' && (friendRequests.length > 0 && !loading ? friendRequests.map((friend, index) => (
                         <FriendItemWithModal
                             key={friend.id}
                             friend={friend}
@@ -342,7 +375,7 @@ const Friends = () => {
                         />
                     ))
                         : (
-                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                            <div className="flex flex-col justify-center items-center w-full border-gray-400">
                                 <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                     Bạn không có lời mời kết bạn nào
@@ -351,7 +384,7 @@ const Friends = () => {
                         ))}
 
                     {/* Find friends */}
-                    {activeTab == 'findFriends' && (friends.length > 0 && !loading ? friends.map((friend, index) => (
+                    {activeTab == 'findFriends' && (friendSuggests.length > 0 && !loading ? friendSuggests.map((friend, index) => (
                         <FriendItemWithModal
                             key={friend.id}
                             friend={friend}
@@ -363,7 +396,7 @@ const Friends = () => {
                         />
                     ))
                         : (
-                            <div className="flex flex-col justify-center items-center w-full border-t border-gray-400 mt-2">
+                            <div className="flex flex-col justify-center items-center w-full border-gray-400">
                                 <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                                     Danh sách rỗng

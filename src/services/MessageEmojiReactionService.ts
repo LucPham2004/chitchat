@@ -3,16 +3,16 @@ import { ApiResponse } from '../types/backend';
 import { MessageEmojiReaction } from '../types/MessageEmojiReaction';
 
 // Get Message MessageEmojiReaction Count
-export const getMessageMessageEmojiReactionCount = async (MessageId: number) => {
-    return (await instance.get<ApiResponse<number>>(`/message-reactions/get/count/message/${MessageId}`)).data;
+export const getMessageMessageEmojiReactionCount = async (MessageId: string) => {
+    return (await instance.get<ApiResponse<string>>(`/message-reactions/get/count/message/${MessageId}`)).data;
 };
 
-export const getMessageMessageEmojiReactions = async (messageId: number) => {
+export const getMessageMessageEmojiReactions = async (messageId: string) => {
     return (await instance.get<ApiResponse<MessageEmojiReaction[]>>(`/message-reactions/get/all/${messageId}`)).data;
 };
 
 // Create Message MessageEmojiReaction
-export const createMessageMessageEmojiReaction = async (userId: number, messageId: number, emoji: string) => {
+export const createMessageMessageEmojiReaction = async (userId: string, messageId: string, emoji: string) => {
     return (await instance.post<ApiResponse<MessageEmojiReaction>>(`/message-reactions`, null, 
         { params: { userId, messageId, emoji } }
     )).data;
@@ -20,7 +20,7 @@ export const createMessageMessageEmojiReaction = async (userId: number, messageI
 
 
 // Delete Message MessageEmojiReaction
-export const deleteMessageMessageEmojiReaction = async (userId: number, messageId: number) => {
+export const deleteMessageMessageEmojiReaction = async (userId: string, messageId: string) => {
     return (await instance.delete<ApiResponse<void>>(`/message-reactions/remove/user/${userId}/message/${messageId}`)).data;
 };
 

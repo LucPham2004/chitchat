@@ -23,9 +23,9 @@ const ConversationList: React.FC = () => {
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+    const [openMenuId, setOpenMenuId] = useState<string | null>(null);
 
-    const toggleMenu = (conversationId: number) => {
+    const toggleMenu = (conversationId: string) => {
         setOpenMenuId((prev) => (prev === conversationId ? null : conversationId));
     };
 
@@ -83,7 +83,7 @@ const ConversationList: React.FC = () => {
         return () => {
             isMounted = false; // Cleanup tránh gọi setState khi unmount
         };
-    }, [page]);
+    }, [page, conv_id]);
 
 
     return (
@@ -135,7 +135,7 @@ const ConversationList: React.FC = () => {
                                 ref={index === conversations.length - 1 ? lastConversationRef : null}
                                 className={`relative flex items-center p-2.5 rounded-lg cursor-pointer group
                                     ${isDarkMode ? 'text-white hover:bg-[#28282A]' : 'text-black hover:bg-gray-100'}
-                                    ${conv_id && conv.id === parseInt(conv_id) ? isDarkMode ? 'bg-[#2e2e2e]' : 'bg-gray-200' : ''}`}
+                                    ${conv_id && conv.id === conv_id ? isDarkMode ? 'bg-[#2e2e2e]' : 'bg-gray-200' : ''}`}
                             >
                                 <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []}
                                     width={12} height={12}></ConversationAvatar>
@@ -214,7 +214,7 @@ const ConversationList: React.FC = () => {
                         </p>
                         <Link to={`${deviceType == 'Mobile' 
                             ? `/mobile/profile/${user?.user.id}/friends`
-                            : `/profile/${user?.user.id}/friends` }`}>
+                            : `/d/profile/${user?.user.id}/friends` }`}>
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit rounded-full
                                 ${isDarkMode ? 'border-white text-white hover:bg-[#2e2e2e]'
                                     : 'border-black text-gray-800 hover:bg-gray-200'}

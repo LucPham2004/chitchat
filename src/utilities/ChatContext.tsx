@@ -4,23 +4,23 @@ import { useAuth } from "./AuthContext";
 import { ChatResponse } from "../types/Message";
 
 type LastMessage = {
-    conversationId: number;
-    senderId: number;
+    conversationId: string;
+    senderId: string;
     content: string;
     timestamp: string;
 };
 
 // Type payloads tương ứng backend
 type CallRequest = { 
-    from: number; 
+    from: string; 
     fromName: string; 
-    to: number;
+    to: string;
     toName: string;
     callType: string;
 };
 
-type OfferAnswer = { from: number; to: number; sdp: string };
-type IceCandidateMsg = { from: number; to: number; candidate: string };
+type OfferAnswer = { from: string; to: string; sdp: string };
+type IceCandidateMsg = { from: string; to: string; candidate: string };
 
 const STUN_SERVERS = {
   iceServers: [
@@ -31,7 +31,7 @@ const STUN_SERVERS = {
 
 type ChatContextType = {
     lastMessages: Record<string, LastMessage>;
-    updateLastMessage: (conversationId: number, senderId: number, content: string, timestamp: string) => void;
+    updateLastMessage: (conversationId: string, senderId: string, content: string, timestamp: string) => void;
 
     // Media display
     displayMediaUrl: string | undefined;
@@ -49,16 +49,16 @@ type ChatContextType = {
     clearGlobalMessages: () => void;
 
     // Conversation-specific subscriptions (cho MainChat)
-    subscribeToConversation: (conversationId: number, callback: (message: ChatResponse) => void) => () => void;
+    subscribeToConversation: (conversationId: string, callback: (message: ChatResponse) => void) => () => void;
 
     // Call functions
     incomingCall: CallRequest | null;
     showIncomingCallModal: boolean;
     localVideoRef: any | null;
     remoteStreamRef: any | null;
-    callUser: (targetId: number) => void;
+    callUser: (targetId: string) => void;
     handleIncomingCall: (req: CallRequest) => void;
-    acceptCall: (callerId: number, callType: string) => void;
+    acceptCall: (callerId: string, callType: string) => void;
     hangup:() => void;
 };
 
@@ -86,10 +86,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const localStreamRef = useRef<MediaStream | null>(null);
     const remoteStreamRef = useRef<HTMLVideoElement | null>(null);
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
-    const targetRef = useRef<number | null>(null);
+    const targetRef = useRef<string | null>(null);
 
 
-    const updateLastMessage = useCallback((conversationId: number, senderId: number, content: string, timestamp: string) => {
+    const updateLastMessage = useCallback((conversationId: string, senderId: string, content: string, timestamp: string) => {
         setLastMessages((prev) => ({
             ...prev,
             [conversationId]: { conversationId, senderId, content, timestamp },
@@ -214,7 +214,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     // Conversation-specific subscription (dành cho MainChat component)
-    const subscribeToConversation = useCallback((conversationId: number, callback: (message: ChatResponse) => void) => {
+    const subscribeToConversation = useCallback((conversationId: string, callback: (message: ChatResponse) => void) => {
         if (!stompClientRef.current?.connected) {
             console.warn("WebSocket not connected, cannot subscribe to conversation");
             return () => { };
@@ -289,7 +289,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     // ===== call someone (caller flow)
-    const callUser = async (targetId: number) => {
+    const callUser = async (targetId: string) => {
         if(!user) return;
         targetRef.current = targetId;
         const pc = await createPeerConnection(true);
@@ -316,7 +316,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     // ===== accept call (callee flow)
-    const acceptCall = async (callerId: number, callType: string) => {
+    const acceptCall = async (callerId: string, callType: string) => {
         targetRef.current = callerId;
         const pc = await createPeerConnection(false);
         // cua B (callee) sẽ chờ receive offer (server đã gửi offer từ caller). Khi handleRemoteSDP bắt được offer, sẽ tạo answer.

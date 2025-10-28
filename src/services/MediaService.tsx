@@ -4,14 +4,14 @@ import instance from "./Axios-customize";
 
 
 // Get Medias by Conversation ID
-export const getMediasByConversationId = async (conversationId: number, pageNum: number) => {
+export const getMediasByConversationId = async (conversationId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<MediaResponse>>>(
         `/medias/get/conversation/media`,
         { params: { conversationId, pageNum } }
     )).data;
 };
 
-export const getRawFilesByConversationId = async (conversationId: number, pageNum: number) => {
+export const getRawFilesByConversationId = async (conversationId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<MediaResponse>>>(
         `/medias/get/conversation/raw`,
         { params: { conversationId, pageNum } }

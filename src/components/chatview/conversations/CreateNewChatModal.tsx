@@ -20,7 +20,7 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
-    const [selectedFriendIds, setSelectedFriendIds] = useState<number[]>([]);
+    const [selectedFriendIds, setSelectedFriendIds] = useState<string[]>([]);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -44,7 +44,7 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
         fetchFriends();
     }, [isOpen, user?.user.id]);
 
-    const handleSelectFriend = (id: number) => {
+    const handleSelectFriend = (id: string) => {
         setSelectedFriendIds((prev) =>
             prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
         );

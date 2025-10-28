@@ -3,8 +3,8 @@ export interface MediaResponse {
     publicId: string;
     url: string;
     fileName: string;
-    messageId: number;
-    conversationId: number;
+    messageId: string;
+    conversationId: string;
     createdAt: string;
     updatedAt: string;
 }

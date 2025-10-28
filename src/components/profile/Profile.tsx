@@ -47,9 +47,9 @@ const Profile = () => {
         try {
             if (user?.user.id && user_id_param) {
                 setLoading(true);
-                const response = await getOtherUserById(user?.user.id, parseInt(user_id_param));
+                const response = await getOtherUserById(user?.user.id, user_id_param);
                 if (response.result) {
-                    if (parseInt(user_id_param) == user?.user.id) {
+                    if (user_id_param == user?.user.id) {
                         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(response.result));
                         setUserAccount(response.result);
                         localStorage.setItem("user_profile", JSON.stringify(response.result));
@@ -62,11 +62,11 @@ const Profile = () => {
                     throw new Error("User response result is undefined");
                 }
 
-                if(parseInt(user_id_param) == user.user.id) {
+                if(user_id_param == user.user.id) {
                     const friendResponse = await getUserFriends(user.user.id, 0);
                     setFriends(friendResponse.result?.content || []);
                 } else {
-                    const mutualFriendResponse = await getMutualFriends(user.user.id, parseInt(user_id_param), 0);
+                    const mutualFriendResponse = await getMutualFriends(user.user.id, user_id_param, 0);
                     setFriends(mutualFriendResponse.result?.content || []);
                 }
 
@@ -89,11 +89,11 @@ const Profile = () => {
         const fetchData = async () => {
             const storedUser = localStorage.getItem(LOCAL_STORAGE_KEY);
             const storedProfile = localStorage.getItem("user_profile");
-            if (storedUser && storedUser !== "undefined" && user_id_param && parseInt(user_id_param) == user?.user.id) {
+            if (storedUser && storedUser !== "undefined" && user_id_param && user_id_param == user?.user.id) {
                 setUserAccount(JSON.parse(storedUser));
                 setLoading(false);
             }
-            if (storedProfile && storedProfile !== "undefined" && user_id_param && parseInt(user_id_param) != user?.user.id) {
+            if (storedProfile && storedProfile !== "undefined" && user_id_param && user_id_param != user?.user.id) {
                 setUserProfile(JSON.parse(storedProfile));
                 setLoading(false);
             } else {
@@ -163,7 +163,7 @@ const Profile = () => {
         }
     };
 
-    const handleSendRequest = async (userId: number) => {
+    const handleSendRequest = async (userId: string) => {
         try {
             console.log("clicked")
             if (!user) return;
@@ -196,6 +196,7 @@ const Profile = () => {
             ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
             ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="relative flex flex-col w-full min-h-full">
+                {deviceType != 'PC' && (
                 <div className="absolute top-3 left-4 z-10">
                     <button className={`p-2 rounded-full text-xl
                     ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
@@ -204,6 +205,7 @@ const Profile = () => {
                         <FaArrowLeft />
                     </button>
                 </div>
+                )}
 
                 <div className="w-full h-[300px] relative self-start">
                     {/* Ảnh bìa */}
@@ -305,7 +307,7 @@ const Profile = () => {
                             </div>
                         }
 
-                        {user_id_param && parseInt(user_id_param) != user?.user.id ? (
+                        {user_id_param && user_id_param != user?.user.id ? (
                             <div className="flex flex-col items-end gap-2 pt-4">
                                 <Link to={`${deviceType == 'Mobile' 
                                     ? `/mobile/conversations/${userProfile?.conversationId}`
@@ -325,7 +327,7 @@ const Profile = () => {
                                 {friends.length > 0 && (
                                 <Link to={`${deviceType == 'Mobile'
                                     ? `/mobile/profile/${user_id_param}/friends`
-                                    : `/profile/${user_id_param}/friends`}`}
+                                    : `/d/profile/${user_id_param}/friends`}`}
                                     className="w-full min-w-[130px]">
                                     <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit min-w-[130px]
                                         ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -361,7 +363,7 @@ const Profile = () => {
                                 <div className="flex flex-col items-end gap-2 pt-4">
                                     <Link to={`${deviceType == 'Mobile'
                                         ? `/mobile/profile/${user_id_param}/update`
-                                        : `/profile/${user_id_param}/update`} `}
+                                        : `/d/profile/${user_id_param}/update`} `}
                                         className="w-full">
                                         <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -377,7 +379,7 @@ const Profile = () => {
                                     </Link>
                                     <Link to={`${deviceType == 'Mobile'
                                         ? `/mobile/profile/${user_id_param}/friends`
-                                        : `/profile/${user_id_param}/friends`}`}
+                                        : `/d/profile/${user_id_param}/friends`}`}
                                         className="w-full min-w-[130px]">
                                         <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit min-w-[130px]
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -393,7 +395,7 @@ const Profile = () => {
                                     </Link>
                                     {/* <Link to={`${deviceType == 'Mobile'
                                         ? `/mobile/profile/${user_id_param}/friends`
-                                        : `/profile/${user_id_param}/friends`}`}
+                                        : `/d/profile/${user_id_param}/friends`}`}
                                         className="w-full">
                                         <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit 
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -430,9 +432,9 @@ const Profile = () => {
                         <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.location? `Nơi sống: ${userProfile?.location}` : ""}</p>
                         <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-600'} text-md`}>{userProfile?.dob? `Ngày sinh: ${userProfile?.dob}` : ""}</p>
                         
-                        {user_id_param && parseInt(user_id_param) == user?.user.id 
+                        {user_id_param && user_id_param == user?.user.id 
                         ? (
-                            <p className="font-semibold">Bạn có tổng cộng {userProfile?.friendNum} người bạn</p>
+                            <p className="font-semibold">Bạn đã kết nối {userProfile?.friendNum} người bạn</p>
                         ) 
                         : (
                             <p className="font-semibold">Các bạn có {friends.length} bạn chung</p>
@@ -461,14 +463,14 @@ const Profile = () => {
                             )}
                             <Link to={`${deviceType == 'Mobile'
                                 ? `/mobile/profile/${user_id_param}/friends`
-                                : `/profile/${user_id_param}/friends`}`}>
+                                : `/d/profile/${user_id_param}/friends`}`}>
                                 <button className={`flex gap-2 items-center text-md min-w-max h-10 border-2 
                                 rounded-full shadow-md transition duration-200 px-3
                                 ${isDarkMode
                                         ? 'border-white text-gray-300 bg-[#161618] hover:border-blue-400 hover:text-blue-400'
                                         : 'border-black text-black bg-white hover:bg-gradient-to-r from-black to-gray-800 hover:text-white'
                                     }`}>
-                                    {user_id_param && parseInt(user_id_param) == user?.user.id 
+                                    {user_id_param && user_id_param == user?.user.id 
                                     ? (
                                         <p>Bạn bè</p>
                                     ) 

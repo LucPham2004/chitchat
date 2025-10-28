@@ -19,7 +19,7 @@ interface MessageProps {
 	isLastMessageByCurrentUser?: boolean;
 	conversationResponse?: ConversationResponse;
 	participants?: ChatParticipants[];
-	onDeleteMessage?: (id: number) => void;
+	onDeleteMessage?: (id: string) => void;
 	setDisplayMediaUrl: (url: string) => void;
 	setIsDisplayMedia: (open: boolean) => void;
 }
@@ -68,11 +68,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
 	};
 
-	const isMatchingSender = (senderId: number) => {
+	const isMatchingSender = (senderId: string) => {
 		return participants?.find(participant => participant.id === senderId);
 	}
 
-	const handleSelectEmoji = async (messageId: number, emoji: string) => {
+	const handleSelectEmoji = async (messageId: string, emoji: string) => {
 		if (!user?.user.id) return; // Kiểm tra userId trước khi gọi API
 
 		try {

@@ -1,7 +1,6 @@
 import axiosClient from "axios";
 import { Mutex } from "async-mutex";
 import { ApiResponse } from "../types/backend";
-import { notification } from "antd";
 
 interface AccessTokenResponse {
     access_token: string;
@@ -57,40 +56,39 @@ instance.interceptors.response.use(
     async (error) => {
         if (!error.response) {
             console.error("Network error or CORS issue", error);
-            window.location.href ="/login";
+            window.location.href = "/";
         }
 
-        
-    const originalRequest = error.config;
+        const originalRequest = error.config;
 
-    // Nếu bị 401 và không phải refresh thì thử refresh
-    if (
-      error.response.status === 401 &&
-      originalRequest.url !== '/auth/login' &&
-      originalRequest.url !== '/auth/refresh' &&
-      !originalRequest.headers[NO_RETRY_HEADER]
-    ) {
-      try {
-        const access_token = await handleRefreshToken();
-        if (access_token) {
-          originalRequest.headers[NO_RETRY_HEADER] = 'true';
-          originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
-          localStorage.setItem('access_token', access_token);
-          return instance(originalRequest);
+        // Nếu bị 401 và không phải refresh thì thử refresh
+        if (
+            error.response.status === 401 &&
+            originalRequest.url !== '/auth/login' &&
+            originalRequest.url !== '/auth/refresh' &&
+            !originalRequest.headers[NO_RETRY_HEADER]
+        ) {
+            try {
+                const access_token = await handleRefreshToken();
+                if (access_token) {
+                    originalRequest.headers[NO_RETRY_HEADER] = 'true';
+                    originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
+                    localStorage.setItem('access_token', access_token);
+                    return instance(originalRequest);
+                }
+            } catch (e) {
+                // Refresh fail => redirect
+                window.location.href = "/";
+            }
         }
-      } catch (e) {
-        // Refresh fail => redirect
-        window.location.href = "/login";
-      }
-    }
 
-    // Nếu chính refresh token request bị 401 thì redirect luôn
-    if (
-      error.response.status === 401 &&
-      originalRequest.url === '/auth/refresh'
-    ) {
-      window.location.href = "/login";
-    }
+        // Nếu chính refresh token request bị 401 thì redirect luôn
+        if (
+            error.response.status === 401 &&
+            originalRequest.url === '/auth/refresh'
+        ) {
+            window.location.href = "/";
+        }
 
         if (
             error.config && error.response
@@ -100,7 +98,7 @@ instance.interceptors.response.use(
         ) {
             const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
             alert(message)
-            window.location.href = '/login';
+            window.location.href = '/';
         }
 
         if (+error.response.status === 403) {

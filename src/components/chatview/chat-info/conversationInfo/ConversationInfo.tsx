@@ -2,9 +2,7 @@ import { FaArrowLeft, FaLink, FaUserCircle } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import { act, useEffect, useState } from "react";
 import { FaFileAlt } from "react-icons/fa";
-import { BsFillBellFill } from "react-icons/bs";
 import MediaGrid from "./MediaGrid";
-import { linkUrls } from "../../../../FakeData";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { ConversationResponse } from "../../../../types/Conversation";
@@ -44,7 +42,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
 
-    const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
+    const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
 
     const [mediaList, setMediaList] = useState<MediaResponse[]>([]);
     const [rawFileList, setRawFileList] = useState<MediaResponse[]>([]);
@@ -56,7 +54,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
     const [loading, setLoading] = useState<boolean>(false);
 
-    const toggleUserMenu = (participantId: number) => {
+    const toggleUserMenu = (participantId: string) => {
         setSelectedParticipantId(prev => (prev === participantId ? null : participantId));
     };
 
@@ -68,7 +66,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             }
             try {
                 setLoading(true);
-                const data = await searchMessages(parseInt(conv_id), keyword, 0);
+                const data = await searchMessages(conv_id, keyword, 0);
                 if (data?.result?.content) {
                     setSearchedMessages(data.result?.content);
                     setLoading(false);
@@ -86,7 +84,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
         setSearchedMessages(null);
     };
 
-    const isMatchingSender = (senderId: number) => {
+    const isMatchingSender = (senderId: string) => {
 		return participants?.find(participant => participant.id === senderId);
 	}
 
@@ -114,13 +112,13 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 
                 switch (activeTab) {
                     case 'media':
-                        response = await getMediasByConversationId(parseInt(conv_id), 0);
+                        response = await getMediasByConversationId(conv_id, 0);
                         if (response.result) {
                             setMediaList(response.result.content);
                         }
                         break;
                     case 'files':
-                        response = await getRawFilesByConversationId(parseInt(conv_id), 0);
+                        response = await getRawFilesByConversationId(conv_id, 0);
                         if (response.result) {
                             setRawFileList(response.result.content);
                         }
@@ -274,7 +272,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
 					                : 'text-gray-800 hover:bg-gray-100'}`}>
                                     <Link to={`${deviceType == 'Mobile'
                                         ? `/mobile/profile/${conversationResponse?.participantIds.find(id => id !== user?.user.id)}`
-                                        : `/profile/${conversationResponse?.participantIds.find(id => id !== user?.user.id)}`}`}
+                                        : `/d/profile/${conversationResponse?.participantIds.find(id => id !== user?.user.id)}`}`}
                                         className="flex flex-row items-center gap-4">
                                         <button className={`p-2 text-xl rounded-full
                                             ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#5A5A5A]'

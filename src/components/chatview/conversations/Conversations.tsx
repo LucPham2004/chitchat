@@ -4,7 +4,7 @@ import '../../../styles/scrollbar.css';
 import SearchBar from "../../common/SearchBar";
 import { useEffect, useState } from "react";
 import { IoSettings } from "react-icons/io5";
-import { FiLogOut } from "react-icons/fi";
+import { FiLogOut, FiMenu } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
 import Modal from "../../common/Modal";
 import { FaMoon, FaUserFriends } from "react-icons/fa";
@@ -90,30 +90,26 @@ const Conversations = () => {
                 ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
                 ${isDarkMode ? 'bg-[#161618] text-gray-300' : 'bg-white text-black'}`}>
 
-                <div className="flex flex-row items-center p-2 py-0 pe-4 self-start w-full">
-                    <h2 className={`flex self-start text-2xl font-bold text-left w-[40%]
-                        ${isDarkMode ? 'text-white' : 'text-black'}`}> Đoạn chat </h2>
-                    <div className="relative flex flex-row gap-4 items-center justify-end w-[65%]">
-                        <button onClick={() => setIsNewChatModalOpen(true)}
-                            className={`p-0.5 rounded-full text-3xl
+                <div className="flex flex-row items-center justify-between p-2 py-0 pe-4 self-start w-full">
+                    <div className="relative flex flex-row gap-4 items-center justify-start w-[65%]">
+                        <button className={`p-2 rounded-full text-xl
                             ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]'
-                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
-                            <GoPlus />
-                        </button>
-                        <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}
+                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}
                             onClick={toggleMenu}>
-                            <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={8} height={8}></Avatar>
+                            {/* <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={8} height={8}></Avatar> */}
+                            <FiMenu />
                         </button>
 
                         {isMenuOpen && (
-                            <div className={`absolute top-8 right-0 mt-2 w-64 border rounded-lg shadow-lg z-10
+                            <div className={`absolute top-8 left-0 mt-2 w-64 border rounded-lg shadow-lg z-10
                                 ${isDarkMode ? 'bg-[#2E2E2E] border-gray-900' : 'bg-white border-gray-200'}`}>
                                 <ul className="text-gray-700 px-1">
                                     <Link to={`${deviceType == 'Mobile' 
                                         ? `/mobile/profile/${user?.user.id}`
-                                        : `/profile/${user?.user.id}`}`}>
+                                        : `/d/profile/${user?.user.id}`}`}>
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
-                                        ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
+                                            ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
+                                            onClick={() => setIsMenuOpen(false)}>
                                             <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
                                             {user?.user.firstName + " " + user?.user.lastName}
                                         </li>
@@ -121,9 +117,10 @@ const Conversations = () => {
                                     <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
                                     <Link to={`${deviceType == 'Mobile'
                                         ? `/mobile/profile/${user?.user.id}/friends`
-                                        : `/profile/${user?.user.id}/friends`}`}>
+                                        : `/d/profile/${user?.user.id}/friends`}`}>
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
-                                        ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}>
+                                            ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
+                                            onClick={() => setIsMenuOpen(false)}>
                                             <button className={`p-2 rounded-full text-xl
                                                 ${isDarkMode ? 'text-gray-300 bg-[#474747] hover:bg-[#545454]'
                                                     : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
@@ -160,7 +157,16 @@ const Conversations = () => {
                                 </ul>
                             </div>
                         )}
+                        <button onClick={() => setIsNewChatModalOpen(true)}
+                            className={`p-0.5 rounded-full text-3xl
+                            ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]'
+                                    : 'text-black bg-gray-100 hover:bg-gray-200'}`}>
+                            <GoPlus />
+                        </button>
                     </div>
+                    <h2 className={`text-2xl font-bold bg-gradient-to-br from-blue-500 to-pink-400 bg-clip-text text-transparent`}> 
+                        ChitChat 
+                    </h2>
                 </div>
 
                 <div className="flex flex-col items-center w-full h-fit p-2 pe-4">

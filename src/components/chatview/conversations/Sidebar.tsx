@@ -42,7 +42,7 @@ const Sidebar = () => {
             ${isDarkMode ? ' text-gray-300' : 'text-black'}`}>
             
             <div className="flex flex-col items-center gap-2">
-                <Link to={`/profile/${user?.user.id}`}>
+                <Link to={`/d/profile/${user?.user.id}`}>
                     <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}>
                         <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={10} height={10}></Avatar>
                     </button>
@@ -54,7 +54,7 @@ const Sidebar = () => {
                     <BsChatDots />
                 </button> */}
                 
-                <Link to={`/profile/${user?.user.id}/friends`}>
+                <Link to={`/d/profile/${user?.user.id}/friends`}>
                     <button className={`p-3 rounded-lg text-xl 
                         ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
                             : 'text-black  hover:bg-gray-200'}`}>
@@ -63,7 +63,7 @@ const Sidebar = () => {
                 </Link>
             </div>
 
-            <p className="font-satisfy text-xl">Chit Chat</p>
+            <p className="font-satisfy text-xl bg-gradient-to-br from-blue-500 to-pink-400 bg-clip-text text-transparent">Chit Chat</p>
             
             <div className="flex flex-col items-center gap-2">
                 <button className={` rounded-lg 

@@ -4,7 +4,7 @@ import { ChatParticipants } from "../types/User";
 import instance from "./Axios-customize";
 
 // Get Joined Conversations by user ID
-export const getJoinedConversationsById = async (userId: number, pageNum: number) => {
+export const getJoinedConversationsById = async (userId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ConversationShortResponse>>>(
         `/conversations/get/joined`,
         { params: { userId, pageNum } }
@@ -12,7 +12,7 @@ export const getJoinedConversationsById = async (userId: number, pageNum: number
 };
 
 // Get Conversations by Owner ID
-export const getConversationsByOwnerId = async (userId: number, pageNum: number) => {
+export const getConversationsByOwnerId = async (userId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ConversationShortResponse>>>(
         `/conversations/get/owned`,
         { params: { userId, pageNum } }
@@ -20,20 +20,25 @@ export const getConversationsByOwnerId = async (userId: number, pageNum: number)
 };
 
 // Search Conversation
-export const searchConversations = async (keyword: string, userId: number, pageNum: number) => {
+export const searchConversations = async (keyword: string, userId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<ConversationResponse[]>>('/conversations/search', 
         { params: { keyword, userId, pageNum } }
     )).data;
 };
 
 // Get Conversation by ID
-export const getConversationById = async (convId: number, userId: number) => {
+export const getConversationById = async (convId: string, userId: string) => {
     return (await instance.get<ApiResponse<ConversationResponse>>(`/conversations/get/${convId}/${userId}`)).data;
 };
 
-export const getParticipantsByConvId = async (convId: number) => {
+export const getParticipantsByConvId = async (convId: string) => {
     return (await instance.get<ApiResponse<ChatParticipants[]>>(
         `/conversations/get/participants/${convId}`)).data;
+};
+
+export const getDirectMessage = async (selfId: string, otherId: string) => {
+    return (await instance.get<ApiResponse<ConversationResponse>>(
+        `/conversations/get/direct-message/${selfId}/${otherId}`)).data;
 };
 
 // Create Conversation
@@ -42,15 +47,15 @@ export const createConversation = async (request: ConversationRequest) => {
 };
 
 // Update Conversation
-export const updateConversation = async (request: ConversationRequest, userId: number) => {
+export const updateConversation = async (request: ConversationRequest, userId: string) => {
     return (await instance.put<ApiResponse<ConversationResponse>>(`/conversations/update/${userId}`, request)).data;
 };
 
-export const updateConversationPartially = async (request: ConversationRequest, conv_id: number, userId: number) => {
+export const updateConversationPartially = async (request: ConversationRequest, conv_id: string, userId: string) => {
     return (await instance.patch<ApiResponse<ConversationResponse>>(`/conversations/update/partially/${conv_id}/${userId}`, request)).data;
 };
 
 // Delete Conversation by ID
-export const deleteConversationById = async (id: number): Promise<void> => {
+export const deleteConversationById = async (id: string): Promise<void> => {
     await instance.delete<ApiResponse<void>>(`/conversations/delete/${id}`);
 };

@@ -3,21 +3,21 @@ import { ChatResponse, ChatRequest } from "../types/Message";
 import instance from "./Axios-customize";
 
 
-export const getConversationMessages = async (conversationId: number, pageNum: number) => {
+export const getConversationMessages = async (conversationId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ChatResponse>>>(
         `/messages/get/conversation`,
         { params: { conversationId, pageNum } }
     )).data;
 };
 
-export const getUserMessages = async (senderId: number, pageNum: number) => {
+export const getUserMessages = async (senderId: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ChatResponse>>>(
         `/messages/get/user`,
         { params: { senderId, pageNum } }
     )).data;
 };
 
-export const searchMessages = async (conversationId: number, keyword: string, pageNum: number) => {
+export const searchMessages = async (conversationId: string, keyword: string, pageNum: number) => {
     return (await instance.get<ApiResponse<Page<ChatResponse>>>(
         `/messages/search`,
         { params: { conversationId, keyword, pageNum } }
@@ -31,11 +31,11 @@ export const sendMessage = async (request: ChatRequest) => {
     )).data;
 };
 
-export const deleteMessage = async (messageId: number): Promise<void> => {
+export const deleteMessage = async (messageId: string): Promise<void> => {
     await instance.delete<ApiResponse<void>>(`/messages/delete/${messageId}`);
 };
 
-export const updateMessage = async (messageId: number, content: string) => {
+export const updateMessage = async (messageId: string, content: string) => {
     return (await instance.put<ApiResponse<void>>(
         `/messages/update`,
         null,

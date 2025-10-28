@@ -5,11 +5,11 @@ import { Link } from "react-router-dom";
 import { IoChatbubblesSharp } from "react-icons/io5";
 
 export interface Participant {
-    id: number;
+    id: string;
     avatar: string;
     name: string;
-    toggleUserMenu: (id: number) => void;
-    selectedParticipantId: number | null;
+    toggleUserMenu: (id: string) => void;
+    selectedParticipantId: string | null;
 }
 
 const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMenu, selectedParticipantId }) => {
@@ -20,7 +20,7 @@ const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMe
             <div className="flex items-center gap-2">
                 <img src={avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
                 <div className={`font-semibold ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>
-                    <a href={`/profile/${id}`}>{name}</a>
+                    <a href={`/d/profile/${id}`}>{name}</a>
                 </div>
             </div>
 
@@ -33,7 +33,7 @@ const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMe
             {selectedParticipantId === id && (
                 <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
                     <ul className="text-gray-700 p-1">
-                        <Link to={`/profile/${id}`}>
+                        <Link to={`/d/profile/${id}`}>
                             <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
                                 <img src={avatar} className="w-8 h-8 rounded-full" />
                                 Xem trang cá nhân

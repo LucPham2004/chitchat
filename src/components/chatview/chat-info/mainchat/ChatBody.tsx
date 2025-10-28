@@ -18,7 +18,7 @@ interface MessagesProps {
     conversationResponse: ConversationResponse;
     participants?: ChatParticipants[];
     files?: File[];
-    onDeleteMessage: (id: number) => void;
+    onDeleteMessage: (id: string) => void;
 }
 
 const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files, onDeleteMessage }) => {
@@ -113,7 +113,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                     if(conv_id) {
                         const lastMessages = newMessages;
                         const lastMessage = lastMessages[lastMessages.length - 1];
-                        updateLastMessage(parseInt(conv_id), lastMessage.senderId, lastMessage.content, lastMessage.createdAt);
+                        updateLastMessage(conv_id, lastMessage.senderId, lastMessage.content, lastMessage.createdAt);
                     }
                 } else {
                     setHasMore(false);

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Conversations from "../components/homeview/conversations/Conversations";
+import Conversations from "../components/chatview/conversations/Conversations";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../utilities/ThemeContext";
@@ -27,11 +27,15 @@ const LayoutDesktop = () => {
   
 	useEffect(() => {
 		if (!user) {
-			navigate("/login");
+			navigate("/");
+		}
+
+		if(deviceType == 'Mobile') {
+			navigate("/mobile");
 		}
 		
 		if (location.pathname === '/' && user?.user.id) {
-			navigate(`/profile/${user.user.id}`, { replace: true });
+			navigate(`/d/profile/${user.user.id}`, { replace: true });
 		}
 	}, [user, location.pathname, navigate]);
 
@@ -41,7 +45,7 @@ const LayoutDesktop = () => {
 					${deviceType == 'Mobile' ? '' : 'gap-4'}
 					${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-[#EDEEF3]'}`}
 					style={{
-                    backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : ''})`,
+                    backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : '/clouds.jpg'})`,
 					backgroundSize: 'cover'
                 }}>
 				<div className={`
@@ -62,7 +66,7 @@ const LayoutDesktop = () => {
             {isDisplayMedia && (
                 <DisplayMedia url={displayMediaUrl} setIsDisplayMedia={setIsDisplayMedia} />
             )}
-			<GlobalNotifications />
+			{/* <GlobalNotifications /> */}
 			{showIncomingCallModal && (
             	<IncomingCallModal />
 			)}

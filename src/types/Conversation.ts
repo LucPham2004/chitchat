@@ -1,7 +1,7 @@
 
 
 export interface Conversation {
-	id: number;
+	id: string;
 	name: string;
 	lastMessage: string;
 	avatarUrl: string;
@@ -9,17 +9,17 @@ export interface Conversation {
 }
 
 export interface ConversationResponse {
-	id: number;
+	id: string;
 	name: string;
 	avatarUrls?: string[];
 	description?: string;
 	color?: string;
 	emoji?: string;
 	lastMessage: {
-		id: number;
-		conversationId: number;
-		senderId: number;
-		recipientId: number[];
+		id: string;
+		conversationId: string;
+		senderId: string;
+		recipientId: string[];
 		content: string;
 		publicIds: string[];
 		urls: string[];
@@ -27,8 +27,8 @@ export interface ConversationResponse {
 		createdAt: string;
 		updatedAt: string;
 	}
-	ownerId: number;
-	participantIds: number[];
+	ownerId: string;
+	participantIds: string[];
 
 	group?: boolean;
 	isRead?: boolean;
@@ -44,14 +44,14 @@ export interface ConversationResponse {
 };
 
 export interface ConversationShortResponse {
-	id: number;
+	id: string;
 	name: string;
 	avatarUrls?: string[];
 	lastMessage: {
-		id: number;
-		conversationId: number;
-		senderId: number;
-		recipientId: number[];
+		id: string;
+		conversationId: string;
+		senderId: string;
+		recipientId: string[];
 		content: string;
 		publicIds: string[];
 		urls: string[];
@@ -59,22 +59,22 @@ export interface ConversationShortResponse {
 		createdAt: string;
 		updatedAt: string;
 	}
-	ownerId: number;
-	participantIds?: number[];
+	ownerId: string;
+	participantIds?: string[];
 	group?: boolean;
 	isRead?: boolean;
 };
 
 export interface ConversationRequest {
-	id?: number;
+	id?: string;
 	name?: string;
 	avatarUrls?: string;
 	description?: string;
 	color?: string;
 	emoji?: string;
   
-	participantIds?: number[];
-	ownerId?: number;
+	participantIds?: string[];
+	ownerId?: string;
 
 	isGroup?: boolean;
 	isRead?: boolean;

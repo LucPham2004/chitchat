@@ -17,7 +17,7 @@ export interface Page<T> {
 }
 
 export interface User {
-     id?: number;
+     id?: string;
      email: string;
      username: string;
      password?: string;
@@ -44,7 +44,7 @@ export interface GetAccount extends Omit<Account, "access_token"> { }
 export interface Account {
      access_token: string ;
      user: {
-          id: number;
+          id: string;
           email: string;
           username: string;
           firstName: string;

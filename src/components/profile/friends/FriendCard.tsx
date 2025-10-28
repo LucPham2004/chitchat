@@ -23,7 +23,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
             <div className="flex items-center gap-4">
                 <Link to={`${deviceType == 'Mobile' 
                         ? `/mobile/profile/${friend.id}`
-                        : `/profile/${friend.id}`}`} >
+                        : `/d/profile/${friend.id}`}`} >
                 <img 
                     src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} 
                     alt={friend.firstName + " " + friend.lastName} 
@@ -32,7 +32,7 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
                 <div className={`flex flex-col items-start  ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <Link to={`${deviceType == 'Mobile' 
                         ? `/mobile/profile/${friend.id}`
-                        : `/profile/${friend.id}`}`} 
+                        : `/d/profile/${friend.id}`}`} 
                         className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
                     <p className="text-sm font-semibold">{friend.mutualFriendsNum} bạn chung</p>
                 </div>

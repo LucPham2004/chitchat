@@ -1,4 +1,4 @@
-import ChatAndInfo from "../components/homeview/chat-info/ChatAndInfo";
+import ChatAndInfo from "../components/chatview/chat-info/ChatAndInfo";
 import { useEffect, useState } from "react";
 import { useAuth } from "../utilities/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -9,14 +9,14 @@ export interface ChangeWidthProps {
 	isChangeWidth: boolean;
 }
 
-const HomeView = () => {
+const ChatView = () => {
 	const { user } = useAuth();
   	const navigate = useNavigate();
 	const [isChangeWidth, setChangeWidth] = useState(false);
   
 	useEffect(() => {
 		if (!user) {
-			navigate("/login");
+			navigate("/");
 		}
 	}, [user, navigate]);
 
@@ -27,4 +27,4 @@ const HomeView = () => {
 	);
 };
 
-export default HomeView;
+export default ChatView;

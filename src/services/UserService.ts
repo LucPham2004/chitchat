@@ -8,11 +8,11 @@ export const createUser = async (request: UserCreationRequest) => {
 };
 
 // Get User by ID
-export const getUserById = async (id: number) => {
+export const getUserById = async (id: string) => {
     return (await instance.get<ApiResponse<UserResponse>>(`/users/get/${id}`)).data;
 };
 
-export const getOtherUserById = async (selfId: number, otherId: number) => {
+export const getOtherUserById = async (selfId: string, otherId: string) => {
     return (await instance.get<ApiResponse<UserResponse>>(`/users/get`,
         { params: { selfId, otherId } }
     )).data;
@@ -32,7 +32,7 @@ export const updateUserLinks = async (request: UserUpdateLinksRequest) => {
 };
 
 // Delete User by ID
-export const deleteUserById = async (id: number): Promise<void> => {
+export const deleteUserById = async (id: string): Promise<void> => {
     await instance.delete<ApiResponse<void>>(`/users/delete/${id}`);
 };
 
@@ -42,27 +42,27 @@ export const getAllUsers = async (page: number = 0, size: number = 20) => {
 };
 
 // Search users
-export const searchUsers = async (userId: number, name: string, pageNum: number = 0) => {
+export const searchUsers = async (userId: string, name: string, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/search/name', 
         { params: { userId, name, pageNum } })).data;
 };
 
 // Get User's Friends
-export const getUserFriends = async (userId: number, pageNum: number = 0) => {
+export const getUserFriends = async (userId: string, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/get/friends', { params: { userId, pageNum } })).data;
 };
 
 // Get User's Friends
-export const getUserFriendRequests = async (userId: number, pageNum: number = 0) => {
+export const getUserFriendRequests = async (userId: string, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/get/friends/request', { params: { userId, pageNum } })).data;
 };
 
 // Get Mutual Friends
-export const getMutualFriends = async (meId: number, youId: number, pageNum: number = 0) => {
+export const getMutualFriends = async (meId: string, youId: string, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/get/friends/mutual', { params: { meId, youId, pageNum } })).data;
 };
 
 // Get Suggested Friends
-export const getSuggestedFriends = async (userId: number, pageNum: number = 0) => {
+export const getSuggestedFriends = async (userId: string, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/get/friends/suggested', { params: { userId, pageNum } })).data;
 };

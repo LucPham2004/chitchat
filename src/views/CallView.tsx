@@ -1,49 +1,42 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../utilities/AuthContext";
 import { useChatContext } from "../utilities/ChatContext";
+import { useSearchParams } from "react-router-dom";
 
 export default function CallComponent() {
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const [recipientId, setRecipientId] = useState<string | null>(null);
   const { isConnected, remoteStreamRef, localVideoRef, callUser, hangup } = useChatContext();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [targetId, setTargetId] = useState("");
+  const [isCalling, setIsCalling] = useState(false);
 
-  // Mở modal khi bắt đầu cuộc gọi
+  // Bắt đầu cuộc gọi
   const handleCall = () => {
-    const input = parseInt(targetId);
+    const input = recipientId;
+    console.log(input)
     if (input) {
       callUser(input);
-      setIsModalOpen(true);
+      setIsCalling(true);
     }
   };
 
-  // Đóng modal khi kết thúc cuộc gọi
+  // Kết thúc cuộc gọi
   const handleHangup = () => {
     hangup();
-    setIsModalOpen(false);
+    setIsCalling(false);
   };
+
+  useEffect(() => {
+    const r = searchParams.get("r");
+    setRecipientId(r);
+
+    handleCall();
+  }, [searchParams]);
 
   return (
     <div className="p-4">
-      {/* Input và nút gọi */}
-      <div className="flex items-center gap-2 mb-4">
-        <input
-          id="target"
-          value={targetId}
-          onChange={(e) => setTargetId(e.target.value)}
-          placeholder="Nhập ID người nhận"
-          className="p-2 rounded-lg bg-gray-800 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button
-          onClick={handleCall}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
-        >
-          Gọi
-        </button>
-      </div>
-
       {/* Modal cuộc gọi */}
-      {isModalOpen && (
+      {isCalling && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
           <div className="bg-gray-900 rounded-2xl p-6 w-full max-w-4xl flex flex-col gap-4">
             {/* Thông tin người gọi */}

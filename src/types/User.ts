@@ -15,7 +15,7 @@ export interface UserCreationRequest {
 }
 
 export interface UserUpdateRequest {
-    id: number;
+    id: string;
     firstName?: string;
     lastName?: string;
     dob?: Date;
@@ -26,7 +26,7 @@ export interface UserUpdateRequest {
 }
 
 export interface UserUpdateImageRequest {
-    id: number;
+    id: string;
     avatarPublicId?: string;
     avatarUrl?: string;
     coverPhotoPublicId?: string;
@@ -34,7 +34,7 @@ export interface UserUpdateImageRequest {
 }
 
 export interface UserUpdateLinksRequest {
-    id: number;
+    id: string;
     facebook?: string;
     instagram?: string;
     twitter?: string;
@@ -46,7 +46,7 @@ export interface UserUpdateLinksRequest {
 }
 
 export interface UserDTO {
-    id: number;
+    id: string;
     firstName: string;
     lastName?: string;
     location?: string;
@@ -55,11 +55,11 @@ export interface UserDTO {
     friendNum?: number;
     mutualFriendsNum?: number | null;
 
-    conversationId?: number;
+    conversationId?: string;
 }
 
 export interface UserResponse {
-    id: number;
+    id: string;
     username: string;
     avatarPublicId?: string;
     avatarUrl: string;
@@ -76,7 +76,7 @@ export interface UserResponse {
          id: string;
          authority: string;
     };
-    conversationId: number;
+    conversationId: string;
     
     facebook?: string;
     instagram?: string;
@@ -97,7 +97,7 @@ export interface UserResponse {
 }
 
 export interface ChatParticipants {
-    id: number;
+    id: string;
     username: string;
     avatarPublicId: string;
     avatarUrl: string;

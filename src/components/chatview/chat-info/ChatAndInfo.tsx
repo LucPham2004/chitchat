@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import ConversationInfo from "./conversationInfo/ConversationInfo";
 import MainChat from "./mainchat/MainChat";
-import { ChangeWidthProps } from "../../../views/HomeView";
+import { ChangeWidthProps } from "../../../views/ChatView";
 import Modal from "../../common/Modal";
 import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
@@ -44,9 +44,9 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const [charCount, setCharCount] = useState<number>(0);
 
 
-    const [selectedParticipantId, setSelectedParticipantId] = useState<number | null>(null);
+    const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null);
 
-    const toggleUserMenu = (participantId: number) => {
+    const toggleUserMenu = (participantId: string) => {
         setSelectedParticipantId(prev => (prev === participantId ? null : participantId));
     };
 
@@ -58,8 +58,8 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         const fetchConversation = async () => {
             try {
                 if (conv_id && user?.user.id) {
-                    const response = await getConversationById(parseInt(conv_id), user?.user.id);
-                    const participants = await getParticipantsByConvId(parseInt(conv_id));
+                    const response = await getConversationById(conv_id, user?.user.id);
+                    const participants = await getParticipantsByConvId(conv_id);
                     if (response.result) {
                         setConversation(response.result);
                         setParticipants(participants.result);
@@ -84,7 +84,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
     const handleEmojiSelect = async (emoji: string) => {
         try {
             if (conv_id && user?.user.id) {
-                const response = await updateConversationPartially({ emoji }, parseInt(conv_id), user?.user.id);
+                const response = await updateConversationPartially({ emoji }, conv_id, user?.user.id);
                 setIsChangeConversationEmojiModalOpen(false);
             }
         } catch (error) {
@@ -204,7 +204,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                                 if (charCount < 1) return;
                                 try {
                                     if (conv_id && user?.user.id) {
-                                        const response = await updateConversationPartially({ name: inputValue }, parseInt(conv_id), user?.user.id);
+                                        const response = await updateConversationPartially({ name: inputValue }, conv_id, user?.user.id);
                                         console.log(response);
                                         setIsChangeConversationNameModalOpen(false);
                                         setInputValue('');
