@@ -6,6 +6,7 @@ import { getUserFriends } from "../../../services/UserService";
 import { createConversation } from "../../../services/ConversationService";
 import { useTheme } from "../../../utilities/ThemeContext";
 import Avatar from "../../common/Avatar";
+import { ROUTES } from "../../../utilities/Constants";
 
 type Props = {
     isOpen: boolean;
@@ -67,7 +68,7 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
 
                 if(res.code == 200 && res.result) {
                     // Redirect to the new chat
-                    window.location.href = `/conversations/${res.result.id}`;
+                    window.location.href = `${ROUTES.DESKTOP.PROFILE(res.result.id)}`;
 
                 }
 

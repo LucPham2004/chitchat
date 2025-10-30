@@ -8,6 +8,7 @@ import { useChatContext } from "../utilities/ChatContext";
 import DisplayMedia from "../components/common/DisplayMedia";
 import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
+import { ROUTES } from "../utilities/Constants";
 
 export interface ChangeWidthProps {
     toggleChangeWidth: () => void;
@@ -27,15 +28,15 @@ const LayoutDesktop = () => {
   
 	useEffect(() => {
 		if (!user) {
-			navigate("/");
+			navigate(ROUTES.AUTH.LOGIN);
 		}
 
 		if(deviceType == 'Mobile') {
-			navigate("/mobile");
+			navigate(ROUTES.MOBILE.ROOT);
 		}
 		
-		if (location.pathname === '/' && user?.user.id) {
-			navigate(`/d/profile/${user.user.id}`, { replace: true });
+		if (location.pathname === '/d' && user?.user.id) {
+			navigate(ROUTES.DESKTOP.PROFILE(user.user.id), { replace: true });
 		}
 	}, [user, location.pathname, navigate]);
 

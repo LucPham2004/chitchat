@@ -1,6 +1,7 @@
 import axiosClient from "axios";
 import { Mutex } from "async-mutex";
 import { ApiResponse } from "../types/backend";
+import { ROUTES } from "../utilities/Constants";
 
 interface AccessTokenResponse {
     access_token: string;
@@ -11,7 +12,7 @@ interface AccessTokenResponse {
  */
 
 const instance = axiosClient.create({
-    baseURL: 'http://localhost:8888',
+    baseURL: 'https://servertest.top/api',
     withCredentials: true
 });
 
@@ -56,7 +57,7 @@ instance.interceptors.response.use(
     async (error) => {
         if (!error.response) {
             console.error("Network error or CORS issue", error);
-            window.location.href = "/";
+            window.location.href = ROUTES.AUTH.LOGIN;
         }
 
         const originalRequest = error.config;
@@ -78,7 +79,7 @@ instance.interceptors.response.use(
                 }
             } catch (e) {
                 // Refresh fail => redirect
-                window.location.href = "/";
+                window.location.href = ROUTES.AUTH.LOGIN;
             }
         }
 
@@ -87,7 +88,7 @@ instance.interceptors.response.use(
             error.response.status === 401 &&
             originalRequest.url === '/auth/refresh'
         ) {
-            window.location.href = "/";
+            window.location.href = ROUTES.AUTH.LOGIN;
         }
 
         if (
@@ -98,7 +99,7 @@ instance.interceptors.response.use(
         ) {
             const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
             alert(message)
-            window.location.href = '/';
+            window.location.href = ROUTES.AUTH.LOGIN;
         }
 
         if (+error.response.status === 403) {

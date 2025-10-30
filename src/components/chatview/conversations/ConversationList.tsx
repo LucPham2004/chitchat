@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "../../../utilities/ThemeContext";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { PiUserPlusBold } from "react-icons/pi";
 import { deleteConversationById, getJoinedConversationsById, updateConversation } from "../../../services/ConversationService";
 import { ConversationShortResponse } from "../../../types/Conversation";
@@ -10,12 +10,14 @@ import { useChatContext } from "../../../utilities/ChatContext";
 import ConversationAvatar from "./ConversationAvatar";
 import { FaEllipsisH } from "react-icons/fa";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import { ROUTES } from "../../../utilities/Constants";
 
 
 const ConversationList: React.FC = () => {
     const { isDarkMode } = useTheme();
     const { user } = useAuth();
     const { conv_id } = useParams();
+    const [searchParams] = useSearchParams();
     const deviceType = useDeviceTypeByWidth();
     const [conversations, setConversations] = useState<ConversationShortResponse[]>([]);
     const [page, setPage] = useState<number>(0);
@@ -84,6 +86,31 @@ const ConversationList: React.FC = () => {
             isMounted = false; // Cleanup tránh gọi setState khi unmount
         };
     }, [page, conv_id]);
+    
+    useEffect(() => {
+        const fetchConversations = async () => {
+            if (!user || loading || !hasMore) return;
+            setLoading(true);
+            try {
+                const response = await getJoinedConversationsById(user.user.id, page);
+
+                const newConversations = response.result?.content ?? [];
+
+                setConversations((prev) => {
+                    const uniqueConversations = [...prev, ...newConversations].filter(
+                        (conv, index, self) => index === self.findIndex(c => c.id === conv.id)
+                    );
+                    return uniqueConversations;
+                });
+
+                setHasMore(response.result ? response.result.page.number < response.result.page.totalPages - 1 : false);
+            } catch (err) {
+                console.error("Lỗi khi lấy danh sách hội thoại:", err);
+            }
+        };
+
+        fetchConversations();
+    }, [searchParams]);
 
 
     return (
@@ -127,8 +154,8 @@ const ConversationList: React.FC = () => {
 
                     return (
                         <Link to={`${deviceType == 'Mobile' 
-                                ? `/mobile/conversations/${conv.id}`
-                                : `/conversations/${conv.id}`}`} 
+                                ? `${ROUTES.MOBILE.CONVERSATION(conv.id)}`
+                                : `${ROUTES.DESKTOP.CONVERSATION(conv.id)}`}`} 
                             key={conv.id}>
                             <li
                                 key={conv.id}
@@ -213,8 +240,9 @@ const ConversationList: React.FC = () => {
                             Hãy tìm kiếm bạn bè để bắt đầu các cuộc trò chuyện
                         </p>
                         <Link to={`${deviceType == 'Mobile' 
-                            ? `/mobile/profile/${user?.user.id}/friends`
-                            : `/d/profile/${user?.user.id}/friends` }`}>
+                            ? `${ROUTES.MOBILE.PROFILE_FRIENDS(user?.user.id)}`
+                            : `${ROUTES.DESKTOP.PROFILE_FRIENDS(user?.user.id)}`
+                            }`}>
                             <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit rounded-full
                                 ${isDarkMode ? 'border-white text-white hover:bg-[#2e2e2e]'
                                     : 'border-black text-gray-800 hover:bg-gray-200'}

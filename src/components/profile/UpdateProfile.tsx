@@ -10,6 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
 import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import toast, { Toaster } from "react-hot-toast";
+import { ROUTES } from "../../utilities/Constants";
 
 
 const UpdateProfile: React.FC = ({ }) => {
@@ -93,6 +95,16 @@ const UpdateProfile: React.FC = ({ }) => {
                 console.error("Lỗi không xác định:", error.message);
                 alert("Có lỗi xảy ra, vui lòng thử lại!");
             }
+        } finally {
+            toast.success("Cập nhật thông tin thành công!");
+            
+            setTimeout(() => {
+                if(deviceType == 'Mobile') {
+                    window.location.href = ROUTES.MOBILE.PROFILE(user?.user.id);
+                } else {
+                    window.location.href = ROUTES.DESKTOP.PROFILE(user?.user.id);
+                }
+            }, 1500)
         }
     };
 
@@ -224,10 +236,20 @@ const UpdateProfile: React.FC = ({ }) => {
     return (
         <div className={`overflow-hidden w-full flex
                 pb-0 rounded-xl border shadow-sm overflow-y-auto
-                ${deviceType == 'Mobile' ? 'max-h-[100vh]' : 'min-h-[96vh] max-h-[96vh]'}
+                ${deviceType == 'Mobile' ? 'max-h-[100dvh]' : 'min-h-[96dvh] max-h-[96dvh]'}
                 ${isDarkMode ? 'bg-[#161618] border-gray-900 text-gray-300' : 'bg-white border-gray-200 text-black'}`}>
             <div className={`relative flex flex-col items-center w-full pt-0
-                ${deviceType == 'Mobile' ? 'max-h-[100vh]' : 'min-h-[96vh] max-h-[96vh]'}`}>
+                ${deviceType == 'Mobile' ? 'max-h-[100dvh]' : 'min-h-[96dvh] max-h-[96dvh]'}`}>
+                
+                {/* 🔔 Toast */}
+                <Toaster position="top-center" toastOptions={{
+                    style: {
+                    background: "#fff",
+                    color: "#333",
+                    borderRadius: "10px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    },
+                }} />
 
                 <div className={`sticky top-0 z-50 min-w-full w-full pt-4 pb-6 flex border-b mb-4
                     ${deviceType == 'Mobile' ? 'justify-between px-2' : 'items-center justify-center'}

@@ -11,6 +11,7 @@ import FriendItemWithModal from "./friends/FriendItemWithModal";
 import { UserDTO } from "../../types/User";
 import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends, searchUsers } from "../../services/UserService";
 import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import toast, { Toaster } from "react-hot-toast";
 
 
 
@@ -42,6 +43,14 @@ const Friends = () => {
     const goBack = () => {
         navigate(-1);
     };
+
+    const showToast = (content: string, status: string) => {
+        if(status == 'success') {
+            toast.success(content);
+        } else {
+            toast.error(content);
+        }
+    }
 
     const isOtherUser = user_id_param != user?.user.id;
 
@@ -197,10 +206,20 @@ const Friends = () => {
     const cardComponent = getCardComponent(activeTab);
 
     return (
-        <div className={`overflow-hidden w-full flex flex-col pb-0 rounded-xl bordershadow-sm overflow-y-auto
-            ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
+        <div className={`overflow-hidden relative w-full flex flex-col pb-0 rounded-xl border shadow-sm overflow-y-auto
+            ${deviceType !== 'Mobile' ? 'max-h-[96dvh] min-h-[96dvh]' : 'h-[100dvh]'}
             ${isDarkMode ? 'bg-[#161618] text-gray-300 border-gray-900' : 'bg-white text-black border-gray-200'}`}
             onClick={() => setShowMenu(!showMenu)}>
+                
+            {/* 🔔 Toast */}
+            <Toaster position="top-center" toastOptions={{
+                style: {
+                background: "#fff",
+                color: "#333",
+                borderRadius: "10px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                },
+            }} />
 
             <div className={`sticky top-0 z-10 w-full flex px-4 pt-2
                     items-center justify-end md:justify-center border-b-2
@@ -329,7 +348,7 @@ const Friends = () => {
             </div>
             <div
                 ref={scrollContainerRef}
-                className="min-h-[86vh] max-h-[90vh] overflow-y-auto"
+                className="min-h-[86dvh] max-h-[90dvh] overflow-y-auto"
             >
                 <div className="w-full flex items-center justify-start gap-4 flex-wrap p-4">
 
@@ -351,6 +370,7 @@ const Friends = () => {
                             toggleMenu={() => toggleFriendMenuOpen(friend.id)}
                             isDarkMode={isDarkMode}
                             CardComponent={cardComponent}
+                            showToast={showToast}
                         />
                     ))
                         : (
@@ -372,6 +392,7 @@ const Friends = () => {
                             toggleMenu={() => toggleFriendMenuOpen(friend.id)}
                             isDarkMode={isDarkMode}
                             CardComponent={cardComponent}
+                            showToast={showToast}
                         />
                     ))
                         : (
@@ -393,6 +414,7 @@ const Friends = () => {
                             toggleMenu={() => toggleFriendMenuOpen(friend.id)}
                             isDarkMode={isDarkMode}
                             CardComponent={cardComponent}
+                            showToast={showToast}
                         />
                     ))
                         : (
@@ -414,6 +436,7 @@ const Friends = () => {
                             toggleMenu={() => toggleFriendMenuOpen(friend.id)}
                             isDarkMode={isDarkMode}
                             CardComponent={cardComponent}
+                            showToast={showToast}
                         />
                     ))
                         : (

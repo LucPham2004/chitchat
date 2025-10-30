@@ -9,6 +9,7 @@ import Avatar from "../../common/Avatar";
 import { useEffect, useState } from "react";
 import { UserResponse } from "../../../types/User";
 import { IoSettings } from "react-icons/io5";
+import { ROUTES } from "../../../utilities/Constants";
 
 
 const Sidebar = () => {
@@ -37,12 +38,12 @@ const Sidebar = () => {
     }, []);
     
     return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden min-w-[10%] flex flex-col gap-4 
+        <div className={`min-h-[96dvh] max-h-[96dvh] overflow-hidden min-w-[10%] flex flex-col gap-4 
             py-2 items-center justify-between rounded-xl
             ${isDarkMode ? ' text-gray-300' : 'text-black'}`}>
             
             <div className="flex flex-col items-center gap-2">
-                <Link to={`/d/profile/${user?.user.id}`}>
+                <Link to={`${ROUTES.DESKTOP.PROFILE(user?.user.id)}`}>
                     <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}>
                         <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={10} height={10}></Avatar>
                     </button>
@@ -54,7 +55,7 @@ const Sidebar = () => {
                     <BsChatDots />
                 </button> */}
                 
-                <Link to={`/d/profile/${user?.user.id}/friends`}>
+                <Link to={`${ROUTES.DESKTOP.PROFILE_FRIENDS(user?.user.id)}`}>
                     <button className={`p-3 rounded-lg text-xl 
                         ${isDarkMode ? 'text-white hover:bg-[#5A5A5A]' 
                             : 'text-black  hover:bg-gray-200'}`}>

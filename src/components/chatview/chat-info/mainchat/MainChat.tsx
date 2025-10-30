@@ -12,6 +12,7 @@ import { useChatContext } from "../../../../utilities/ChatContext";
 import { deleteImage, uploadConversationImage, uploadFile } from "../../../../services/ImageService";
 import { uploadConversationVideo } from "../../../../services/VideoService";
 import { ChatParticipants } from "../../../../types/User";
+import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 
 export interface MainChatProps {
     toggleChangeWidth: () => void;
@@ -31,6 +32,7 @@ const MainChat: React.FC<MainChatProps> = ({
     const { user } = useAuth();
     const { conv_id } = useParams();
     const { isDarkMode } = useTheme();
+    const deviceType = useDeviceTypeByWidth();
 
     const { 
         sendMessage: sendWebSocketMessage, 
@@ -147,15 +149,17 @@ const MainChat: React.FC<MainChatProps> = ({
 
     return (
         !conversationResponse ? (
-            <div className={`min-h-[96vh] max-h-[96vh]  w-full flex items-center justify-center
+            <div className={`min-h-[96dvh] max-h-[96dvh]  w-full flex items-center justify-center
                     pb-0 rounded-xl shadow-sm overflow-y-auto
                     `}
                 >
                 <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
             </div>
         ) : (
-            <div className={`min-h-[96vh] flex flex-col items-center justify-center pe-1 pt-1 pb-0 
-                rounded-xl shadow-sm bg-cover bg-center
+            <div className={` flex flex-col items-center justify-center pe-1 pt-1 pb-0 
+                 shadow-sm bg-cover bg-center 
+                ${deviceType == 'Mobile' ? 'h-full' : 'min-h-[96dvh] rounded-xl'}
+                ${isDarkMode ? ' border border-gray-900' : ''}
                 `}
                 style={{
                     backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : '/sky-bg.jpg'})`,
@@ -167,8 +171,8 @@ const MainChat: React.FC<MainChatProps> = ({
                         toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                         conversationResponse={conversationResponse}
                     />
-                    <div className="relative flex flex-col items-center justify-start w-full 
-                        max-h-[87vh] min-h-[87vh] ">
+                    <div className={`relative flex flex-col items-center justify-start w-full 
+                        ${deviceType == 'Mobile' ? 'max-h-[91dvh] min-h-[91dvh] ' : 'max-h-[87dvh] min-h-[87dvh] '}`}>
                         <ChatBody
                             messages={messages}
                             setMessages={setMessages}

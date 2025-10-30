@@ -1,4 +1,4 @@
-import { IoCamera, IoChatbubblesSharp, IoClose, IoLogoYoutube, IoSettings } from "react-icons/io5";
+import { IoCamera, IoChatbubblesOutline, IoChatbubblesSharp, IoClose, IoLogoYoutube, IoSettings } from "react-icons/io5";
 import { PiHandWavingFill, PiUploadSimpleFill } from "react-icons/pi";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLinkedin, FaTiktok, FaUserFriends } from "react-icons/fa";
@@ -14,6 +14,8 @@ import { uploadUserImage } from "../../services/ImageService";
 import Avatar from "../common/Avatar";
 import { useChatContext } from "../../utilities/ChatContext";
 import { sendFriendRequest } from "../../services/FriendshipService";
+import { ROUTES } from "../../utilities/Constants";
+import toast, { Toaster } from "react-hot-toast";
 
 
 const LOCAL_STORAGE_KEY = 'user_account';
@@ -120,8 +122,8 @@ const Profile = () => {
         }
     }, [userProfile]);
 
-    const goBack = () => {
-        navigate(-1);
+    const toConversations = () => {
+        navigate(ROUTES.MOBILE.CONVERSATIONS);
     };
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,7 +154,10 @@ const Profile = () => {
             };
 
             const response = await updateUserImages(request);
-            console.log("Cập nhật thành công:", response);
+            if(response.code == 1000) {
+                console.log("Cập nhật thành công:", response);
+                toast.success("Cập nhật ảnh thành công!");
+            }
             setShowMenu(false);
             setInputUrl("");
             setSelectedFile(null);
@@ -168,14 +173,17 @@ const Profile = () => {
             console.log("clicked")
             if (!user) return;
             const res = await sendFriendRequest(user?.user.id, userId);
-            console.log("Yêu cầu kết bạn đã được gửi: ", res);
+            if(res.code == 1000) {
+                console.log("Yêu cầu kết bạn đã được gửi: ", res);
+                toast.success("Cập nhật thông tin thành công!");
+            }
         } catch (error) {
             console.error("Lỗi khi gửi yêu cầu kết bạn: ", error);
         }
     };
 
     if (loading) return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+        <div className={`min-h-[96dvh] max-h-[96dvh] overflow-hidden w-full flex items-center justify-center
             pb-0 rounded-xl border shadow-sm overflow-y-auto
             ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
@@ -183,7 +191,7 @@ const Profile = () => {
     );
 
     if (error) return (
-        <div className={`min-h-[96vh] max-h-[96vh] overflow-hidden w-full flex items-center justify-center
+        <div className={`min-h-[96dvh] max-h-[96dvh] overflow-hidden w-full flex items-center justify-center
             pb-0 rounded-xl border shadow-sm overflow-y-auto
             ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <p className="text-red-500 text-lg font-semibold">Lỗi tải dữ liệu, xin vui lòng thử lại sau</p>
@@ -193,16 +201,27 @@ const Profile = () => {
     return (
         <div className={`overflow-hidden w-full flex
             pb-0 rounded-xl border shadow-sm overflow-y-auto
-            ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
+            ${deviceType !== 'Mobile' ? 'max-h-[96dvh] min-h-[96dvh]' : 'h-[100dvh]'}
             ${isDarkMode ? 'bg-[#161618] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="relative flex flex-col w-full min-h-full">
+                
+                {/* 🔔 Toast */}
+                <Toaster position="top-center" toastOptions={{
+                    style: {
+                    background: "#fff",
+                    color: "#333",
+                    borderRadius: "10px",
+                    boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                    },
+                }} />
+
                 {deviceType != 'PC' && (
                 <div className="absolute top-3 left-4 z-10">
                     <button className={`p-2 rounded-full text-xl
                     ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
                             : 'text-black bg-gray-200 hover:bg-gray-100'}`}
-                        onClick={goBack}>
-                        <FaArrowLeft />
+                        onClick={toConversations}>
+                        <IoChatbubblesOutline />
                     </button>
                 </div>
                 )}
@@ -310,8 +329,8 @@ const Profile = () => {
                         {user_id_param && user_id_param != user?.user.id ? (
                             <div className="flex flex-col items-end gap-2 pt-4">
                                 <Link to={`${deviceType == 'Mobile' 
-                                    ? `/mobile/conversations/${userProfile?.conversationId}`
-                                    : `/conversations/${userProfile?.conversationId}`}`}
+                                    ? `${ROUTES.MOBILE.CONVERSATION(userProfile?.conversationId)}`
+                                    : `${ROUTES.DESKTOP.CONVERSATION(userProfile?.conversationId)}`}`}
                                     className="w-full">
                                     <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -326,8 +345,8 @@ const Profile = () => {
 
                                 {friends.length > 0 && (
                                 <Link to={`${deviceType == 'Mobile'
-                                    ? `/mobile/profile/${user_id_param}/friends`
-                                    : `/d/profile/${user_id_param}/friends`}`}
+                                    ? `${ROUTES.MOBILE.PROFILE_FRIENDS(user_id_param)}`
+                                    : `${ROUTES.DESKTOP.PROFILE_FRIENDS(user_id_param)}`}`}
                                     className="w-full min-w-[130px]">
                                     <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit min-w-[130px]
                                         ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -362,8 +381,8 @@ const Profile = () => {
                             : (
                                 <div className="flex flex-col items-end gap-2 pt-4">
                                     <Link to={`${deviceType == 'Mobile'
-                                        ? `/mobile/profile/${user_id_param}/update`
-                                        : `/d/profile/${user_id_param}/update`} `}
+                                        ? `${ROUTES.MOBILE.PROFILE_UPDATE(user_id_param)}`
+                                        : `${ROUTES.DESKTOP.PROFILE_UPDATE(user_id_param)}`} `}
                                         className="w-full">
                                         <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit  
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -378,8 +397,8 @@ const Profile = () => {
                                         </button>
                                     </Link>
                                     <Link to={`${deviceType == 'Mobile'
-                                        ? `/mobile/profile/${user_id_param}/friends`
-                                        : `/d/profile/${user_id_param}/friends`}`}
+                                        ? `${ROUTES.MOBILE.PROFILE_FRIENDS(user_id_param)}`
+                                        : `${ROUTES.DESKTOP.PROFILE_FRIENDS(user_id_param)}`}`}
                                         className="w-full min-w-[130px]">
                                         <button className={`flex items-center justify-center gap-2 py-2 px-4 h-fit min-w-[130px]
                                             ${deviceType == 'Mobile' ? 'w-full rounded-lg' : 'w-fit rounded-full'}
@@ -439,7 +458,7 @@ const Profile = () => {
                         : (
                             <p className="font-semibold">Các bạn có {friends.length} bạn chung</p>
                         )}
-                        <div className="flex items-center -space-x-2">
+                        {/* <div className="flex items-center -space-x-2">
                             {friends.map((user) => (
                                 <div key={user.id} className="relative group">
                                     <img
@@ -448,7 +467,6 @@ const Profile = () => {
                                         className="w-10 h-10 rounded-full border-2 border-white cursor-pointer object-cover
                                         hover:scale-105 transition-transform"
                                     />
-                                    {/* Tooltip */}
                                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 
                                         text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 
                                         transition-opacity w-max">
@@ -456,7 +474,7 @@ const Profile = () => {
                                     </div>
                                 </div>
                             ))}
-                        </div>
+                        </div> */}
                         {/* <div className="flex items-center gap-2">
                             {friends.length > 1 && (
                                 <p>{friends[0].firstName + " " + friends[0].lastName + ", " + friends[1].firstName + " " + friends[1].lastName + `${friends.length - 2 > 0 ? " và " + `${friends.length - 2}` + " người khác" : ''}`}</p>

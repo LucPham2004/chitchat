@@ -5,6 +5,7 @@ import { UserDTO } from "../../../types/User";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { useAuth } from "../../../utilities/AuthContext";
 import { getDirectMessage } from "../../../services/ConversationService";
+import { ROUTES } from "../../../utilities/Constants";
 
 interface FriendItemProps {
     friend: UserDTO;
@@ -12,7 +13,13 @@ interface FriendItemProps {
     isOpen: boolean;
     toggleMenu: () => void;
     isDarkMode: boolean;
-    CardComponent: React.ComponentType<{ friend: UserDTO; isOpen: boolean; toggleFriendMenuOpen?: () => void; }>;
+    CardComponent: React.ComponentType<{ 
+        friend: UserDTO; 
+        isOpen: boolean; 
+        toggleFriendMenuOpen?: () => void; 
+        showToast?: (content: string, status: string) => void;
+    }>;
+        showToast?: (content: string, status: string) => void;
 }
 
 const FriendItemWithModal: React.FC<FriendItemProps> = ({
@@ -21,14 +28,15 @@ const FriendItemWithModal: React.FC<FriendItemProps> = ({
     isOpen,
     toggleMenu,
     isDarkMode,
-    CardComponent
+    CardComponent,
+    showToast
 }) => {
     const { user } = useAuth();
 	const deviceType = useDeviceTypeByWidth();
     const navigate = useNavigate();
 
     const menuPosition = index + 5 > 10 ? "-top-24" : "top-16";
-    const baseClass = isDarkMode ? "text-white bg-[#2E2E2E]" : "text-black bg-white";
+    const baseClass = isDarkMode ? "text-white bg-[#2E2E2E] border-gray-500" : "text-black bg-white border-gray-300";
     const hoverClass = isDarkMode ? "text-gray-200 hover:bg-[#5A5A5A]" : "text-black hover:bg-gray-100";
     const btnClass = isDarkMode ? "bg-[#474747] text-gray-200 border-gray-900" : "bg-white border-gray-200";
 
@@ -38,9 +46,9 @@ const FriendItemWithModal: React.FC<FriendItemProps> = ({
                 const data = await getDirectMessage(user?.user.id, friend.id);
                 if (data?.code == 1000 && data.result) {
                     if(deviceType == 'Mobile') {
-                        navigate(`/mobile/conversations/${data.result.id}`);
+                        navigate(`${ROUTES.MOBILE.CONVERSATION(data.result.id)}`);
                     } else {
-                        navigate(`/conversations/${data.result.id}`);
+                        navigate(`${ROUTES.DESKTOP.CONVERSATION(data.result.id)}`);
                     }
                 }
             } catch (error) {
@@ -55,6 +63,7 @@ const FriendItemWithModal: React.FC<FriendItemProps> = ({
                 friend={friend}
                 isOpen={isOpen}
                 toggleFriendMenuOpen={toggleMenu}
+                showToast={showToast}
             />
             {isOpen && (
                 <div className={`absolute right-10 ${menuPosition} mt-2 w-64 border rounded-lg shadow-lg z-10 ${baseClass}`}>

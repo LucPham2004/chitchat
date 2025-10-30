@@ -7,6 +7,7 @@ import { useAuth } from "../../../../utilities/AuthContext";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import { ROUTES } from "../../../../utilities/Constants";
 
 
 const ChatHeader: React.FC<MainChatProps> = ({
@@ -20,26 +21,26 @@ const ChatHeader: React.FC<MainChatProps> = ({
     const deviceType = useDeviceTypeByWidth();
 
     const handleCallAudio = () => {
-        const callUrl = `${window.location.origin}/call?r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
+        const callUrl = `${window.location.origin}/call?t=audio&r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
         deviceType !== 'Mobile' 
-        ? window.open(callUrl, "_blank", "width=600,height=400")
+        ? window.open(callUrl, "_blank", "width=900,height=600")
         : window.location.href = `${callUrl}`;
     };
 
     const handleCallVideo = () => {
-        const callUrl = `${window.location.origin}/call?r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
+        const callUrl = `${window.location.origin}/call?t=video&r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
         deviceType !== 'Mobile' 
-        ? window.open(callUrl, "_blank", "width=600,height=400")
+        ? window.open(callUrl, "_blank", "width=900,height=600")
         : window.location.href = `${callUrl}`;
     };
 
     return (
-        <div className={`flex justify-between items-center w-full p-0.5 ps-1 pb-1 border-b h-[9vh]
+        <div className={`flex justify-between items-center w-full p-0.5 ps-1 pb-1 border-b h-[9dvh]
             ${isDarkMode ? 'border-gray-600' : 'border-gray-400'}`}>
 
             <div className="flex justify-between items-center ms-2 gap-1">
             {deviceType == 'Mobile' && (
-                <Link to={`/mobile/conversations`}>
+                <Link to={`${ROUTES.MOBILE.CONVERSATIONS}`}>
                     <button className={`p-2 rounded-full text-xl
                                         ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
                             : 'text-black bg-gray-200 hover:bg-gray-100'}`}>

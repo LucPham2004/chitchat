@@ -17,7 +17,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 	return (
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
 			onClick={onClose}>
-			<div className={`relative min-h-[30vh] max-h-[80vh] flex flex-col items-center justify-start 
+			<div className={`relative min-h-[30dvh] max-h-[80dvh] flex flex-col items-center justify-start 
 				 rounded-xl shadow-lg 
 				${deviceType == 'Mobile' ? 'max-w-[90%] p-4' : 'min-w-[30%] max-w-[40%] p-6'}
 				${isDarkMode ? 'text-white bg-[#2E2E2E]' : 'text-black bg-white'}

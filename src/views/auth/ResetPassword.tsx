@@ -5,6 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { callResetPassword } from "../../services/AuthService";
 import { Particle } from "../../components/common/Particle";
 import ParticlesBackground from "../../components/common/ParticlesBackground";
+import { ROUTES } from "../../utilities/Constants";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -42,7 +43,7 @@ const ResetPassword = () => {
         if (res.data.code == 1000) {
           toast.success("Đặt lại mật khẩu thành công!");
           setTimeout(() => {
-            window.location.href = "/login";
+            window.location.href = ROUTES.AUTH.LOGIN;
           }, 1500);
         } else {
           const message = res.data.message ?? "Đã có lỗi xảy ra!";

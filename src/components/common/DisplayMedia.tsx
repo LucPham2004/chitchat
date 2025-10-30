@@ -27,7 +27,7 @@ const DisplayMedia: React.FC<DisplayMediaProps> = ({ url, setIsDisplayMedia }) =
                     }}>
                 <IoClose />
             </button>
-            <div className="max-w-[90vw] h-[90vh]" onClick={(e) => e.stopPropagation()}>
+            <div className="max-w-[90vw] h-[90dvh]" onClick={(e) => e.stopPropagation()}>
                 {url && isVideoUrl(url) ? (
                     <video src={url} controls className="max-w-full w-auto h-full rounded-lg"/>
                 )

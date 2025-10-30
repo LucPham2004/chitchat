@@ -2,6 +2,7 @@ import ChatAndInfo from "../components/chatview/chat-info/ChatAndInfo";
 import { useEffect, useState } from "react";
 import { useAuth } from "../utilities/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../utilities/Constants";
 
 
 export interface ChangeWidthProps {
@@ -16,7 +17,7 @@ const ChatView = () => {
   
 	useEffect(() => {
 		if (!user) {
-			navigate("/");
+			navigate(ROUTES.AUTH.LOGIN);
 		}
 	}, [user, navigate]);
 

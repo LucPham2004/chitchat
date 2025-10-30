@@ -11,21 +11,21 @@ type LastMessage = {
 };
 
 // Type payloads tương ứng backend
-type CallRequest = { 
-    from: string; 
-    fromName: string; 
+type CallRequest = {
+    from: string;
+    fromName: string;
     to: string;
     toName: string;
     callType: string;
 };
 
-type OfferAnswer = { from: string; to: string; sdp: string };
+type OfferAnswer = { from: string; to: string; sdp: string, callType: string };
 type IceCandidateMsg = { from: string; to: string; candidate: string };
 
 const STUN_SERVERS = {
-  iceServers: [
-    { urls: "stun:stun.l.google.com:19302" } // test miễn phí
-  ]
+    iceServers: [
+        { urls: "stun:stun.l.google.com:19302" } // test miễn phí
+    ]
 };
 
 
@@ -56,10 +56,10 @@ type ChatContextType = {
     showIncomingCallModal: boolean;
     localVideoRef: any | null;
     remoteStreamRef: any | null;
-    callUser: (targetId: string) => void;
+    callUser: (targetId: string, callType: string) => void;
     handleIncomingCall: (req: CallRequest) => void;
     acceptCall: (callerId: string, callType: string) => void;
-    hangup:() => void;
+    hangup: () => void;
 };
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -81,7 +81,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const conversationSubscriptionsRef = useRef<Map<string, any>>(new Map());
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const reconnectAttempts = useRef(0);
-    
+
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
     const remoteStreamRef = useRef<HTMLVideoElement | null>(null);
@@ -135,7 +135,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             stompClientRef.current.disconnect();
         }
 
-        const client = Stomp.client("ws://localhost:8888/ws");
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const client = Stomp.client(`${protocol}://${window.location.host}/api/ws`);
         stompClientRef.current = client;
 
         client.connect({},
@@ -247,7 +248,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, []);
 
     // ===== helper create RTCPeerConnection
-    const createPeerConnection = async (isCaller: boolean) => {
+    const createPeerConnection = async (isCaller: boolean, callType: string) => {
+        if (pcRef.current) {
+            pcRef.current.close();
+        }
+
         const pc = new RTCPeerConnection(STUN_SERVERS);
 
         pc.onicecandidate = (event) => {
@@ -276,8 +281,22 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         };
 
+        pc.onconnectionstatechange = () => {
+            console.log("Connection state:", pc.connectionState);
+            if (pc.connectionState === "disconnected" || pc.connectionState === "failed" || pc.connectionState === "closed") {
+                hangup();
+            }
+        };
+        let localStream;
+
         // get local stream
-        const localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+        try {
+            localStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: callType === "video" });
+        } catch (err) {
+            alert("Không thể truy cập camera/microphone");
+            return pc;
+        }
+        
         localStreamRef.current = localStream;
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
@@ -289,19 +308,20 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     // ===== call someone (caller flow)
-    const callUser = async (targetId: string) => {
-        if(!user) return;
+    const callUser = async (targetId: string, callType: string) => {
+        if (!user) return;
         targetRef.current = targetId;
-        const pc = await createPeerConnection(true);
+        const pc = await createPeerConnection(true, callType);
 
         // create offer
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);
 
         const payload: OfferAnswer = {
-        from: user.user.id,
-        to: targetId,
-        sdp: JSON.stringify(pc.localDescription)
+            from: user.user.id,
+            to: targetId,
+            sdp: JSON.stringify(pc.localDescription),
+            callType: callType
         };
         stompClientRef.current?.send("/app/call/offer", {}, JSON.stringify(payload));
         console.log("Offer sent");
@@ -318,13 +338,20 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // ===== accept call (callee flow)
     const acceptCall = async (callerId: string, callType: string) => {
         targetRef.current = callerId;
-        const pc = await createPeerConnection(false);
+        const pc = await createPeerConnection(false, callType);
         // cua B (callee) sẽ chờ receive offer (server đã gửi offer từ caller). Khi handleRemoteSDP bắt được offer, sẽ tạo answer.
         console.log("Accepted call; waiting for offer...");
     };
 
     // ===== hangup
     const hangup = () => {
+        if (targetRef.current && user) {
+            stompClientRef.current?.send("/app/call/hangup", {}, JSON.stringify({
+                from: user.user.id,
+                to: targetRef.current
+            }));
+        }
+
         pcRef.current?.close();
         pcRef.current = null;
         localStreamRef.current?.getTracks().forEach(t => t.stop());
@@ -334,12 +361,14 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (remoteStreamRef.current) remoteStreamRef.current.srcObject = null;
     };
 
+    const pendingCandidates: RTCIceCandidateInit[] = [];
+
     // ===== handle remote SDP (offer or answer)
     const handleRemoteSDP = async (msg: OfferAnswer) => {
         if (!user) return;
         if (!pcRef.current) {
             // nếu chưa có pc (callee hasn't accepted), tạo
-            await createPeerConnection(false);
+            await createPeerConnection(false, msg.callType);
         }
         const pc = pcRef.current!;
         const sdpObj = JSON.parse(msg.sdp) as RTCSessionDescriptionInit;
@@ -347,9 +376,18 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (sdpObj.type === "offer") {
             // callee nhận offer -> setRemote + createAnswer
             await pc.setRemoteDescription(sdpObj);
+
+            pendingCandidates.forEach(c => pc.addIceCandidate(c));
+            pendingCandidates.length = 0;
+
             const answer = await pc.createAnswer();
             await pc.setLocalDescription(answer);
-            const payload: OfferAnswer = { from: user?.user.id, to: msg.from, sdp: JSON.stringify(pc.localDescription) };
+            const payload: OfferAnswer = { 
+                from: user?.user.id, 
+                to: msg.from, 
+                sdp: JSON.stringify(pc.localDescription),
+                callType: msg.callType
+            };
             stompClientRef.current?.send("/app/call/answer", {}, JSON.stringify(payload));
             console.log("Answer sent");
         } else if (sdpObj.type === "answer") {
@@ -367,6 +405,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
         try {
             const candidateObj = JSON.parse(msg.candidate);
+            if (!pcRef.current?.remoteDescription) {
+                pendingCandidates.push(candidateObj);
+                return;
+            }
             await pcRef.current.addIceCandidate(candidateObj);
             console.log("Added remote ICE candidate");
         } catch (e) {

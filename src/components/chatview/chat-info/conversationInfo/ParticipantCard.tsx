@@ -3,6 +3,7 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 import { FiLogOut } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { IoChatbubblesSharp } from "react-icons/io5";
+import { ROUTES } from "../../../../utilities/Constants";
 
 export interface Participant {
     id: string;
@@ -20,7 +21,7 @@ const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMe
             <div className="flex items-center gap-2">
                 <img src={avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
                 <div className={`font-semibold ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>
-                    <a href={`/d/profile/${id}`}>{name}</a>
+                    <a href={`${ROUTES.DESKTOP.PROFILE(id)}`}>{name}</a>
                 </div>
             </div>
 
@@ -33,7 +34,7 @@ const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMe
             {selectedParticipantId === id && (
                 <div className="absolute top-8 right-0 mt-2 w-64 bg-white border rounded-lg shadow-lg z-50">
                     <ul className="text-gray-700 p-1">
-                        <Link to={`/d/profile/${id}`}>
+                        <Link to={`${ROUTES.DESKTOP.PROFILE(id)}`}>
                             <li className="flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-lg font-bold hover:bg-gray-100 cursor-pointer">
                                 <img src={avatar} className="w-8 h-8 rounded-full" />
                                 Xem trang cá nhân

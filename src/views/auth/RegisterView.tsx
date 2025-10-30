@@ -7,6 +7,7 @@ import { Gender } from "../../types/User";
 import { useAuth } from "../../utilities/AuthContext";
 import ParticlesBackground from "../../components/common/ParticlesBackground";
 import { Particle } from "../../components/common/Particle";
+import { ROUTES } from "../../utilities/Constants";
 
 const RegisterView = () => {
   const deviceType = useDeviceTypeByWidth();
@@ -65,7 +66,7 @@ const RegisterView = () => {
       if (response.data.code === 1000) {
         toast.success("Xác minh OTP thành công! Bạn có thể đăng nhập ngay.");
         setTimeout(() => {
-          window.location.href = "/login";
+          window.location.href = ROUTES.AUTH.LOGIN;
         }, 1500);
       } else {
         toast.error(response.data.message || "Mã OTP không hợp lệ!");
@@ -252,7 +253,7 @@ const RegisterView = () => {
 
         <p className="mt-4 text-center text-gray-200">
           Đã có tài khoản?{" "}
-          <a href="/login" className="text-pink-500 hover:underline">
+          <a href={ROUTES.AUTH.LOGIN} className="text-pink-500 hover:underline">
             Đăng nhập ngay!
           </a>
         </p>

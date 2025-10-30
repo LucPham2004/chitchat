@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import ParticlesBackground from "../../components/common/ParticlesBackground";
 import { Particle } from "../../components/common/Particle";
+import { ROUTES } from "../../utilities/Constants";
 
 const LoginView = () => {
   const deviceType = useDeviceTypeByWidth();
@@ -31,8 +32,8 @@ const LoginView = () => {
 
         setTimeout(() => {
           deviceType === "Mobile"
-            ? (window.location.href = "/mobile")
-            : (window.location.href = "/");
+            ? (window.location.href = ROUTES.MOBILE.ROOT)
+            : (window.location.href = ROUTES.DESKTOP.ROOT);
         }, 1000);
       } else {
         toast.error("Đăng nhập thất bại: " + response.data.message);
@@ -162,7 +163,7 @@ const LoginView = () => {
             <p className="mt-6 text-start text-gray-700 dark:text-gray-300">
               Chưa có tài khoản?{" "}
               <a
-                href="/register"
+                href={ROUTES.AUTH.REGISTER}
                 className="text-indigo-500 hover:underline font-medium"
               >
                 Đăng ký ngay!
@@ -172,7 +173,7 @@ const LoginView = () => {
             <p className="mt-2 text-start text-gray-700 dark:text-gray-300">
               Hay là bạn {" "}
               <a
-                href="/forgot-password"
+                href={ROUTES.AUTH.FORGOT_PASSWORD}
                 className="text-indigo-500 hover:underline font-medium"
               >
                 quên mật khẩu?

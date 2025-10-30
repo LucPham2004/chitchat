@@ -1,21 +1,40 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../utilities/AuthContext";
 import { useChatContext } from "../utilities/ChatContext";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { getOtherUserById } from "../services/UserService";
+import { UserDTO } from "../types/User";
+import Avatar from "../components/common/Avatar";
 
 export default function CallComponent() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [recipientId, setRecipientId] = useState<string | null>(null);
+  const [callType, setCallType] = useState<string | null>("audio");
+  const [recipient, setRecipient] = useState<UserDTO | null>(null);
   const { isConnected, remoteStreamRef, localVideoRef, callUser, hangup } = useChatContext();
   const [isCalling, setIsCalling] = useState(false);
 
+  const fetchUser = async () => {
+    try {
+      if (user?.user.id && recipientId) {
+        const response = await getOtherUserById(user?.user.id, recipientId);
+        if (response.result) {
+          setRecipient(response.result);
+        }
+
+      } else {
+        throw new Error("User ID is undefined");
+      }
+    } catch (error) { }
+  };
+
   // Bắt đầu cuộc gọi
   const handleCall = () => {
-    const input = recipientId;
-    console.log(input)
-    if (input) {
-      callUser(input);
+    console.log(recipientId)
+    if (recipientId && callType) {
+      callUser(recipientId, callType);
       setIsCalling(true);
     }
   };
@@ -24,60 +43,70 @@ export default function CallComponent() {
   const handleHangup = () => {
     hangup();
     setIsCalling(false);
+    navigate(-1);
   };
 
   useEffect(() => {
     const r = searchParams.get("r");
-    setRecipientId(r);
+    const callType = searchParams.get("t");
 
-    handleCall();
+    setRecipientId(r);
+    setCallType(callType);
   }, [searchParams]);
 
+  useEffect(() => {
+    if (recipientId && callType) {
+      fetchUser();
+      handleCall();
+    }
+  }, [recipientId]);
+
   return (
-    <div className="p-4">
+    <div className="">
       {/* Modal cuộc gọi */}
       {isCalling && (
         <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-          <div className="bg-gray-900 rounded-2xl p-6 w-full max-w-4xl flex flex-col gap-4">
-            {/* Thông tin người gọi */}
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold text-white">
-                Cuộc gọi với {user?.user.id}
-              </h2>
-              <p className="text-gray-400">
-                {isConnected ? "Đang kết nối..." : "Đã ngắt kết nối"}
-              </p>
-            </div>
+          <div className="bg-gray-900 rounded-2xl w-full flex flex-col gap-4">
 
             {/* Video hiển thị */}
-            <div className="flex flex-col md:flex-row gap-4 justify-center">
-              <div className="relative">
-                <video
-                  ref={localVideoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  className="w-48 h-36 md:w-64 md:h-48 rounded-lg bg-black"
-                />
-                <span className="absolute bottom-2 left-2 text-white text-sm bg-gray-800 bg-opacity-50 px-2 py-1 rounded">
-                  Bạn
-                </span>
-              </div>
-              <div className="relative">
+            <div className="relative w-full h-screen bg-black overflow-hidden">
+              {/* Video của người kia — full màn hình */}
+
+              {remoteStreamRef.current ? (
                 <video
                   ref={remoteStreamRef}
                   autoPlay
                   playsInline
-                  className="w-64 h-48 md:w-96 md:h-64 rounded-lg bg-black"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
-                <span className="absolute bottom-2 left-2 text-white text-sm bg-gray-800 bg-opacity-50 px-2 py-1 rounded">
-                  Người nhận
-                </span>
-              </div>
+              ) : (
+                <div className="flex flex-col gap-2 items-center justify-center w-full h-full bg-black text-white text-lg">
+                  <Avatar avatarUrl={recipient ? recipient.avatarUrl : '/user_default.avif'} width={28} height={28}></Avatar>
+                  <p>
+                    {`${recipient?.firstName + " " + recipient?.lastName}`}
+                  </p>
+                </div>
+              )}
+
+              {/* Video của bạn — nhỏ ở góc trên trái */}
+              {callType == 'video' && (
+                <div className="absolute top-4 left-4 w-40 h-32 md:w-56 md:h-40 border-2 border-white rounded-lg overflow-hidden shadow-lg">
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover bg-black"
+                  />
+                  <span className="absolute bottom-1 left-1 text-white text-xs bg-gray-800 bg-opacity-50 px-1 rounded">
+                    Bạn
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Nút điều khiển */}
-            <div className="flex justify-center gap-4 mt-4">
+            <div className="absolute bottom-6 w-full flex justify-center gap-4 mt-4">
               <button
                 className="p-3 bg-gray-700 rounded-full hover:bg-gray-600 transition"
                 title="Tắt tiếng"

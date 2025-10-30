@@ -3,6 +3,7 @@ import { MessageCircle, Phone, User, Users, Moon, Sun, Zap } from 'lucide-react'
 import { useNavigate } from 'react-router-dom';
 import { Particle } from '../components/common/Particle';
 import { FeatureSection } from '../components/common/FeatureSection';
+import { ROUTES } from '../utilities/Constants';
 
 export default function ChitChatWelcome() {
   const [scrolled, setScrolled] = useState(false);
@@ -36,14 +37,14 @@ export default function ChitChatWelcome() {
           <div className="flex items-center gap-4">
             <button className="px-6 py-2 text-sky-500 hover:text-blue-600 transition font-medium">
               <a
-                href="/login"
+                href={ROUTES.AUTH.LOGIN}
               >
                 Đăng nhập
               </a>
             </button>
             <button className="px-6 py-2 bg-gradient-to-r from-sky-500 to-purple-600 text-white rounded-xl hover:shadow-lg transition font-medium">
               <a
-                href="/register"
+                href={ROUTES.AUTH.REGISTER}
               >
                 Đăng ký
               </a>

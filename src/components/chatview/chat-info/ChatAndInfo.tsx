@@ -14,6 +14,7 @@ import { getConversationById, getParticipantsByConvId, updateConversationPartial
 import { ConversationResponse } from "../../../types/Conversation";
 import { ChatParticipants } from "../../../types/User";
 import { useChatContext } from "../../../utilities/ChatContext";
+import toast, { Toaster } from "react-hot-toast";
 
 
 
@@ -85,6 +86,10 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         try {
             if (conv_id && user?.user.id) {
                 const response = await updateConversationPartially({ emoji }, conv_id, user?.user.id);
+                if(response.code == 1000) {
+                    toast.success("Cập nhật emoji thành công!");
+                    window.location.reload();
+                }
                 setIsChangeConversationEmojiModalOpen(false);
             }
         } catch (error) {
@@ -94,8 +99,19 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
 
 
     return (
-        <div className={`${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-full'} w-full flex flex-row items-center rounded-xl
+        <div className={`${deviceType !== 'Mobile' ? 'max-h-[96dvh] min-h-[96dvh] rounded-xl' : 'h-full'} relative w-full flex flex-row items-center 
             pb-0 `}>
+                
+            {/* 🔔 Toast */}
+            <Toaster position="top-center" toastOptions={{
+                style: {
+                background: "#fff",
+                color: "#333",
+                borderRadius: "10px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+                },
+            }} />
+
             {!(deviceType == 'Mobile' && isChangeWidth) && (
                 <div className={`transition-all duration-100 
                     ${deviceType !== 'PC'
@@ -206,6 +222,10 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                                     if (conv_id && user?.user.id) {
                                         const response = await updateConversationPartially({ name: inputValue }, conv_id, user?.user.id);
                                         console.log(response);
+                                        if(response.code == 1000) {
+                                            toast.success("Cập nhật tên đoạn chat thành công!");
+                                            window.location.reload();
+                                        }
                                         setIsChangeConversationNameModalOpen(false);
                                         setInputValue('');
                                         setCharCount(0);

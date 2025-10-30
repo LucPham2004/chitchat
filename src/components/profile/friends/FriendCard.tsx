@@ -4,11 +4,13 @@ import { UserDTO } from "../../../types/User";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../../utilities/Constants";
 
 export interface FriendCardProps {
     friend: UserDTO;
     isOpen: boolean;
     toggleFriendMenuOpen?: () => void;
+    showToast?: (content: string, status: string) => void;
 }
 
 const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuOpen }) => {
@@ -22,8 +24,8 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
         `}>
             <div className="flex items-center gap-4">
                 <Link to={`${deviceType == 'Mobile' 
-                        ? `/mobile/profile/${friend.id}`
-                        : `/d/profile/${friend.id}`}`} >
+                        ? `${ROUTES.MOBILE.PROFILE(friend.id)}`
+                        : `${ROUTES.DESKTOP.PROFILE(friend.id)}`}`} >
                 <img 
                     src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} 
                     alt={friend.firstName + " " + friend.lastName} 
@@ -31,15 +33,15 @@ const FriendCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMen
                 </Link>
                 <div className={`flex flex-col items-start  ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <Link to={`${deviceType == 'Mobile' 
-                        ? `/mobile/profile/${friend.id}`
-                        : `/d/profile/${friend.id}`}`} 
+                        ? `${ROUTES.MOBILE.PROFILE(friend.id)}`
+                        : `${ROUTES.DESKTOP.PROFILE(friend.id)}`}`} 
                         className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
                     <p className="text-sm font-semibold">{friend.mutualFriendsNum} bạn chung</p>
                 </div>
             </div>
             <div className="flex items-center justify-center gap-2">
                 {deviceType == 'PC' &&
-                <Link to={`/conversations/${friend.conversationId}`}>
+                <Link to={`${ROUTES.DESKTOP.CONVERSATION(friend.conversationId)}`}>
                 <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit border-2 
                     rounded-full shadow-md transition duration-200
                     ${isDarkMode 

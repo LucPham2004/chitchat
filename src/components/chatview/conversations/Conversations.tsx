@@ -20,6 +20,7 @@ import ConversationAvatar from "./ConversationAvatar";
 import { GoPlus } from "react-icons/go";
 import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
 import { callLogout } from "../../../services/AuthService";
+import { ROUTES } from "../../../utilities/Constants";
 
 const Conversations = () => {
     const { user, logout } = useAuth();
@@ -87,7 +88,7 @@ const Conversations = () => {
 
             <div className={`overflow-hidden min-w-[88%] flex flex-col items-center pb-0 pe-1 rounded-xl shadow-sm
                 ${deviceType == 'Mobile' ? 'p-4 ps-2' : 'p-2'}
-                ${deviceType !== 'Mobile' ? 'max-h-[96vh] min-h-[96vh]' : 'h-[100vh]'}
+                ${deviceType !== 'Mobile' ? 'max-h-[96dvh] min-h-[96dvh]' : 'h-[100dvh]'}
                 ${isDarkMode ? 'bg-[#161618] text-gray-300' : 'bg-white text-black'}`}>
 
                 <div className="flex flex-row items-center justify-between p-2 py-0 pe-4 self-start w-full">
@@ -105,8 +106,8 @@ const Conversations = () => {
                                 ${isDarkMode ? 'bg-[#2E2E2E] border-gray-900' : 'bg-white border-gray-200'}`}>
                                 <ul className="text-gray-700 px-1">
                                     <Link to={`${deviceType == 'Mobile' 
-                                        ? `/mobile/profile/${user?.user.id}`
-                                        : `/d/profile/${user?.user.id}`}`}>
+                                        ? `${ROUTES.MOBILE.PROFILE(user?.user.id)}`
+                                        : `${ROUTES.DESKTOP.PROFILE(user?.user.id)}`}`}>
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                             ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
                                             onClick={() => setIsMenuOpen(false)}>
@@ -116,8 +117,8 @@ const Conversations = () => {
                                     </Link>
                                     <hr className={`border ${isDarkMode ? 'border-[#545454]' : 'border-gray-100'}`}></hr>
                                     <Link to={`${deviceType == 'Mobile'
-                                        ? `/mobile/profile/${user?.user.id}/friends`
-                                        : `/d/profile/${user?.user.id}/friends`}`}>
+                                        ? `${ROUTES.MOBILE.PROFILE_FRIENDS(user?.user.id)}`
+                                        : `${ROUTES.DESKTOP.PROFILE_FRIENDS(user?.user.id)}`}`}>
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                             ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
                                             onClick={() => setIsMenuOpen(false)}>
@@ -175,11 +176,14 @@ const Conversations = () => {
 
                 {/* Danh sách hội thoại */}
                 <div className="flex flex-col items-center w-full h-full py-1 pe-2 overflow-y-auto overflow-x-hidden">
-                    {searchedConversations !== null ? (
+                    {searchedConversations != null ? (
                         searchedConversations.length > 0 ? (
                             <ul className="w-full">
                                 {searchedConversations.map((conv) => (
-                                    <Link to={`/conversations/${conv.id}`} key={conv.id} onClick={handleClearSearch}>
+                                    <Link to={`${deviceType == 'Mobile' 
+                                        ? `${ROUTES.MOBILE.CONVERSATION(conv.id)}`
+                                        : `${ROUTES.DESKTOP.CONVERSATION(conv.id)}`}`} key={conv.id} 
+                                        >
                                         <li className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer
                                                 ${isDarkMode ? 'hover:bg-[#3A3A3A]' : 'hover:bg-gray-100'}`}>
                                             <ConversationAvatar avatarUrls={conv.avatarUrls != undefined ? conv.avatarUrls : []}

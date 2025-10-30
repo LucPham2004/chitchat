@@ -8,10 +8,11 @@ import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
 import { deleteFriendship, editFriendshipStatus } from "../../../services/FriendshipService";
 import { Link } from "react-router-dom";
+import { ROUTES } from "../../../utilities/Constants";
 
 
 
-const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuOpen }) => {
+const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFriendMenuOpen, showToast }) => {
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
     const { user } = useAuth();
@@ -20,10 +21,13 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
         try {
             if (!user) return;
             const res = await editFriendshipStatus(user?.user.id, friend.id, 'Accepted');
-            console.log("Yêu cầu kết bạn đã được gửi: ", res);
+            if(res.code == 1000) {
+                console.log("Đã chấp nhận kết bạn: ", res);
+                showToast?.("Đã chấp nhận kết bạn!", "success");
+            }
             return (<></>)
         } catch (error) {
-            console.error("Lỗi khi gửi yêu cầu kết bạn: ", error);
+            console.error("Lỗi khi chấp nhận kết bạn: ", error);
         }
     };
 
@@ -31,11 +35,14 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
         try {
             if (user?.user.id) {
                 await deleteFriendship(user?.user.id, friend.id);
+
+                console.log("Đã xoá lời mời kết bạn!");
+                showToast?.("Đã xoá lời mời kết bạn!", "success");
             }
-            console.log("Đã xoá kết bạn.");
             return (<></>)
         } catch (error) {
-            console.error("Lỗi khi xoá kết bạn: ", error);
+            console.error("Lỗi khi xoá lời mời kết bạn: ", error);
+            showToast?.("Lỗi khi xoá lời mời kết bạn!", "error");
         }
     };
 
@@ -47,8 +54,8 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
         `}>
             <div className="flex items-center gap-4">
                 <Link to={`${deviceType == 'Mobile' 
-                        ? `/mobile/profile/${friend.id}`
-                        : `/d/profile/${friend.id}`}`} >
+                        ? `${ROUTES.MOBILE.PROFILE(friend.id)}`
+                        : `${ROUTES.DESKTOP.PROFILE(friend.id)}`}`} >
                 <img 
                     src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} 
                     alt={friend.firstName + " " + friend.lastName} 
@@ -56,8 +63,9 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
                 </Link>
                 <div className={`flex flex-col items-start  ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                     <Link to={`${deviceType == 'Mobile' 
-                        ? `/mobile/profile/${friend.id}`
-                        : `/d/profile/${friend.id}`}`} className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
+                        ? `${ROUTES.MOBILE.PROFILE(friend.id)}`
+                        : `${ROUTES.DESKTOP.PROFILE(friend.id)}`}`} 
+                    className="text-xl cursor-pointer">{friend.firstName + " " + friend.lastName}</Link>
                     <p className="text-sm font-semibold">{friend.mutualFriendsNum} bạn chung</p>
                 </div>
             </div>

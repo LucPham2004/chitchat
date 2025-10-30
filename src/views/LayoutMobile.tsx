@@ -7,6 +7,7 @@ import DisplayMedia from "../components/common/DisplayMedia";
 import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
+import { ROUTES } from "../utilities/Constants";
 
 export interface ChangeWidthProps {
     toggleChangeWidth: () => void;
@@ -25,15 +26,15 @@ const LayoutMobile = () => {
   
     useEffect(() => {
         if (!user) {
-            navigate("/");
+			navigate(ROUTES.AUTH.LOGIN);
         }
 
 		if(deviceType != 'Mobile') {
-			navigate("/");
+			navigate(ROUTES.MOBILE.ROOT);
 		}
         
-        if (location.pathname === '/' && user?.user.id) {
-            navigate(`/mobile/profile/${user.user.id}`, { replace: true });
+        if (location.pathname === '/mobile' && user?.user.id) {
+            navigate(ROUTES.MOBILE.PROFILE(user.user.id), { replace: true });
         }
     }, [user, location.pathname, navigate]);
 
