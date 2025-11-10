@@ -12,7 +12,7 @@ const ConversationAvatar: React.FC<ConversationAvatarProps> = ({ avatarUrls, wid
     if (avatarCount === 0) {
         return (
             <img
-                src={'/user_default.avif'}
+                src={'/images/user_default.avif'}
                 alt="avatar"
                 className={`rounded-full object-cover`}
                 style={{ width: `${width * 4}px`, height: `${height * 4}px` }}

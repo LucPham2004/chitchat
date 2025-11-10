@@ -57,7 +57,7 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
                         ? `${ROUTES.MOBILE.PROFILE(friend.id)}`
                         : `${ROUTES.DESKTOP.PROFILE(friend.id)}`}`} >
                 <img 
-                    src={friend.avatarUrl ? friend.avatarUrl : '/user_default.avif'} 
+                    src={friend.avatarUrl ? friend.avatarUrl : '/images/user_default.avif'} 
                     alt={friend.firstName + " " + friend.lastName} 
                     className="w-24 h-24 rounded-lg object-cover" />
                 </Link>

@@ -37,17 +37,13 @@ const MainChat: React.FC<MainChatProps> = ({
     const { 
         sendMessage: sendWebSocketMessage, 
         subscribeToConversation, 
+        currentNewMessage,
         isConnected
     } = useChatContext();
 
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<ChatResponse[]>([]);
     const [files, setFiles] = useState<File[]>([]);
-
-    const isVideoUrl = (url: string): boolean => {
-        const videoExtensions = ['.mp4', '.webm', '.mov', '.avi', '.mkv'];
-        return videoExtensions.some(ext => url.toLowerCase().includes(ext));
-    };
 
     useEffect(() => {
         document.title = conversationResponse?.name + " | Chit Chat" || "Chit Chat";
@@ -60,14 +56,11 @@ const MainChat: React.FC<MainChatProps> = ({
     useEffect(() => {
         if (!user?.user.id) return;
 
-        const unsubscribe = subscribeToConversation(user?.user.id, (receivedMessage) => {
-            console.log('Message received in conversation:', receivedMessage);
-            
-            setMessages((prev) => [...prev, receivedMessage]);
-        });
+        if (currentNewMessage && currentNewMessage.conversationId === conv_id) {
+            setMessages(prev => [...prev, currentNewMessage]);
+        }
 
-        return unsubscribe;
-    }, [conv_id, subscribeToConversation]);
+    }, [conv_id, currentNewMessage]);
 
     const sendMessage = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -162,7 +155,7 @@ const MainChat: React.FC<MainChatProps> = ({
                 ${isDarkMode ? ' border border-gray-900' : ''}
                 `}
                 style={{
-                    backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : '/sky-bg.jpg'})`,
+                    backgroundImage: `url(${isDarkMode ? '/images/sky-dark.jpg' : '/images/sky-bg.jpg'})`,
                 }}>
                 <>
                     <ChatHeader

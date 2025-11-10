@@ -19,7 +19,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAcc
 
 	return (
 		<div className="">
-			<button
+			{/* <button
 				onClick={() => {
 					toggleAccordion(index);
 				} }
@@ -33,10 +33,10 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAcc
 						${openIndices.includes(index) ? 'rotate-180' : 'rotate-0'}`}>
 					<IoIosArrowDown />
 				</span>
-			</button>
+			</button> */}
+            <hr className="w-[100%] mt-2 border-gray-400"></hr>
 			<div
-				className={`transition-[max-height] duration-300 ease-in-out overflow-hidden
-					${openIndices.includes(index) ? 'max-h-80' : 'max-h-0'}`}>
+				className={`transition-[max-height] duration-300 ease-in-out overflow-hidden mt-2 max-h-80 `}>
 				<div className={``}>{content}</div>
 			</div>
 		</div>

@@ -45,7 +45,7 @@ const Sidebar = () => {
             <div className="flex flex-col items-center gap-2">
                 <Link to={`${ROUTES.DESKTOP.PROFILE(user?.user.id)}`}>
                     <button className={`rounded-full ${isDarkMode ? 'text-white' : 'text-black'}`}>
-                        <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={10} height={10}></Avatar>
+                        <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/images/user_default.avif'} width={10} height={10}></Avatar>
                     </button>
                 </Link>
 {/*                 

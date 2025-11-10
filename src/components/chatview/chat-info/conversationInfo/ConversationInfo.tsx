@@ -268,7 +268,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
                         </div>
 
-                        <div className={`flex flex-col justify-center gap-2  p-2 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
+                        <div className={`flex flex-col justify-center gap-2 p-2 pb-0 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>
 
                             {!conversationResponse?.group && (
                                 <div className={`p-1 rounded-lg text-md font-medium
@@ -313,7 +313,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 <p className="text-sm">Tìm kiếm</p>
                             </div>
 
-                            <hr className="w-[100%]  border-gray-400"></hr>
+                            {/* <hr className="w-[100%]  border-gray-400"></hr> */}
                         </div>
 
 

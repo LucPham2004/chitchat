@@ -4,26 +4,55 @@ import { useNavigate } from 'react-router-dom';
 import { Particle } from '../components/common/Particle';
 import { FeatureSection } from '../components/common/FeatureSection';
 import { ROUTES } from '../utilities/Constants';
+import { useAuth } from '../utilities/AuthContext';
+import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
+import instance from '../services/Axios-customize';
+import { ApiResponse } from '../types/backend';
+
+interface AccessTokenResponse {
+  access_token: string;
+}
 
 export default function ChitChatWelcome() {
+  const { user } = useAuth();
+  const deviceType = useDeviceTypeByWidth();
   const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
     };
-    
+
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
+  useEffect(() => {
+    const refreshTokenAndNavigate = async () => {
+      try {
+        const res = await instance.get<ApiResponse<AccessTokenResponse>>('/auth/refresh');
+        if (res && res.data) {
+          if (!user) return;
+          if (deviceType === 'Mobile') {
+            navigate(ROUTES.MOBILE.CONVERSATIONS);
+          } else {
+            navigate(ROUTES.DESKTOP.PROFILE(user.user.id), { replace: true });
+          }
+        }
+      } catch (err) {
+        console.error("Failed to refresh token:", err);
+      }
+    };
+
+    refreshTokenAndNavigate();
+  }, [deviceType, user, navigate]);
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'bg-white/80 backdrop-blur-lg shadow-md' : 'bg-transparent'
-      }`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-lg shadow-md' : 'bg-transparent'
+        }`}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-purple-600 rounded-xl flex items-center justify-center">
@@ -33,7 +62,7 @@ export default function ChitChatWelcome() {
               ChitChat
             </span>
           </div>
-          
+
           <div className="flex items-center gap-4">
             <button className="px-6 py-2 text-sky-500 hover:text-blue-600 transition font-medium">
               <a
@@ -52,7 +81,7 @@ export default function ChitChatWelcome() {
           </div>
         </div>
       </header>
-      
+
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 overflow-hidden">
         {[...Array(20)].map((_, i) => (
@@ -68,21 +97,25 @@ export default function ChitChatWelcome() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
             <button className="px-8 py-4 bg-gradient-to-r from-sky-500 to-purple-600 text-white rounded-xl text-lg font-medium hover:shadow-2xl hover:scale-105 transition duration-300">
-              Bắt đầu ngay
+              <a
+                href={ROUTES.AUTH.LOGIN}
+              >
+                Bắt đầu ngay
+              </a>
             </button>
             <button className="px-8 py-4 bg-white text-gray-700 rounded-xl text-lg font-medium hover:shadow-xl transition duration-300 border border-gray-200">
               Tìm hiểu thêm
             </button>
           </div>
         </div>
-        
+
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
           <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-2 bg-gray-400 rounded-full"></div>
           </div>
         </div>
       </section>
-      
+
       {/* Feature: Real-time Chat */}
       <FeatureSection
         title="Chat Thời Gian Thực"
@@ -102,7 +135,7 @@ export default function ChitChatWelcome() {
         }
         bgColor="bg-white"
       />
-      
+
       {/* Feature: Voice & Video Calls */}
       <FeatureSection
         title="Gọi Điện & Video Call"
@@ -132,7 +165,7 @@ export default function ChitChatWelcome() {
         reverse
         bgColor="bg-gradient-to-br from-blue-50 to-purple-50"
       />
-      
+
       {/* Feature: User Profile */}
       <FeatureSection
         title="Hồ Sơ Cá Nhân"
@@ -159,7 +192,7 @@ export default function ChitChatWelcome() {
         }
         bgColor="bg-white"
       />
-      
+
       {/* Feature: Friends Management */}
       <FeatureSection
         title="Quản Lý Bạn Bè"
@@ -184,7 +217,7 @@ export default function ChitChatWelcome() {
         reverse
         bgColor="bg-gradient-to-br from-purple-50 to-blue-50"
       />
-      
+
       {/* Feature: Dark Mode */}
       <FeatureSection
         title="Chế Độ Sáng/Tối"
@@ -216,13 +249,13 @@ export default function ChitChatWelcome() {
         }
         bgColor="bg-white"
       />
-      
+
       {/* CTA Section */}
       <section className="relative py-20 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-600 overflow-hidden">
         {[...Array(25)].map((_, i) => (
           <Particle key={i} delay={i} />
         ))}
-        
+
         <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8 text-white">
           <h2 className="text-5xl font-bold">Sẵn sàng bắt đầu?</h2>
           <p className="text-xl opacity-90">
@@ -230,7 +263,11 @@ export default function ChitChatWelcome() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <button className="px-8 py-4 bg-white text-blue-600 rounded-xl text-lg font-medium hover:shadow-2xl hover:scale-105 transition duration-300">
+              <a
+                href={ROUTES.AUTH.REGISTER}
+              >
               Tạo tài khoản miễn phí
+              </a>
             </button>
             <button className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl text-lg font-medium hover:bg-white/10 transition duration-300">
               Xem demo
@@ -238,7 +275,7 @@ export default function ChitChatWelcome() {
           </div>
         </div>
       </section>
-      
+
       {/* Footer */}
       <footer className="bg-gray-900 text-gray-300 py-12">
         <div className="max-w-7xl mx-auto px-6">
@@ -252,7 +289,7 @@ export default function ChitChatWelcome() {
               </div>
               <p className="text-sm">Kết nối không giới hạn với ChitChat</p>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-white mb-4">Sản phẩm</h4>
               <ul className="space-y-2 text-sm">
@@ -261,7 +298,7 @@ export default function ChitChatWelcome() {
                 <li><a href="#" className="hover:text-blue-400 transition">Tải ứng dụng</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-white mb-4">Công ty</h4>
               <ul className="space-y-2 text-sm">
@@ -270,7 +307,7 @@ export default function ChitChatWelcome() {
                 <li><a href="#" className="hover:text-blue-400 transition">Tuyển dụng</a></li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="font-semibold text-white mb-4">Hỗ trợ</h4>
               <ul className="space-y-2 text-sm">
@@ -280,7 +317,7 @@ export default function ChitChatWelcome() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm">
             <p>&copy; 2024 ChitChat. Đã đăng ký bản quyền.</p>
           </div>

@@ -9,6 +9,7 @@ import DisplayMedia from "../components/common/DisplayMedia";
 import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
 import { ROUTES } from "../utilities/Constants";
+import CallView from "./CallView";
 
 export interface ChangeWidthProps {
     toggleChangeWidth: () => void;
@@ -17,7 +18,7 @@ export interface ChangeWidthProps {
 
 const LayoutDesktop = () => {
 	const { user } = useAuth();
-  	const { showIncomingCallModal } = useChatContext();
+  	const { callState } = useChatContext();
   	const navigate = useNavigate();
 	const deviceType = useDeviceTypeByWidth();
 	const { isDarkMode } = useTheme();
@@ -46,7 +47,7 @@ const LayoutDesktop = () => {
 					${deviceType == 'Mobile' ? '' : 'gap-4'}
 					${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-[#EDEEF3]'}`}
 					style={{
-                    backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : '/clouds.jpg'})`,
+                    backgroundImage: `url(${isDarkMode ? '/images/sky-dark.jpg' : '/images/clouds.jpg'})`,
 					backgroundSize: 'cover'
                 }}>
 				<div className={`
@@ -68,9 +69,8 @@ const LayoutDesktop = () => {
                 <DisplayMedia url={displayMediaUrl} setIsDisplayMedia={setIsDisplayMedia} />
             )}
 			{/* <GlobalNotifications /> */}
-			{showIncomingCallModal && (
-            	<IncomingCallModal />
-			)}
+        	<IncomingCallModal />
+			{(callState === 'OUTGOING' || callState === 'CONNECTED') && <CallView />}
 		</div>
 	);
 }

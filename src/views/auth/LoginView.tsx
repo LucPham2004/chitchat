@@ -78,11 +78,11 @@ const LoginView = () => {
             className="w-3/5 flex items-center justify-center relative"
           >
             <div
-              className="absolute -translate-y-1/4 translate-x-2/3 bg-[url('/ChatSample.png')] 
+              className="absolute -translate-y-1/4 translate-x-2/3 bg-[url('/images/ChatSample.png')] 
               w-[290px] h-[260px] bg-cover bg-center shadow-xl rounded-xl"
             ></div>
             <div
-              className="bg-[url('/profileImage.png')] w-[360px] h-[220px] md:w-[480px] md:h-[290px] 
+              className="bg-[url('/images/profileImage.png')] w-[360px] h-[220px] md:w-[480px] md:h-[290px] 
               bg-cover bg-center shadow-xl rounded-xl"
             ></div>
           </motion.div>
@@ -110,7 +110,7 @@ const LoginView = () => {
               Kết nối với bạn bè và gia đình, xây dựng cộng đồng và đào sâu sở thích của bạn.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} autoComplete="on" className="space-y-4">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -118,6 +118,7 @@ const LoginView = () => {
               >
                 <input
                   type="email"
+                  name="email" 
                   placeholder="Email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -134,6 +135,7 @@ const LoginView = () => {
               >
                 <input
                   type="password"
+                  name="password" 
                   placeholder="Mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}

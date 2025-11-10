@@ -97,7 +97,7 @@ const Conversations = () => {
                             ${isDarkMode ? 'text-white bg-[#474747] hover:bg-[#5A5A5A]'
                                     : 'text-black bg-gray-100 hover:bg-gray-200'}`}
                             onClick={toggleMenu}>
-                            {/* <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/user_default.avif'} width={8} height={8}></Avatar> */}
+                            {/* <Avatar avatarUrl={userAccount ? userAccount.avatarUrl : user?.user.avatarUrl || '/images/user_default.avif'} width={8} height={8}></Avatar> */}
                             <FiMenu />
                         </button>
 
@@ -111,7 +111,7 @@ const Conversations = () => {
                                         <li className={`flex items-center gap-4 px-2 py-2 mt-1 mb-1 rounded-md font-bold cursor-pointer
                                             ${isDarkMode ? 'text-gray-300 hover:bg-[#545454]' : 'text-black hover:bg-gray-100'}`}
                                             onClick={() => setIsMenuOpen(false)}>
-                                            <img src={user?.user.avatarUrl || '/user_default.avif'} className="w-8 h-8 rounded-full" />
+                                            <img src={user?.user.avatarUrl || '/images/user_default.avif'} className="w-8 h-8 rounded-full" />
                                             {user?.user.firstName + " " + user?.user.lastName}
                                         </li>
                                     </Link>

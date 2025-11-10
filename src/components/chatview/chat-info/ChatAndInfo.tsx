@@ -173,7 +173,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                     </div>
                 ) : (
                     <div className="flex flex-col gap-2 items-center justify-center px-16 py-40 w-max">
-                        <img alt="no pinned message" src="/noPinnedImg.png" className="w-54 h-36" />
+                        <img alt="no pinned message" src="/images/noPinnedImg.png" className="w-54 h-36" />
                         <p className="text-base font-semibold">Chưa ghim tin nhắn nào</p>
                         <p className="text-gray-400 text-sm">Các tin nhắn được ghim trong đoạn chat này sẽ hiển thị ở đây</p>
                     </div>)}

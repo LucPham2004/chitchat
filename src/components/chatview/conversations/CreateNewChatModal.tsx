@@ -114,7 +114,7 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
                             onClick={() => handleSelectFriend(friend.id)}
                         >
                             <img
-                                src={friend.avatarUrl ?? '/user_default.avif'}
+                                src={friend.avatarUrl ?? '/images/user_default.avif'}
                                 alt={friend.firstName}
                                 className="w-10 h-10 rounded-full object-cover"
                             />

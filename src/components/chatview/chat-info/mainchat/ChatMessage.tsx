@@ -9,6 +9,7 @@ import { deleteMessage } from "../../../../services/MessageService";
 import { createMessageMessageEmojiReaction, deleteMessageMessageEmojiReaction } from "../../../../services/MessageEmojiReactionService";
 import { MessageEmojiReaction } from "../../../../types/MessageEmojiReaction";
 import { Link } from "react-router-dom";
+import { PhoneOff, Video, Phone, Clock } from "lucide-react";
 
 
 interface MessageProps {
@@ -38,6 +39,8 @@ const ChatMessage: React.FC<MessageProps> = ({
 	const [activeEmojiPicker, setActiveEmojiPicker] = useState<number | null>(null);
 	const [activeMenuMessage, setActiveMenuMessage] = useState<number | null>(null);
 
+	const isMissed = message.callStatus === "MISSED";
+
 	const emojis = ["😂", "❤️", "👍", "😢", "🔥", "😡"];
 
 	const toggleEmojiPicker = (messageId: number) => {
@@ -55,6 +58,12 @@ const ChatMessage: React.FC<MessageProps> = ({
 			return match.match(new RegExp(`.{1,${maxLength}}`, "g"))?.join(" ") ?? match;
 		});
 	};
+
+	function formatDuration(sec: number) {
+		const m = Math.floor(sec / 60);
+		const s = sec % 60;
+		return `${m}m ${s}s`;
+	}
 
 	const isOnlyEmoji = (text: string) => {
 		if (!text) return false;
@@ -94,9 +103,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 			if (message.id != undefined && user?.user) {
 				const response = await deleteMessageMessageEmojiReaction(user.user.id, message.id);
 
-				if(response.code == 200) {
+				if (response.code == 200) {
 					console.log("Tin nhắn reaction đã bị xoá: message id:" + message.id + " user id: " + user.user.id);
-	
+
 					setMessageReactions(prev =>
 						prev.filter(reaction => reaction.userId !== user.user.id)
 					);
@@ -128,6 +137,28 @@ const ChatMessage: React.FC<MessageProps> = ({
 		setMessageReactions(message.reactions || []);
 	}, [message.reactions]);
 
+	const baseClasses = `
+		flex justify-center w-full py-[1.5px]
+	`;
+
+	const bubbleClasses = `
+		relative max-w-xs w-fit px-4 py-3 rounded-2xl shadow-sm
+		flex flex-col gap-1.5 transition-all duration-200
+		${isDarkMode ? 'shadow-gray-900/50' : 'shadow-gray-200/50'}
+		${isMissed
+		? isDarkMode
+			? 'bg-red-900/30 border border-red-800/50 text-red-300'
+			: 'bg-red-50 border border-red-200 text-red-600'
+		: isDarkMode
+		? 'bg-emerald-900/30 border border-emerald-800/50 text-emerald-300'
+		: 'bg-emerald-50 border border-emerald-200 text-emerald-600'
+		}
+	`;
+
+	const iconColor = isMissed
+		? isDarkMode ? 'text-red-400' : 'text-red-600'
+		: isDarkMode ? 'text-emerald-400' : 'text-emerald-600';
+
 	return (
 		<div className={`relative flex items-end group 
 			${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}
@@ -136,7 +167,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
 				<img
-					src={isMatchingSender(message.senderId)?.avatarUrl || '/user_default.avif'}
+					src={isMatchingSender(message.senderId)?.avatarUrl || '/images/user_default.avif'}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
 					alt="avatar"
 				/>
@@ -162,9 +193,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 								{emoji}
 							</button>
 						))}
-						<button className="py-1 px-2 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400">
+						{/* <button className="py-1 px-2 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400">
 							<FaPlus className="text-sm text-gray-700 dark:text-gray-200" />
-						</button>
+						</button> */}
 					</div>
 				)}
 
@@ -194,7 +225,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 				${messageReactions.length > 0 && !isLastInGroup && 'mb-4'}
 				`}>
 
-				{message.content && (
+				{message.content && message.type != 'CALL' && (
 					<div className={`relative inline-flex pt-1 pb-1.5 
 					
 					${isOnlyEmoji(message.content) ? '' : `${message.senderId === user?.user.id
@@ -264,18 +295,18 @@ const ChatMessage: React.FC<MessageProps> = ({
           								${!isLastInGroup ? 'ms-10' : ''}`}>
 
 									{isVideo && (
-										<video src={url} controls className="w-full h-auto rounded-xl" 
+										<video src={url} controls className="w-full h-auto rounded-xl"
 											onClick={() => {
 												setDisplayMediaUrl(url);
 												setIsDisplayMedia(true);
-											}}/>
+											}} />
 									)}
 
 									{isImage && (
 										<div onClick={() => {
-												setDisplayMediaUrl(url);
-												setIsDisplayMedia(true);
-											}}>
+											setDisplayMediaUrl(url);
+											setIsDisplayMedia(true);
+										}}>
 											<img loading="lazy" src={url} alt="A message media" className="w-full h-auto rounded-xl
 											hover:brightness-110" />
 										</div>
@@ -286,7 +317,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 											<a
 												href={message.urls[index].replace("/upload/", "/upload/fl_attachment/")}
 												download={message.fileNames[index]}
-												target="blank" 
+												target="blank"
 												className={`text-md font-medium hover:brightness-110
   													${isDarkMode ? 'text-gray-300' : 'text-gray-200'}`}
 											>
@@ -330,6 +361,55 @@ const ChatMessage: React.FC<MessageProps> = ({
 					</div>
 				)}
 
+				{message.type && message.type == 'CALL' && (
+					<div className={`relative inline-flex
+					
+					${isSingleMessage // Nếu là tin nhắn đơn
+							? message.senderId === user?.user.id ? 'rounded-[20px]' : `rounded-[20px]`
+							: isFirstInGroup // Nếu là tin nhắn đầu trong chuỗi tin nhắn
+								? message.senderId === user?.user.id
+									? 'rounded-t-[20px] rounded-bl-[20px] rounded-br-[4px]' // Người dùng hiện tại
+									: 'rounded-t-[20px] rounded-br-[20px] rounded-bl-[4px] ms-10' // Người gửi khác
+								: isLastInGroup // Nếu là tin nhắn cuối trong chuỗi tin nhắn
+									? message.senderId === user?.user.id
+										? 'rounded-b-[20px] rounded-tl-[20px] rounded-tr-[4px]' // Người dùng hiện tại
+										: 'rounded-b-[20px] rounded-tr-[20px] rounded-tl-[4px]' // Người gửi khác
+									: message.senderId === user?.user.id // Nếu là tin nhắn giữa trong chuỗi tin nhắn
+										? 'rounded-l-[20px] rounded-r-[4px]' // Người dùng hiện tại
+										: 'rounded-r-[20px] rounded-l-[4px] ms-10' // Người gửi khác
+						} `}
+					>
+						<div className={baseClasses}>
+							<div className={bubbleClasses}>
+								{/* Nội dung chính */}
+								<p className="font-medium text-sm">{message.content}</p>
+
+								{/* Thông tin cuộc gọi */}
+								<div className="flex items-center gap-2 text-sm">
+									{message.callType === 'video' ? (
+									isMissed ? (
+										<Video size={14} className={iconColor} />
+									) : (
+										<Video size={14} className={iconColor} />
+									)
+									) : isMissed ? (
+										<PhoneOff size={14} className={iconColor} />
+									) : (
+										<Phone size={14} className={iconColor} />
+									)}
+
+									<span className="font-mono">{formatDuration(message.callDuration)}</span>
+								</div>
+
+								{/* Hiệu ứng viền nhẹ khi nhắn lỡ */}
+								{isMissed && (
+									<div className="absolute -inset-px rounded-2xl bg-gradient-to-r from-red-500/20 to-transparent pointer-events-none -z-10" />
+								)}
+							</div>
+						</div>
+					</div>
+				)}
+
 			</div>
 
 			{/* Nút reaction và menu khi hover vào tin nhắn */}
@@ -352,17 +432,17 @@ const ChatMessage: React.FC<MessageProps> = ({
 								{emoji}
 							</button>
 						))}
-						<button className="py-1 px-2 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400">
+						{/* <button className="py-1 px-2 bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-gray-400">
 							<FaPlus className="text-sm text-gray-700 dark:text-gray-200" />
-						</button>
+						</button> */}
 					</div>
 				)}
 
-				<button className={`py-1.5 px-1.5 rounded-full text-md border
+				{/* <button className={`py-1.5 px-1.5 rounded-full text-md border
 					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
 						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}>
 					<FaEllipsisH />
-				</button>
+				</button> */}
 			</div>
 
 			{isLastMessageByCurrentUser &&

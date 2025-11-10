@@ -13,6 +13,7 @@ interface AccessTokenResponse {
 
 const instance = axiosClient.create({
     baseURL: 'https://servertest.top/api',
+    // baseURL: 'http://localhost:8888/api',
     withCredentials: true
 });
 
@@ -24,7 +25,7 @@ const handleRefreshToken = async (): Promise<string | null | undefined> => {
     return await mutex.runExclusive(async () => {
         const res = await instance.get<ApiResponse<AccessTokenResponse>>('/auth/refresh');
         if (res && res.data) return res.data?.result?.access_token;
-        else return null;
+        else window.location.href = ROUTES.AUTH.LOGIN;
     });
 };
 

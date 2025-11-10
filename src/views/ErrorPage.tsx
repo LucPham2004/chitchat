@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const ErrorPage = () => {
 	return (
-		<div className="min-h-screen bg-[url('/blurBg.png')] bg-cover bg-center flex justify-center items-center">
+		<div className="min-h-screen bg-[url('/images/blurBg.png')] bg-cover bg-center flex justify-center items-center">
 			<div className="absolute inset-0"></div>
 			<div className="relative z-10 h-fit w-fit flex flex-col justify-center items-center bg-gray-200 p-10 rounded-3xl">
 				<div className="flex items-center">

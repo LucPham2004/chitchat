@@ -8,6 +8,7 @@ import { useTheme } from "../../../../utilities/ThemeContext";
 import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { updateConversation } from "../../../../services/ConversationService";
+import { ImBlocked } from "react-icons/im";
 
 
 interface AccordionProps {
@@ -166,17 +167,17 @@ const Accordion: React.FC<AccordionProps> = ({
             title: 'Quyền riêng tư và hỗ trợ',
             content: (
                 <div>
-{/* 
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+
+                    {/* <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <BsFillBellSlashFill />
                         </div>
                         <p>Tắt thông báo</p>
-                    </button>
+                    </button> */}
 
-                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                    rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                    {/* <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                        rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <ImBlocked />
                         </div>
@@ -204,6 +205,21 @@ const Accordion: React.FC<AccordionProps> = ({
                 </div>
             ),
             hidden: !isGroup
+        },
+        {
+            title: 'Quyền riêng tư và hỗ trợ',
+            content: (
+                <div>
+                    <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
+                        rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                        <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
+                            <ImBlocked />
+                        </div>
+                        <p>Chặn</p>
+                    </button>
+                </div>
+            ),
+            hidden: isGroup
         }
     ];
 

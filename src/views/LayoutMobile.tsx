@@ -8,6 +8,7 @@ import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
 import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
 import { ROUTES } from "../utilities/Constants";
+import CallView from "./CallView";
 
 export interface ChangeWidthProps {
     toggleChangeWidth: () => void;
@@ -16,7 +17,7 @@ export interface ChangeWidthProps {
 
 const LayoutMobile = () => {
     const { user } = useAuth();
-    const { showIncomingCallModal } = useChatContext();
+    const { callState } = useChatContext();
 	const deviceType = useDeviceTypeByWidth();
     const navigate = useNavigate();
     const { isDarkMode } = useTheme();
@@ -29,12 +30,12 @@ const LayoutMobile = () => {
 			navigate(ROUTES.AUTH.LOGIN);
         }
 
-		if(deviceType != 'Mobile') {
-			navigate(ROUTES.MOBILE.ROOT);
-		}
+		// if(deviceType != 'Mobile') {
+		// 	navigate(ROUTES.DESKTOP.ROOT);
+		// }
         
         if (location.pathname === '/mobile' && user?.user.id) {
-            navigate(ROUTES.MOBILE.PROFILE(user.user.id), { replace: true });
+            navigate(ROUTES.MOBILE.CONVERSATIONS, { replace: true });
         }
     }, [user, location.pathname, navigate]);
 
@@ -43,7 +44,7 @@ const LayoutMobile = () => {
             <div className={`min-h-screen w-full 
                     ${isDarkMode ? 'bg-[#1A1A1A]' : 'bg-[#EDEEF3]'}`}
                     style={{
-                    backgroundImage: `url(${isDarkMode ? '/sky-dark.jpg' : ''})`,
+                    backgroundImage: `url(${isDarkMode ? '/images/sky-dark.jpg' : ''})`,
                     backgroundSize: 'cover'
                 }}>
                 <Outlet />
@@ -52,9 +53,8 @@ const LayoutMobile = () => {
                 <DisplayMedia url={displayMediaUrl} setIsDisplayMedia={setIsDisplayMedia} />
             )}
             {/* <GlobalNotifications /> */}
-            {showIncomingCallModal && (
-                <IncomingCallModal />
-            )}
+            <IncomingCallModal />
+            {(callState === 'OUTGOING' || callState === 'CONNECTED') && <CallView />}
         </div>
     );
 }

@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
 import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
 import { ROUTES } from "../../../../utilities/Constants";
+import { useChatContext } from "../../../../utilities/ChatContext";
 
 
 const ChatHeader: React.FC<MainChatProps> = ({
@@ -19,19 +20,32 @@ const ChatHeader: React.FC<MainChatProps> = ({
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
+    const { callUser } = useChatContext();
 
     const handleCallAudio = () => {
-        const callUrl = `${window.location.origin}/call?t=audio&r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
-        deviceType !== 'Mobile' 
-        ? window.open(callUrl, "_blank", "width=900,height=600")
-        : window.location.href = `${callUrl}`;
+        const recipientId = conversationResponse?.participantIds.filter(id => id != user?.user.id)[0];
+        if (recipientId) {
+            const chatMessage = {
+                conversationId: conversationResponse.id,
+                senderId: user?.user.id,
+                recipientId: conversationResponse.participantIds,
+                content: '',
+            };
+            callUser(recipientId, conversationResponse?.name, "audio", chatMessage);
+        }
     };
 
     const handleCallVideo = () => {
-        const callUrl = `${window.location.origin}/call?t=video&r=${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`;
-        deviceType !== 'Mobile' 
-        ? window.open(callUrl, "_blank", "width=900,height=600")
-        : window.location.href = `${callUrl}`;
+        const recipientId = conversationResponse?.participantIds.filter(id => id != user?.user.id)[0];
+        if (recipientId) {
+            const chatMessage = {
+                conversationId: conversationResponse.id,
+                senderId: user?.user.id,
+                recipientId: conversationResponse.participantIds,
+                content: '',
+            };
+            callUser(recipientId, conversationResponse?.name, "video", chatMessage);
+        }
     };
 
     return (
@@ -39,39 +53,39 @@ const ChatHeader: React.FC<MainChatProps> = ({
             ${isDarkMode ? 'border-gray-600' : 'border-gray-400'}`}>
 
             <div className="flex justify-between items-center ms-2 gap-1">
-            {deviceType == 'Mobile' && (
-                <Link to={`${ROUTES.MOBILE.CONVERSATIONS}`}>
-                    <button className={`p-2 rounded-full text-xl
+                {deviceType == 'Mobile' && (
+                    <Link to={`${ROUTES.MOBILE.CONVERSATIONS}`}>
+                        <button className={`p-2 rounded-full text-xl
                                         ${isDarkMode ? 'text-gray-200 bg-[#474747] hover:bg-[#5A5A5A]'
-                            : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
-                        <FaArrowLeft />
-                    </button>
-                </Link>
-            )}
+                                : 'text-black bg-gray-200 hover:bg-gray-100'}`}>
+                            <FaArrowLeft />
+                        </button>
+                    </Link>
+                )}
 
-            <div className={`relative flex-1 flex items-center rounded-lg p-1
+                <div className={`relative flex-1 flex items-center rounded-lg p-1
                 h-full min-w-0 max-w-fit  cursor-pointer gap-1
                 ${isDarkMode ? 'hover:bg-[#35313055]' : 'hover:bg-[#ffffff55]'}`}
-                onClick={() => {
-                    if (conversationResponse?.group) {
-                        toggleShowConversationMembersModalOpen;
-                    } else {
-                        window.location.href = `${deviceType == 'Mobile' 
-                            ? `/mobile/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`
-                            : `/d/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`}`;
-                    }
+                    onClick={() => {
+                        if (conversationResponse?.group) {
+                            toggleShowConversationMembersModalOpen;
+                        } else {
+                            window.location.href = `${deviceType == 'Mobile'
+                                ? `/mobile/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`
+                                : `/d/profile/${conversationResponse?.participantIds.filter(id => id != user?.user.id)}`}`;
+                        }
 
-                }}>
-                <div className={`p-1 rounded-lg cursor-pointer`}>
-                    <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []}
-                        width={10} height={10}></ConversationAvatar>
-                    <img className="w-4 h-4 absolute top-8 left-8" src="/onlineIcon.png" alt="online icon" />
+                    }}>
+                    <div className={`p-1 rounded-lg cursor-pointer`}>
+                        <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []}
+                            width={10} height={10}></ConversationAvatar>
+                        <img className="w-4 h-4 absolute top-8 left-8" src="/images/onlineIcon.png" alt="online icon" />
+                    </div>
+                    <div className='flex flex-col justify-center items-left'>
+                        <h3 className={`${isDarkMode ? 'text-gray-100' : 'text-gray-900'} font-semibold`}>{conversationResponse?.name}</h3>
+                        {/* <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-xs`}>Đang hoạt động</p> */}
+                    </div>
                 </div>
-                <div className='flex flex-col justify-center items-left'>
-                    <h3 className={`${isDarkMode ? 'text-gray-100' : 'text-gray-900'} font-semibold`}>{conversationResponse?.name}</h3>
-                    {/* <p className={`${isDarkMode ? 'text-gray-400' : 'text-gray-500'} text-xs`}>Đang hoạt động</p> */}
-                </div>
-            </div>
 
             </div>
 

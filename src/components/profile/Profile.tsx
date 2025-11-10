@@ -248,7 +248,7 @@ const Profile = () => {
                                 setIsDisplayMedia(true);
                             }}>
 
-                        <Avatar avatarUrl={userProfile?.avatarUrl || '/user_default.avif'} width={40} height={40}></Avatar>
+                        <Avatar avatarUrl={userProfile?.avatarUrl || '/images/user_default.avif'} width={40} height={40}></Avatar>
                     </div>
 
                     <div className="absolute right-2 bottom-2">
@@ -462,7 +462,7 @@ const Profile = () => {
                             {friends.map((user) => (
                                 <div key={user.id} className="relative group">
                                     <img
-                                        src={user.avatarUrl ? user.avatarUrl : '/user_default.avif'}
+                                        src={user.avatarUrl ? user.avatarUrl : '/images/user_default.avif'}
                                         alt={user.firstName}
                                         className="w-10 h-10 rounded-full border-2 border-white cursor-pointer object-cover
                                         hover:scale-105 transition-transform"
