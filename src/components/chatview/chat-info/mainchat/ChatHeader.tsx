@@ -6,7 +6,7 @@ import { IoCall, IoVideocam } from "react-icons/io5";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
-import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../../utilities/DeviceType";
 import { ROUTES } from "../../../../utilities/Constants";
 import { useChatContext } from "../../../../utilities/ChatContext";
 

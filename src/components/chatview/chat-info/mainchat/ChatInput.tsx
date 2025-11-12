@@ -1,11 +1,15 @@
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import React, { useRef, useState } from 'react';
 import '../../../../styles/scrollbar.css';
 import { FaFaceGrinWide, FaVideo } from 'react-icons/fa6';
 import { IoIosImages, IoMdClose } from 'react-icons/io';
 import { PiPaperPlaneRightFill } from 'react-icons/pi';
 import { useTheme } from '../../../../utilities/ThemeContext';
-import { FaFileAlt } from 'react-icons/fa';
+import { FaFileAlt, FaReplyAll } from 'react-icons/fa';
+import { ChatResponse } from '../../../../types/Message';
+import { ChatParticipants } from '../../../../types/User';
+import { useAuth } from '../../../../utilities/AuthContext';
+import { P } from 'framer-motion/dist/types.d-BJcRxCew';
 
 interface ChatInputProps {
 	setMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -14,9 +18,13 @@ interface ChatInputProps {
 	files: File[];
 	setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 	emoji?: string;
+	participants?: ChatParticipants[];
+	replyTo: ChatResponse | null;
+	setReplyTo: React.Dispatch<React.SetStateAction<ChatResponse | null>>;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message, files, setFiles, emoji }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message, files, setFiles, emoji, participants, replyTo, setReplyTo }) => {
+	const { user } = useAuth();
 	const { isDarkMode } = useTheme();
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const scrollRef = useRef<HTMLDivElement>(null);
@@ -25,6 +33,15 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 		if (scrollRef.current) {
 			scrollRef.current.scrollLeft += e.deltaY;
 		}
+	};
+
+	const isMatchingSender = (senderId: string) => {
+		return participants?.find(participant => participant.id === senderId);
+	}
+
+	const isVideoUrl = (url: string): boolean => {
+		const videoExtensions = ['.mp4', '.webm', '.mov', '.mkv'];
+		return videoExtensions.some(ext => url.toLowerCase().includes(ext));
 	};
 
 	const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -42,14 +59,15 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 	};
 
 	const handleSendEmoji = () => {
-		if(emoji) {
+		if (emoji) {
 			setMessage(emoji);
 		}
 	};
 
 
 	return (
-		<form className={`absolute bottom-0 flex flex-col p-2 pb-0 w-full min-w-0 min-h-[7dvh]`} 
+		<form className={`absolute bottom-0 flex flex-col p-2 pb-0 w-full min-w-0 min-h-[7dvh] 
+			${isDarkMode ? 'bg-[#00000087]' : ''}`}
 			onSubmit={sendMessage}>
 
 			{/* File Preview */}
@@ -74,12 +92,12 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 								<div className="flex items-center">
 									<div className={`flex items-center gap-2 pt-2 mb-2 text-md font-medium 
                                         ${isDarkMode ? 'text-gray-300' : 'text-gray-800'}`}>
-                                        <div className={`px-2 h-12 flex gap-2 items-center justify-center rounded-lg max-w-60
+										<div className={`px-2 h-12 flex gap-2 items-center justify-center rounded-lg max-w-60
                                             ${isDarkMode ? 'bg-[#474747]' : 'bg-gray-200'}`}>
-                                            <FaFileAlt className='text-2xl'/>
+											<FaFileAlt className='text-2xl' />
 											<p className='text-sm overflow-hidden text-ellipsis whitespace-nowrap'>{file.name}</p>
-                                        </div>
-                                    </div>
+										</div>
+									</div>
 								</div>
 							)}
 							<button
@@ -95,7 +113,63 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 				</div>
 			)}
 
-			<div className={`flex items-end gap-2 mt-2 py-2
+			{replyTo && (
+				<div className={`flex items-center justify-between rounded-lg px-3 py-0.5 pt-2 
+				${isDarkMode ? 'border-gray-400 border-t' : 'border-cyan-500 border-t-2 bg-[#ffffff9b]'}`}>
+					<div className='flex items-center gap-4'>
+						<FaReplyAll className={`text-2xl ${isDarkMode ? 'text-cyan-400' : 'text-black'}`} />
+						<div className="flex items-center gap-4">
+							<div className={`flex flex-col gap-1 text-md
+								${isDarkMode ? 'text-gray-200' : 'text-gray-700 font-bold'}`}>
+								<div className="text-xs ">
+									Đang trả lời {replyTo.senderId !== user?.user.id ? isMatchingSender(replyTo.senderId)?.fullName : "chính mình"}
+								</div>
+
+								{replyTo.publicIds == null ? (
+									<div className="truncate max-w-[240px] font-normal">
+										{replyTo.content}
+									</div>
+								) : (
+									<div className="truncate max-w-[240px] font-normal">
+										{(!(replyTo.resourceTypes[0] === 'image') && !isVideoUrl(replyTo.urls[0]))
+											? (
+												<p>File</p>
+											)
+											: (
+												<div className={`relative w-12 h-12 rounded-lg overflow-hidden ring-2 ${isDarkMode ? 'ring-gray-600' : 'ring-gray-200'
+													}`}>
+													<img
+														src={replyTo.urls[0]}
+														alt="preview"
+														className="w-full h-full object-cover"
+													/>
+													{replyTo.urls.length > 1 && (
+														<div className={`absolute inset-0 flex items-center justify-center backdrop-blur-sm ${isDarkMode ? 'bg-gray-900/60' : 'bg-white/60'
+															}`}>
+															<span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'
+																}`}>
+																+{replyTo.urls.length - 1}
+															</span>
+														</div>
+													)}
+												</div>
+											)}
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+					<button
+						type="button"
+						className="ml-3 p-1.5 text-lg text-gray-200 hover:text-white rounded-full bg-[#3c3c3c7c] hover:bg-[#5a5a5a83]"
+						onClick={() => setReplyTo(null)}
+					>
+						<IoMdClose />
+					</button>
+				</div>
+			)}
+
+			<div className={`flex items-end gap-2 py-2
 			`}>
 				{/* File Upload Button */}
 				<label className={`cursor-pointer text-xl p-2 me-1 rounded-full
@@ -123,6 +197,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 						placeholder="Aa"
 						value={message}
 						rows={1}
+						autoFocus
 						style={{ lineHeight: '1.5', maxHeight: 'calc(1.5em * 6.5 + 0.5rem)', minHeight: '1.5em' }}
 						onChange={(e) => {
 							setMessage(e.target.value);
@@ -165,7 +240,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 				{/* Emoji Picker */}
 				{showEmojiPicker && (
 					<div className="absolute bottom-10 right-16">
-						<EmojiPicker width={360} height={340} onEmojiClick={handleEmojiClick} />
+						<EmojiPicker emojiStyle={EmojiStyle.FACEBOOK} width={420} height={420} onEmojiClick={handleEmojiClick} />
 					</div>
 				)}
 

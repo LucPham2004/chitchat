@@ -12,7 +12,7 @@ import { useChatContext } from "../../../../utilities/ChatContext";
 import { deleteImage, uploadConversationImage, uploadFile } from "../../../../services/ImageService";
 import { uploadConversationVideo } from "../../../../services/VideoService";
 import { ChatParticipants } from "../../../../types/User";
-import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../../utilities/DeviceType";
 
 export interface MainChatProps {
     toggleChangeWidth: () => void;
@@ -43,6 +43,7 @@ const MainChat: React.FC<MainChatProps> = ({
 
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<ChatResponse[]>([]);
+    const [replyTo, setReplyTo] = useState<ChatResponse | null>(null);
     const [files, setFiles] = useState<File[]>([]);
 
     useEffect(() => {
@@ -51,6 +52,8 @@ const MainChat: React.FC<MainChatProps> = ({
 
     useEffect(() => {
         setMessages([]);
+        setFiles([]);
+        setReplyTo(null);
     }, [conv_id]);
 
     useEffect(() => {
@@ -117,7 +120,8 @@ const MainChat: React.FC<MainChatProps> = ({
                     fileNames: uploadedFileNames,
                     heights: uploadedHeights,
                     widths: uploadedWidths,
-                    resourceTypes: uploadedResourceTypes
+                    resourceTypes: uploadedResourceTypes,
+                    replyToId: replyTo?.id || null,
                 };
 
                 if (!message && uploadedPublicIds.length === 0 && uploadedUrls.length === 0) return;
@@ -126,6 +130,7 @@ const MainChat: React.FC<MainChatProps> = ({
                 if (success) {
                     setMessage('');
                     setFiles([]);
+                    setReplyTo(null);
                 } else {
                     alert("Không thể gửi tin nhắn. Vui lòng thử lại.");
                 }
@@ -151,7 +156,7 @@ const MainChat: React.FC<MainChatProps> = ({
         ) : (
             <div className={` flex flex-col items-center justify-center pe-1 pt-1 pb-0 
                  shadow-sm bg-cover bg-center 
-                ${deviceType == 'Mobile' ? 'h-full' : 'min-h-[96dvh] rounded-xl'}
+                ${deviceType == 'Mobile' ? 'min-h-[100dvh] max-h-[100dvh]' : 'min-h-[96dvh] rounded-xl'}
                 ${isDarkMode ? ' border border-gray-900' : ''}
                 `}
                 style={{
@@ -173,9 +178,15 @@ const MainChat: React.FC<MainChatProps> = ({
                             participants={participants}
                             files={files}
                             onDeleteMessage={handleDeleteMessage}
+                            replyTo={replyTo}
+                            onReply={setReplyTo}
                         />
                         <ChatInput message={message} setMessage={setMessage} sendMessage={sendMessage}
-                            files={files} setFiles={setFiles} emoji={conversationResponse.emoji} />
+                            files={files} setFiles={setFiles} emoji={conversationResponse.emoji} 
+                            participants={participants}
+                            replyTo={replyTo}
+                            setReplyTo={setReplyTo}
+                        />
                     </div>
                 </>
             </div>

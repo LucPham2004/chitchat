@@ -1,4 +1,4 @@
-import { FaEllipsisH, FaFileAlt, FaPlus, FaSmile, FaTrash } from "react-icons/fa";
+import { FaEllipsisH, FaFileAlt, FaPlus, FaReply, FaSmile, FaTrash } from "react-icons/fa";
 import { ConversationResponse } from "../../../../types/Conversation";
 import { ChatResponse } from "../../../../types/Message";
 import { ChatParticipants } from "../../../../types/User";
@@ -8,8 +8,9 @@ import { useEffect, useState } from "react";
 import { deleteMessage } from "../../../../services/MessageService";
 import { createMessageMessageEmojiReaction, deleteMessageMessageEmojiReaction } from "../../../../services/MessageEmojiReactionService";
 import { MessageEmojiReaction } from "../../../../types/MessageEmojiReaction";
-import { Link } from "react-router-dom";
-import { PhoneOff, Video, Phone, Clock } from "lucide-react";
+import { PhoneOff, Video, Phone, Clock, ImageIcon, Reply } from "lucide-react";
+import { formatTimeHHmm } from "../../../../utilities/TimeUltilities";
+
 
 
 interface MessageProps {
@@ -23,13 +24,14 @@ interface MessageProps {
 	onDeleteMessage?: (id: string) => void;
 	setDisplayMediaUrl: (url: string) => void;
 	setIsDisplayMedia: (open: boolean) => void;
+	onReply: React.Dispatch<React.SetStateAction<ChatResponse | null>>;
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
 	message, isFirstInGroup, isLastInGroup, isSingleMessage,
 	isLastMessageByCurrentUser, conversationResponse,
 	participants, onDeleteMessage, setDisplayMediaUrl,
-	setIsDisplayMedia
+	setIsDisplayMedia, onReply
 }) => {
 
 	const { user } = useAuth();
@@ -39,7 +41,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 	const [activeEmojiPicker, setActiveEmojiPicker] = useState<number | null>(null);
 	const [activeMenuMessage, setActiveMenuMessage] = useState<number | null>(null);
 
-	const isMissed = message.callStatus === "MISSED";
+	const isMissed = message.callStatus === "MISSED" || message.callStatus === "REJECTED";
 
 	const emojis = ["😂", "❤️", "👍", "😢", "🔥", "😡"];
 
@@ -146,12 +148,12 @@ const ChatMessage: React.FC<MessageProps> = ({
 		flex flex-col gap-1.5 transition-all duration-200
 		${isDarkMode ? 'shadow-gray-900/50' : 'shadow-gray-200/50'}
 		${isMissed
-		? isDarkMode
-			? 'bg-red-900/30 border border-red-800/50 text-red-300'
-			: 'bg-red-50 border border-red-200 text-red-600'
-		: isDarkMode
-		? 'bg-emerald-900/30 border border-emerald-800/50 text-emerald-300'
-		: 'bg-emerald-50 border border-emerald-200 text-emerald-600'
+			? isDarkMode
+				? 'bg-red-900/30 border border-red-800/50 text-red-300'
+				: 'bg-red-50 border border-red-200 text-red-600'
+			: isDarkMode
+				? 'bg-emerald-900/30 border border-emerald-800/50 text-emerald-300'
+				: 'bg-emerald-50 border border-emerald-200 text-emerald-600'
 		}
 	`;
 
@@ -160,9 +162,10 @@ const ChatMessage: React.FC<MessageProps> = ({
 		: isDarkMode ? 'text-emerald-400' : 'text-emerald-600';
 
 	return (
-		<div className={`relative flex items-end group 
+		<div className={`relative flex items-center group 
 			${message.senderId === user?.user.id ? 'justify-end' : 'justify-start gap-2'}
-			${isLastInGroup && 'mb-4'}
+			${isLastInGroup ? 'mb-4' : ''}
+			${message.replyTo ? 'mt-16' : ''}
 			`}>
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
 			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
@@ -174,19 +177,32 @@ const ChatMessage: React.FC<MessageProps> = ({
 			)}
 
 			{/* Nút reaction và menu khi hover vào tin nhắn */}
-			<div className={`relative self-center hidden gap-1 me-6
-				${message.senderId === user?.user.id ? 'left-4 group-hover:flex' : 'hidden'}`}>
+			<div className={`relative flex items-center opacity-0 scale-95 gap-1 me-6 transition-all duration-400 z-40
+				${message.senderId === user?.user.id ? 'left-4 group-hover:opacity-100 group-hover:scale-100' : 'hidden'}`}>
+
+				<p className={`text-xs text-gray-800 bg-[#ffffffa0] px-1.5 py-1 font-semibold rounded-xl`}>
+					{formatTimeHHmm(message.createdAt)}
+				</p>
+
 				<button className={`py-1.5 px-1.5 rounded-full text-md border
 					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
-						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+						: 'text-gray-700 border-gray-700 hover:text-gray-600 bg-[#ffffffa0]'}`}
 					onClick={() => toggleEmojiPicker(message.id)}>
 					<FaSmile />
 				</button>
 
+				<button className={`py-1.5 px-1.5 rounded-full text-md border
+					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
+						: 'text-gray-700 border-gray-700 hover:text-gray-600 bg-[#ffffffa0]'}`}
+					onClick={() => onReply(message)}>
+					<FaReply />
+				</button>
+
 				{/* Popup emoji */}
 				{activeEmojiPicker === message.id && activeMenuMessage !== message.id && (
-					<div className="absolute -left-28 bottom-5 mb-2 p-2 bg-white dark:bg-[#161618] 
-						shadow-md rounded-full flex gap-0.5 z-40">
+					<div className={`absolute -left-28 bottom-5 mb-2 p-2 
+						shadow-md rounded-full flex gap-0.5 z-40
+						${isDarkMode ? 'bg-[#161618d5]' : 'bg-[#ffffffa0]'}`}>
 						{emojis.map((emoji, index) => (
 							<button key={index} className="text-2xl hover:scale-110 transition"
 								onClick={() => handleSelectEmoji(message.id, emoji)}>
@@ -201,12 +217,12 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				<button className={`py-1.5 px-1.5 rounded-full text-md border
 					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
-						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+						: 'text-gray-700 border-gray-700 hover:text-gray-600 bg-[#ffffffa0]'}`}
 					onClick={() => toggleMenuMessage(message.id)}>
 					<FaEllipsisH />
 				</button>
 
-				{/* Menu xóa tin nhắn - chỉ hiển thị nếu tin nhắn này được chọn */}
+				{/* Menu xóa tin nhắn */}
 				{message.senderId === user?.user.id && activeMenuMessage === message.id && activeEmojiPicker !== message.id && (
 					<div className="absolute -right-12 bottom-6 mb-2 p-2 bg-white dark:bg-[#161618] shadow-md rounded-lg z-40">
 						<button
@@ -219,6 +235,82 @@ const ChatMessage: React.FC<MessageProps> = ({
 					</div>
 				)}
 			</div>
+
+			{message.replyTo && (
+				<div className={`absolute -top-14 right-0 transition-all duration-200 hover:scale-[1.01] z-0`}>
+					<div className={`relative overflow-hidden rounded-lg shadow-lg backdrop-blur-sm ${isDarkMode
+							? 'bg-gradient-to-r from-gray-800/45 to-gray-700/45 border border-gray-600/50'
+							: 'bg-gradient-to-r from-white/45 to-gray-50/45 border border-gray-200/50'
+						}`}>
+						{/* Thanh màu accent bên trái */}
+						<div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-purple-500" />
+
+						<div className="flex items-start gap-2 p-2 pl-3">
+							{/* Icon Reply */}
+							<div className={`flex-shrink-0 mt-1 ${isDarkMode ? 'text-blue-400' : 'text-blue-500'
+								}`}>
+								<Reply size={16} />
+							</div>
+
+							{/* Nội dung chính */}
+							<div className="flex-1 min-w-0">
+								{/* Header - Người gửi */}
+								<div className="flex items-center gap-1 mb-1">
+									<span className={`text-xs font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
+										}`}>
+										{user?.user.id === message.senderId ? 'Bạn' : isMatchingSender(message.senderId)?.fullName}
+									</span>
+									<span className={`text-xs ${isDarkMode ? 'text-gray-300' : 'text-gray-600'
+										}`}>
+										đã trả lời
+									</span>
+									<span className={`text-xs font-semibold ${isDarkMode ? 'text-blue-400' : 'text-blue-600'
+										}`}>
+										{isMatchingSender(message.replyTo.senderId)?.fullName || 'một người'}
+									</span>
+								</div>
+
+								{/* Nội dung tin nhắn */}
+								<div className={`text-sm leading-relaxed ${isDarkMode ? 'text-gray-300' : 'text-gray-700'
+									}`}>
+									<p className="line-clamp-2">
+										{message.replyTo.content || (
+											<span className="flex items-center gap-1.5 italic">
+												<ImageIcon size={14} />
+												Tin nhắn đa phương tiện
+											</span>
+										)}
+									</p>
+								</div>
+							</div>
+
+							{/* Preview ảnh/media */}
+							{message.replyTo.urls && message.replyTo.urls.length > 0 && (
+								<div className="flex-shrink-0">
+									<div className={`relative w-12 h-12 rounded-lg overflow-hidden ring-2 ${isDarkMode ? 'ring-gray-600' : 'ring-gray-200'
+										}`}>
+										<img
+											src={message.replyTo.urls[0]}
+											alt="preview"
+											className="w-full h-full object-cover"
+										/>
+										{message.replyTo.urls.length > 1 && (
+											<div className={`absolute inset-0 flex items-center justify-center backdrop-blur-sm ${isDarkMode ? 'bg-gray-900/60' : 'bg-white/60'
+												}`}>
+												<span className={`text-xs font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'
+													}`}>
+													+{message.replyTo.urls.length - 1}
+												</span>
+											</div>
+										)}
+									</div>
+								</div>
+							)}
+						</div>
+					</div>
+				</div>
+			)}
+
 
 			<div className={`relative flex flex-col max-w-[70%] gap-0.5
 				${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start'}
@@ -281,7 +373,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 
 				{/* Show images/videos/files */}
 				{message.publicIds != null && message.publicIds != "" && (
-					<div className={`flex flex-col gap-[1px] 
+					<div className={`flex flex-col gap-[1px] w-max
 					${message.senderId === user?.user.id ? 'items-end justify-end' : 'items-start justify-start gap-2'}`}>
 						{message.publicIds.map((publicId: string, index: number) => {
 							const url = message.urls[index];
@@ -387,11 +479,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 								{/* Thông tin cuộc gọi */}
 								<div className="flex items-center gap-2 text-sm">
 									{message.callType === 'video' ? (
-									isMissed ? (
-										<Video size={14} className={iconColor} />
-									) : (
-										<Video size={14} className={iconColor} />
-									)
+										isMissed ? (
+											<Video size={14} className={iconColor} />
+										) : (
+											<Video size={14} className={iconColor} />
+										)
 									) : isMissed ? (
 										<PhoneOff size={14} className={iconColor} />
 									) : (
@@ -413,13 +505,20 @@ const ChatMessage: React.FC<MessageProps> = ({
 			</div>
 
 			{/* Nút reaction và menu khi hover vào tin nhắn */}
-			<div className={`relative self-center hidden gap-1 
-					${message.senderId === user?.user.id ? 'hidden' : 'right-0 group-hover:flex'}`}>
+			<div className={`relative flex items-center opacity-0 scale-95 gap-1 transition-all duration-400
+					${message.senderId === user?.user.id ? 'hidden' : 'right-0 group-hover:opacity-100 group-hover:scale-100'}`}>
 				<button className={`py-1.5 px-1.5 rounded-full text-md border
 					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
-						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+						: 'text-gray-700 border-gray-700 hover:text-gray-600 bg-gray-200'}`}
 					onClick={() => toggleEmojiPicker(message.id)}>
 					<FaSmile />
+				</button>
+
+				<button className={`py-1.5 px-1.5 rounded-full text-md border
+					${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#150C07] hover:text-gray-200'
+						: 'text-gray-700 border-gray-700 hover:text-gray-600 bg-gray-200'}`}
+					onClick={() => onReply(message)}>
+					<FaReply />
 				</button>
 
 				{/* Popup emoji */}
@@ -443,6 +542,9 @@ const ChatMessage: React.FC<MessageProps> = ({
 						: 'text-gray-300 border-gray-300 hover:text-gray-200'}`}>
 					<FaEllipsisH />
 				</button> */}
+				<p className={`text-xs text-gray-800 bg-gray-300 px-1.5 py-1 font-semibold rounded-xl`}>
+					{formatTimeHHmm(message.createdAt)}
+				</p>
 			</div>
 
 			{isLastMessageByCurrentUser &&

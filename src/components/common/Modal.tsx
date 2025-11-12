@@ -1,7 +1,7 @@
 import React from 'react';
 import { IoClose } from 'react-icons/io5';
 import { useTheme } from '../../utilities/ThemeContext';
-import useDeviceTypeByWidth from '../../utilities/useDeviceTypeByWidth';
+import useDeviceTypeByWidth from '../../utilities/DeviceType';
 
 interface ModalProps {
 	isOpen: boolean;

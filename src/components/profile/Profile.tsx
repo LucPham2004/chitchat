@@ -5,7 +5,7 @@ import { FaArrowLeft, FaArrowRight, FaCameraRetro, FaDiscord, FaFacebook, FaGith
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FaXTwitter } from "react-icons/fa6";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../utilities/DeviceType";
 import { useTheme } from "../../utilities/ThemeContext";
 import { useAuth } from "../../utilities/AuthContext";
 import { getMutualFriends, getOtherUserById, getUserFriends, updateUser, updateUserImages } from "../../services/UserService";

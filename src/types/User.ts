@@ -101,6 +101,7 @@ export interface ChatParticipants {
     username: string;
     avatarPublicId: string;
     avatarUrl: string;
+    fullName: string;
     firstName: string;
     lastName: string;
 }

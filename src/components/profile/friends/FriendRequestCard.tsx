@@ -1,7 +1,7 @@
 import { PiDotsThreeOutline } from "react-icons/pi";
 import { FriendCardProps } from "./FriendCard";
 import { FaUserCheck } from "react-icons/fa";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { useTheme } from "../../../utilities/ThemeContext";

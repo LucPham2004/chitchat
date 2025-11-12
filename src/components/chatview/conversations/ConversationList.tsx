@@ -5,11 +5,11 @@ import { PiUserPlusBold } from "react-icons/pi";
 import { deleteConversationById, getJoinedConversationsById, updateConversation } from "../../../services/ConversationService";
 import { ConversationShortResponse } from "../../../types/Conversation";
 import { useAuth } from "../../../utilities/AuthContext";
-import { timeAgo } from "../../../utilities/timeAgo";
+import { timeAgo } from "../../../utilities/TimeUltilities";
 import { useChatContext } from "../../../utilities/ChatContext";
 import ConversationAvatar from "./ConversationAvatar";
 import { FaEllipsisH } from "react-icons/fa";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { ROUTES } from "../../../utilities/Constants";
 
 
@@ -21,7 +21,7 @@ const ConversationList: React.FC = () => {
     const deviceType = useDeviceTypeByWidth();
     const [conversations, setConversations] = useState<ConversationShortResponse[]>([]);
     const [page, setPage] = useState<number>(0);
-    const { lastMessages } = useChatContext();
+    const { lastMessages, currentNewMessage } = useChatContext();
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
@@ -183,7 +183,7 @@ const ConversationList: React.FC = () => {
                                 <div className={` absolute hidden gap-1 right-12 group-hover:flex`}>
                                     <button className={`p-2 rounded-full text-md border
                                             ${isDarkMode ? 'text-gray-400 border-gray-600 bg-[#242424] hover:text-gray-200'
-                                            : 'text-gray-300 border-gray-300 hover:text-gray-200'}`}
+                                            : 'text-gray-600 border-gray-600 hover:text-gray-500'}`}
                                         onClick={(e) => {
                                             e.preventDefault();
                                             toggleMenu(conv.id);
@@ -194,9 +194,13 @@ const ConversationList: React.FC = () => {
                                 </div>
                                 {/* Menu */}
                                 {openMenuId === conv.id && (
-                                    <div className="absolute top-10 right-0 mt-2 bg-white dark:bg-[#303030] shadow-lg rounded-xl w-40 z-10">
+                                    <div className={`absolute top-10 right-0 mt-2 shadow-lg rounded-xl w-40 z-10
+                                        ${isDarkMode ? 'bg-[#161618]' : 'bg-[#ffffff]'}`}>
                                         <button
-                                            className="w-max text-left px-4 py-3 rounded-t-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
+                                            className={`w-max text-left px-4 py-3 
+                                                ${isDarkMode ? 'hover:bg-[#242424]' : 'hover:bg-gray-100'}
+                                                ${conv.group == true ? 'rounded-t-xl' : 'rounded-xl'}
+                                            `}
                                             onClick={async () => {
                                                 const confirmDelete = window.confirm("Bạn có chắc chắn muốn xoá đoạn chat này?");
                                                 if (confirmDelete) {

@@ -5,7 +5,7 @@ import { Particle } from '../components/common/Particle';
 import { FeatureSection } from '../components/common/FeatureSection';
 import { ROUTES } from '../utilities/Constants';
 import { useAuth } from '../utilities/AuthContext';
-import useDeviceTypeByWidth from '../utilities/useDeviceTypeByWidth';
+import useDeviceTypeByWidth from '../utilities/DeviceType';
 import instance from '../services/Axios-customize';
 import { ApiResponse } from '../types/backend';
 
@@ -293,33 +293,33 @@ export default function ChitChatWelcome() {
             <div>
               <h4 className="font-semibold text-white mb-4">Sản phẩm</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-blue-400 transition">Tính năng</a></li>
+                {/* <li><a href="#" className="hover:text-blue-400 transition">Tính năng</a></li>
                 <li><a href="#" className="hover:text-blue-400 transition">Bảng giá</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">Tải ứng dụng</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Tải ứng dụng</a></li> */}
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Công ty</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-blue-400 transition">Về chúng tôi</a></li>
+                {/* <li><a href="#" className="hover:text-blue-400 transition">Về chúng tôi</a></li>
                 <li><a href="#" className="hover:text-blue-400 transition">Liên hệ</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">Tuyển dụng</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Tuyển dụng</a></li> */}
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Hỗ trợ</h4>
               <ul className="space-y-2 text-sm">
-                <li><a href="#" className="hover:text-blue-400 transition">Trung tâm trợ giúp</a></li>
+                {/* <li><a href="#" className="hover:text-blue-400 transition">Trung tâm trợ giúp</a></li>
                 <li><a href="#" className="hover:text-blue-400 transition">Điều khoản</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">Bảo mật</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Bảo mật</a></li> */}
               </ul>
             </div>
           </div>
 
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-sm">
-            <p>&copy; 2024 ChitChat. Đã đăng ký bản quyền.</p>
+            <p>&copy; 2025 ChitChat. Đã đăng ký bản quyền. (Fake)</p>
           </div>
         </div>
       </footer>

@@ -410,8 +410,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const rejectCall = () => {
         if (!incomingCallData || !user?.user.id) return;
         const payload = {
-            from: incomingCallData.from,
-            to: user.user.id,
+            from: user.user.id,
+            to: incomingCallData.from,
             duration: 0,
             callType: callType,
             status: "REJECTED",
@@ -451,10 +451,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // ===== 5. Caller: Xử lý khi callee từ chối =====
     const handleCallRejected = () => {
-        
-        setCallState("IDLE");
-        setIncomingCallData(null);
-        setCallStartTime(null)
+        setCallStartTime(null);
         cleanupCall();
     };
 

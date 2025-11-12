@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { ImBlocked } from "react-icons/im";
 import { UserDTO } from "../../../types/User";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { useAuth } from "../../../utilities/AuthContext";
 import { getDirectMessage } from "../../../services/ConversationService";
 import { ROUTES } from "../../../utilities/Constants";

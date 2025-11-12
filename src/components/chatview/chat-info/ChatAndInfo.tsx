@@ -7,7 +7,7 @@ import ChatMessage from "./mainchat/ChatMessage";
 import EmojiPicker from "emoji-picker-react";
 import ParticipantCard from "./conversationInfo/ParticipantCard";
 import { useParams } from "react-router-dom";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
 import { getConversationById, getParticipantsByConvId, updateConversationPartially } from "../../../services/ConversationService";

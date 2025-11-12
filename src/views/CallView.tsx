@@ -161,7 +161,7 @@ export default function CallView() {
       )}
       {/* Hiển thị avatar nếu chưa có stream hoặc là cuộc gọi audio */}
       {(!remoteStreamRef.current?.srcObject || callType === 'audio') && (
-        <div className="flex flex-col gap-2 items-center justify-center w-full h-full bg-black text-white text-lg">
+        <div className="flex flex-col gap-2 items-center justify-center w-full h-full bg-gradient-to-br from-[#555555] via-[#3c5559] to-[#242424] text-white text-lg">
           <Avatar avatarUrl={otherParty ? otherParty.avatarUrl : '/images/user_default.avif'} width={28} height={28} />
           <p>{otherParty?.firstName} {otherParty?.lastName}</p>
         </div>
@@ -169,7 +169,7 @@ export default function CallView() {
 
       {/* Video của bạn — nhỏ ở góc */}
       {callType === 'video' && (
-        <div className="absolute top-4 right-4 w-40 h-32 md:w-56 md:h-40 border-2 border-white rounded-lg overflow-hidden shadow-lg bg-black">
+        <div className="absolute top-4 right-4 w-40 h-32 md:w-56 md:h-40 border-2 border-white rounded-lg overflow-hidden shadow-lg bg-gradient-to-br from-[#555555] via-[#3c5559] to-[#242424]">
           <video
             ref={localVideoRef}
             autoPlay

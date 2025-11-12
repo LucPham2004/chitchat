@@ -30,3 +30,12 @@ export const timeAgo = (timestamp: string) => {
     const diffInWeeks = Math.floor(diffInDays / 7);
     return `${diffInWeeks} tuần`;
 };
+
+export const formatTimeHHmm = (isoString: string, locale = "vi-VN"): string => {
+  return new Date(isoString).toLocaleTimeString(locale, {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+};
+

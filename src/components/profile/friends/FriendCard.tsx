@@ -1,7 +1,7 @@
 import { PiDotsThreeOutline } from "react-icons/pi";
 import { IoChatbubblesSharp } from "react-icons/io5";
 import { UserDTO } from "../../../types/User";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../../utilities/Constants";

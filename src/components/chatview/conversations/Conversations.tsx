@@ -18,7 +18,7 @@ import { searchConversations } from "../../../services/ConversationService";
 import { ConversationResponse } from "../../../types/Conversation";
 import ConversationAvatar from "./ConversationAvatar";
 import { GoPlus } from "react-icons/go";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { callLogout } from "../../../services/AuthService";
 import { ROUTES } from "../../../utilities/Constants";
 

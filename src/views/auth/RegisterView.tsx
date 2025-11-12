@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../utilities/DeviceType";
 import { callRegister, callVerifyOtp } from "../../services/AuthService";
 import { Gender } from "../../types/User";
 import { useAuth } from "../../utilities/AuthContext";

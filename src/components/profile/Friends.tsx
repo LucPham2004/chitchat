@@ -10,7 +10,7 @@ import { useAuth } from "../../utilities/AuthContext";
 import FriendItemWithModal from "./friends/FriendItemWithModal";
 import { UserDTO } from "../../types/User";
 import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends, searchUsers } from "../../services/UserService";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../utilities/DeviceType";
 import toast, { Toaster } from "react-hot-toast";
 
 

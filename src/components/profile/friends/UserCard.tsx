@@ -1,7 +1,7 @@
 import { PiDotsThreeOutline } from "react-icons/pi";
 import { FriendCardProps } from "./FriendCard";
 import { FaUserPlus } from "react-icons/fa";
-import useDeviceTypeByWidth from "../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../utilities/DeviceType";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useState } from "react";
 import { sendFriendRequest, deleteFriendship } from "../../../services/FriendshipService";

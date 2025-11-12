@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from "react";
 import ChatMessage from "./ChatMessage";
-import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../../utilities/DeviceType";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { ChatResponse } from "../../../../types/Message";
@@ -9,7 +9,12 @@ import { getConversationMessages } from "../../../../services/MessageService";
 import { useParams } from "react-router-dom";
 import { useChatContext } from "../../../../utilities/ChatContext";
 import { ChatParticipants } from "../../../../types/User";
+import dayjs from "dayjs";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import "dayjs/locale/vi";
 
+dayjs.extend(localizedFormat);
+dayjs.locale("vi");
 
 
 interface MessagesProps {
@@ -19,15 +24,17 @@ interface MessagesProps {
     participants?: ChatParticipants[];
     files?: File[];
     onDeleteMessage: (id: string) => void;
+	replyTo: ChatResponse | null;
+    onReply: React.Dispatch<React.SetStateAction<ChatResponse | null>>;
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files, onDeleteMessage }) => {
+const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files, onDeleteMessage, replyTo, onReply }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
 
-    const {setIsDisplayMedia} = useChatContext();
-    const {setDisplayMediaUrl} = useChatContext();
+    const { setIsDisplayMedia } = useChatContext();
+    const { setDisplayMediaUrl } = useChatContext();
 
     const chatEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -85,7 +92,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
         setIsFetching(false);
     };
-    
+
     useEffect(() => {
         document.title = conversationResponse?.name + " | Chit Chat" || "Chit Chat";
     }, []);
@@ -103,14 +110,14 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
         const fetchInitialMessages = async () => {
             setIsFetching(true);
             try {
-                const response = await getConversationMessages(conversationResponse.id, 0);
+                if (conv_id) {
+                    const response = await getConversationMessages(conv_id, 0);
 
-                if (response.result && response.result.content.length > 0) {
-                    const newMessages = response.result?.content.reverse() || [];
-                    setMessages(newMessages);
-                    setPageNum(0);
-                    setHasMore(true);
-                    if(conv_id) {
+                    if (response.result && response.result.content.length > 0) {
+                        const newMessages = response.result?.content.reverse() || [];
+                        setMessages(newMessages);
+                        setPageNum(0);
+                        setHasMore(true);
                         const lastMessages = newMessages;
                         const lastMessage = lastMessages[lastMessages.length - 1];
                         updateLastMessage(conv_id, lastMessage.senderId, lastMessage.content, lastMessage.createdAt);
@@ -149,7 +156,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     // Chỉ tự động cuộn xuống khi chat ở dưới cùng và có tin nhắn mới
     useEffect(() => {
         if (isAtBottom) {
-            if(messages.at(messages.length)?.fileNames[0]) {
+            if (messages.at(messages.length)?.fileNames[0]) {
                 setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 300);
             } else {
                 setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 10);
@@ -161,12 +168,27 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
     return (
         <div ref={chatContainerRef}
-            className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-4 pt-2
+            className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-6 pt-2
                 ${deviceType !== 'PC' ? 'max-h-[85dvh] min-h-[70dvh]' : 'h-full'}
-                ${files && files?.length > 0 ? 'mb-40' : 'mb-12'}
+                ${files && files?.length > 0 ? replyTo ? 'mb-52' : 'mb-40' : replyTo ? 'mb-32' : 'mb-12'}
                 `}
         >
             {messages.map((message, i) => {
+                const prevMsg = i > 0 ? messages[i - 1] : null;
+
+                // Kiểm tra thời gian cách nhau
+                let showDateSeparator = false;
+                if (!prevMsg) showDateSeparator = true;
+                else {
+                    const prevTime = dayjs(prevMsg.createdAt);
+                    const currTime = dayjs(message.createdAt);
+                    const diffMinutes = currTime.diff(prevTime, "minute");
+
+                    if (!currTime.isSame(prevTime, "day") || diffMinutes > 30) {
+                        showDateSeparator = true;
+                    }
+                }
+
                 const isSameSenderAsPrevious = i > 0 && messages[i - 1].senderId === message.senderId;
                 const isSameSenderAsNext = i < messages.length - 1 && messages[i + 1].senderId === message.senderId;
 
@@ -184,19 +206,32 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
                 return (
                     <div key={i} className={`${isSameSenderAsNext ? 'mb-[1px]' : 'mb-2'}`}>
+                        {showDateSeparator && (
+                            <div className="flex justify-center items-center w-full my-4">
+                                <span className={`mx-3 text-xs font-semibold px-2
+                                    ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}
+                                    `}>
+                                    {dayjs(message.createdAt).isSame(dayjs(), "day")
+                                        ? dayjs(message.createdAt).format("HH:mm")
+                                        : dayjs(message.createdAt).format("HH:mm DD/MM")}
+                                </span>
+                            </div>
+                        )}
+
                         <ChatMessage message={message} isFirstInGroup={isFirstInGroup}
                             isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}
                             isLastMessageByCurrentUser={isLastMessageByCurrentUser}
-                            conversationResponse={conversationResponse} 
+                            conversationResponse={conversationResponse}
                             participants={participants}
                             onDeleteMessage={onDeleteMessage}
                             setDisplayMediaUrl={setDisplayMediaUrl}
                             setIsDisplayMedia={setIsDisplayMedia}
-                            />
+                            onReply={onReply}
+                        />
                     </div>
                 )
             })}
-            <div ref={chatEndRef} className={``}/>
+            <div ref={chatEndRef} className={``} />
         </div>
 
     )

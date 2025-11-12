@@ -6,7 +6,7 @@ import { useChatContext } from "../utilities/ChatContext";
 import DisplayMedia from "../components/common/DisplayMedia";
 import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
-import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../utilities/DeviceType";
 import { ROUTES } from "../utilities/Constants";
 import CallView from "./CallView";
 

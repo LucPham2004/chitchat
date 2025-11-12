@@ -34,7 +34,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({ title, content, toggleAcc
 					<IoIosArrowDown />
 				</span>
 			</button> */}
-            <hr className="w-[100%] mt-2 border-gray-400"></hr>
+            <hr className="w-[100%] mt-2 border-gray-600"></hr>
 			<div
 				className={`transition-[max-height] duration-300 ease-in-out overflow-hidden mt-2 max-h-80 `}>
 				<div className={``}>{content}</div>

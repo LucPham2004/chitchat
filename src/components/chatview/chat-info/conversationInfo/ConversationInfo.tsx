@@ -3,7 +3,7 @@ import { IoSearch } from "react-icons/io5";
 import { act, useEffect, useState } from "react";
 import { FaFileAlt } from "react-icons/fa";
 import MediaGrid from "./MediaGrid";
-import useDeviceTypeByWidth from "../../../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../../../utilities/DeviceType";
 import { useTheme } from "../../../../utilities/ThemeContext";
 import { ConversationResponse } from "../../../../types/Conversation";
 import Accordion from "./Accordion";
@@ -261,11 +261,13 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             </button>
                         }
 
-                        <div className="flex flex-col items-center gap-1 p-2">
+                        <div className="flex justify-center items-center gap-4 p-2 mt-6 mb-6">
                             <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []}
                                 width={24} height={24}></ConversationAvatar>
+                            <div className="flex flex-col items-center gap-2">
                             <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
                             <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
+                            </div>
                         </div>
 
                         <div className={`flex flex-col justify-center gap-2 p-2 pb-0 ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>

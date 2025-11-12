@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../utilities/DeviceType";
 import { callLogin } from "../../services/AuthService";
 import { Account } from "../../types/backend";
 import { useAuth } from "../../utilities/AuthContext";

@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Conversations from "../components/chatview/conversations/Conversations";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
-import useDeviceTypeByWidth from "../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../utilities/DeviceType";
 import { useTheme } from "../utilities/ThemeContext";
 import { useAuth } from "../utilities/AuthContext";
 import { useChatContext } from "../utilities/ChatContext";
 import DisplayMedia from "../components/common/DisplayMedia";
-import { GlobalNotifications } from "../components/common/GlobalNotifications";
 import { IncomingCallModal } from "../components/call/IncomingCallModal";
 import { ROUTES } from "../utilities/Constants";
 import CallView from "./CallView";

@@ -9,7 +9,7 @@ import { FaArrowLeft, FaDiscord, FaFacebook, FaGithub, FaInstagramSquare, FaLink
 import { useNavigate, useParams } from "react-router-dom";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { FaXTwitter } from "react-icons/fa6";
-import useDeviceTypeByWidth from "../../utilities/useDeviceTypeByWidth";
+import useDeviceTypeByWidth from "../../utilities/DeviceType";
 import toast, { Toaster } from "react-hot-toast";
 import { ROUTES } from "../../utilities/Constants";
 
