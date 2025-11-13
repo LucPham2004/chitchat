@@ -86,7 +86,17 @@ const ConversationList: React.FC = () => {
             isMounted = false; // Cleanup tránh gọi setState khi unmount
         };
     }, [page, conv_id]);
-    
+
+    useEffect(() => {
+        if (!user || !currentNewMessage) return;
+        const exists = conversations.some(c => c.id === currentNewMessage.conversationId);
+        if (!exists) {
+            getJoinedConversationsById(user.user.id, 0).then(response => {
+                setConversations(response.result?.content ?? []);
+            });
+        }
+    }, [currentNewMessage]);
+
     useEffect(() => {
         const fetchConversations = async () => {
             if (!user || loading || !hasMore) return;
@@ -153,9 +163,9 @@ const ConversationList: React.FC = () => {
                     }
 
                     return (
-                        <Link to={`${deviceType == 'Mobile' 
-                                ? `${ROUTES.MOBILE.CONVERSATION(conv.id)}`
-                                : `${ROUTES.DESKTOP.CONVERSATION(conv.id)}`}`} 
+                        <Link to={`${deviceType == 'Mobile'
+                            ? `${ROUTES.MOBILE.CONVERSATION(conv.id)}`
+                            : `${ROUTES.DESKTOP.CONVERSATION(conv.id)}`}`}
                             key={conv.id}>
                             <li
                                 key={conv.id}
@@ -243,7 +253,7 @@ const ConversationList: React.FC = () => {
                             ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
                             Hãy tìm kiếm bạn bè để bắt đầu các cuộc trò chuyện
                         </p>
-                        <Link to={`${deviceType == 'Mobile' 
+                        <Link to={`${deviceType == 'Mobile'
                             ? `${ROUTES.MOBILE.PROFILE_FRIENDS(user?.user.id)}`
                             : `${ROUTES.DESKTOP.PROFILE_FRIENDS(user?.user.id)}`
                             }`}>

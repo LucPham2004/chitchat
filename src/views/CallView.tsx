@@ -16,12 +16,14 @@ export default function CallView() {
 
   const {
     callState,      // Trạng thái cuộc gọi toàn cục (IDLE, OUTGOING, INCOMING, CONNECTED)
+    setCallState,
     hangup,         // Hàm để kết thúc cuộc gọi
     incomingCallData,
     targetRef,
     localVideoRef,
     localStreamRef, // Ref cho stream của bạn
-    remoteStreamRef // Ref cho stream của người kia
+    remoteVideoRef,
+    remoteAudioRef,
   } = useChatContext();
 
   const [isMuted, setIsMuted] = useState(false);
@@ -83,7 +85,7 @@ export default function CallView() {
           }
         } else if (incomingCallData) {
           // Lấy thông tin người đang gọi mình
-          const response = await getOtherUserById(user?.user.id, targetRef.current);
+          const response = await getOtherUserById(user?.user.id, incomingCallData.from);
           if (response.code == 1000) {
             setOtherParty(response.result);
           }
@@ -112,6 +114,7 @@ export default function CallView() {
     }
 
     hangup();
+    setCallState("IDLE");
   };
 
   const toggleMute = () => {
@@ -152,20 +155,21 @@ export default function CallView() {
       {/* Video của người kia — full màn hình */}
       {callType === 'video' && (
         <video
-          ref={remoteStreamRef}
+          ref={remoteVideoRef}
           autoPlay
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          style={{ display: remoteStreamRef.current?.srcObject ? 'block' : 'none' }}
         />
       )}
       {/* Hiển thị avatar nếu chưa có stream hoặc là cuộc gọi audio */}
-      {(!remoteStreamRef.current?.srcObject || callType === 'audio') && (
+      {(!remoteVideoRef.current?.srcObject || callType === 'audio') && (
         <div className="flex flex-col gap-2 items-center justify-center w-full h-full bg-gradient-to-br from-[#555555] via-[#3c5559] to-[#242424] text-white text-lg">
           <Avatar avatarUrl={otherParty ? otherParty.avatarUrl : '/images/user_default.avif'} width={28} height={28} />
           <p>{otherParty?.firstName} {otherParty?.lastName}</p>
         </div>
       )}
+
+      <audio ref={remoteAudioRef} autoPlay playsInline />
 
       {/* Video của bạn — nhỏ ở góc */}
       {callType === 'video' && (
@@ -188,13 +192,6 @@ export default function CallView() {
         {/* Chọn giao diện để render */}
         {callState === 'OUTGOING' && renderOutgoingCall()}
         {callState === 'CONNECTED' && renderConnectedCall()}
-
-        <audio
-          ref={remoteStreamRef}
-          autoPlay
-          playsInline
-          className="hidden"
-        />
 
         {/* Các nút điều khiển luôn hiển thị ở dưới */}
         <div className="absolute bottom-6 w-full flex justify-center gap-4 mt-4 z-10">

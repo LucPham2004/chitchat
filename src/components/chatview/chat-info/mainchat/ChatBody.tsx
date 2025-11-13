@@ -166,11 +166,11 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
     if (!user) return
 
+    // ${files && files?.length > 0 ? replyTo ? 'mb-52' : 'mb-40' : replyTo ? 'mb-32' : 'mb-12'}
     return (
         <div ref={chatContainerRef}
-            className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pb-6 pt-2
-                ${deviceType !== 'PC' ? 'max-h-[85dvh] min-h-[70dvh]' : 'h-full'}
-                ${files && files?.length > 0 ? replyTo ? 'mb-52' : 'mb-40' : replyTo ? 'mb-32' : 'mb-12'}
+            className={`w-full overflow-y-auto flex flex-col ps-3 pe-2 pt-2 pb-2
+                ${deviceType !== 'PC' ? 'max-h-[85dvh] min-h-[70dvh]' : 'h-auto'}
                 `}
         >
             {messages.map((message, i) => {

@@ -31,7 +31,7 @@ const ChatHeader: React.FC<MainChatProps> = ({
                 recipientId: conversationResponse.participantIds,
                 content: '',
             };
-            callUser(recipientId, conversationResponse?.name, "audio", chatMessage);
+            callUser(recipientId, conversationResponse?.name, "audio");
         }
     };
 
@@ -44,13 +44,13 @@ const ChatHeader: React.FC<MainChatProps> = ({
                 recipientId: conversationResponse.participantIds,
                 content: '',
             };
-            callUser(recipientId, conversationResponse?.name, "video", chatMessage);
+            callUser(recipientId, conversationResponse?.name, "video");
         }
     };
 
     return (
-        <div className={`flex justify-between items-center w-full p-0.5 ps-1 pb-1 border-b h-[9dvh]
-            ${isDarkMode ? 'border-gray-600' : 'border-gray-400'}`}>
+        <div className={`flex justify-between items-center w-full p-0.5 ps-1 pb-1 border-b h-[9dvh] rounded-t-xl
+            ${isDarkMode ? 'border-gray-600 bg-[#161618a0]' : 'border-gray-400 bg-[#ffffff5c]'}`}>
 
             <div className="flex justify-between items-center ms-2 gap-1">
                 {deviceType == 'Mobile' && (

@@ -55,10 +55,13 @@ type ChatContextType = {
     incomingCallData: CallRequest | null;
     localVideoRef: any | null;
     localStreamRef: any | null;
-    remoteStreamRef: any | null;
+
+    remoteVideoRef: any | null;
+    remoteAudioRef: any | null;
     targetRef: any | null;
 
-    callUser: (targetId: string, toName: string, callType: string, message: any) => void;
+    setCallState: (callState: CallState) => void;
+    callUser: (targetId: string, toName: string, callType: string) => void;
     handleIncomingCall: (req: CallRequest) => void;
 
     acceptCall: () => void;
@@ -93,8 +96,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     const pcRef = useRef<RTCPeerConnection | null>(null);
     const localStreamRef = useRef<MediaStream | null>(null);
-    const remoteStreamRef = useRef<HTMLVideoElement | null>(null);
     const localVideoRef = useRef<HTMLVideoElement | null>(null);
+
+    const remoteVideoRef = useRef<HTMLVideoElement | null>(null);
+    const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
+
     const targetRef = useRef<string | null>(null);
 
     const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
@@ -310,8 +316,13 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         pc.ontrack = (event) => {
             console.log("Remote track received");
-            if (remoteStreamRef.current && event.streams[0]) {
-                remoteStreamRef.current.srcObject = event.streams[0];
+            if (event.streams[0]) {
+                if (event.streams[0].getVideoTracks().length > 0 && remoteVideoRef.current) {
+                    remoteVideoRef.current.srcObject = event.streams[0];
+                }
+                if (event.streams[0].getAudioTracks().length > 0 && remoteAudioRef.current) {
+                    remoteAudioRef.current.srcObject = event.streams[0];
+                }
             }
         };
 
@@ -335,12 +346,15 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 video: callType === "video"
             });
             localStreamRef.current = localStream;
-            if (localStream.getAudioTracks().length > 0) {
-                console.log("localStream.getAudioTracks().length > 0")
-                localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
-            }
+
+            localStream.getTracks().forEach(track => {
+                pc.addTrack(track, localStream);
+            });
+
             if (localVideoRef.current) {
                 localVideoRef.current.srcObject = localStream;
+                localVideoRef.current.muted = true;
+                localVideoRef.current.play().catch(() => {});
             }
         } catch (err) {
             console.error("Không thể truy cập camera/microphone:", err);
@@ -549,7 +563,8 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Reset các ref và state
         if (localVideoRef.current) localVideoRef.current.srcObject = null;
-        if (remoteStreamRef.current) remoteStreamRef.current.srcObject = null;
+        if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
+        if (remoteAudioRef.current) remoteAudioRef.current.srcObject = null;
         targetRef.current = null;
         pendingCandidates.current = [];
         setIncomingCallData(null);
@@ -607,11 +622,15 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
             callState,
             incomingCallData,
+
             localVideoRef,
             localStreamRef,
-            remoteStreamRef,
+
+            remoteVideoRef,
+            remoteAudioRef,
             targetRef,
 
+            setCallState,
             callUser,
             handleIncomingCall,
 

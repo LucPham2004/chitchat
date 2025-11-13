@@ -154,13 +154,14 @@ const MainChat: React.FC<MainChatProps> = ({
                 <div className="w-12 h-12 border-4 border-gray-300 border-t-gray-400 rounded-full animate-spin"></div>
             </div>
         ) : (
-            <div className={` flex flex-col items-center justify-center pe-1 pt-1 pb-0 
+            <div className={` flex flex-col items-center justify-center  
                  shadow-sm bg-cover bg-center 
                 ${deviceType == 'Mobile' ? 'min-h-[100dvh] max-h-[100dvh]' : 'min-h-[96dvh] rounded-xl'}
                 ${isDarkMode ? ' border border-gray-900' : ''}
                 `}
                 style={{
                     backgroundImage: `url(${isDarkMode ? '/images/sky-dark.jpg' : '/images/sky-bg.jpg'})`,
+                    paddingBottom: 'env(safe-area-inset-bottom)',
                 }}>
                 <>
                     <ChatHeader

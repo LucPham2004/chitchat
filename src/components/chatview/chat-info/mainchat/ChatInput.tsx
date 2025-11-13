@@ -66,13 +66,13 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 
 
 	return (
-		<form className={`absolute bottom-0 flex flex-col p-2 pb-0 w-full min-w-0 min-h-[7dvh] 
-			${isDarkMode ? 'bg-[#00000087]' : ''}`}
+		<form className={` flex flex-col px-2 w-full min-w-0 
+			${isDarkMode ? 'bg-[#0000005a]' : ''}`}
 			onSubmit={sendMessage}>
 
 			{/* File Preview */}
 			{files.length > 0 && (
-				<div className="flex gap-2 overflow-x-auto w-full custom-scrollbar"
+				<div className="flex gap-2 overflow-x-auto w-full custom-scrollbar ms-2"
 					ref={scrollRef}
 					onWheel={handleWheel}>
 					{files.map((file, index) => (
