@@ -193,8 +193,8 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                 const isSameSenderAsNext = i < messages.length - 1 && messages[i + 1].senderId === message.senderId;
 
                 const isFirstInGroup = !isSameSenderAsPrevious;
-                const isLastInGroup = !isSameSenderAsNext;
-                const isSingleMessage = !isSameSenderAsPrevious && !isSameSenderAsNext;
+                let isLastInGroup = !isSameSenderAsNext;
+                let isSingleMessage = !isSameSenderAsPrevious && !isSameSenderAsNext;
 
                 // Kiểm tra tin nhắn cuối của user hiện tại trong list
                 const lastMessageByCurrentUserIndex = messages
@@ -203,6 +203,21 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
 
                 // Kiểm tra xem tin nhắn hiện tại có phải là tin cuối của user này không
                 const isLastMessageByCurrentUser = i === lastMessageByCurrentUserIndex;
+
+                let isNextMessageShowDateSeparator = false;
+
+                if (i < messages.length - 1) {
+                    const currTime = dayjs(message.createdAt);
+                    const nextTime = dayjs(messages[i + 1].createdAt);
+
+                    const diffMinutesToNext = nextTime.diff(currTime, "minute");
+
+                    if (!nextTime.isSame(currTime, "day") || diffMinutesToNext > 30) {
+                        isNextMessageShowDateSeparator = true;
+                        isLastInGroup = true;
+                        if(isFirstInGroup) isSingleMessage = true
+                    }
+                }
 
                 return (
                     <div key={i} className={`${isSameSenderAsNext ? 'mb-[1px]' : 'mb-2'}`}>
@@ -221,6 +236,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                         <ChatMessage message={message} isFirstInGroup={isFirstInGroup}
                             isLastInGroup={isLastInGroup} isSingleMessage={isSingleMessage}
                             isLastMessageByCurrentUser={isLastMessageByCurrentUser}
+                            isNextMessageShowDateSeparator={isNextMessageShowDateSeparator}
                             conversationResponse={conversationResponse}
                             participants={participants}
                             onDeleteMessage={onDeleteMessage}

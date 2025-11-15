@@ -23,9 +23,13 @@ const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null | undefined> => {
     return await mutex.runExclusive(async () => {
+        try {
         const res = await instance.get<ApiResponse<AccessTokenResponse>>('/auth/refresh');
-        if (res && res.data) return res.data?.result?.access_token;
+        if (res && res.data.code == 1000) return res.data?.result?.access_token;
         else window.location.href = ROUTES.AUTH.LOGIN;
+        } catch (err) {
+            console.error("Failed to refresh token:", err);
+        }
     });
 };
 

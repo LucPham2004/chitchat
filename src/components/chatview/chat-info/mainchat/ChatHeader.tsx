@@ -25,12 +25,6 @@ const ChatHeader: React.FC<MainChatProps> = ({
     const handleCallAudio = () => {
         const recipientId = conversationResponse?.participantIds.filter(id => id != user?.user.id)[0];
         if (recipientId) {
-            const chatMessage = {
-                conversationId: conversationResponse.id,
-                senderId: user?.user.id,
-                recipientId: conversationResponse.participantIds,
-                content: '',
-            };
             callUser(recipientId, conversationResponse?.name, "audio");
         }
     };
@@ -38,18 +32,12 @@ const ChatHeader: React.FC<MainChatProps> = ({
     const handleCallVideo = () => {
         const recipientId = conversationResponse?.participantIds.filter(id => id != user?.user.id)[0];
         if (recipientId) {
-            const chatMessage = {
-                conversationId: conversationResponse.id,
-                senderId: user?.user.id,
-                recipientId: conversationResponse.participantIds,
-                content: '',
-            };
             callUser(recipientId, conversationResponse?.name, "video");
         }
     };
 
     return (
-        <div className={`flex justify-between items-center w-full p-0.5 ps-1 pb-1 border-b h-[9dvh] rounded-t-xl
+        <div className={`flex justify-between items-center w-full p-0.5 ps-1 pt-1 pb-1 border-b h-[9dvh] rounded-t-xl
             ${isDarkMode ? 'border-gray-600 bg-[#161618a0]' : 'border-gray-400 bg-[#ffffff5c]'}`}>
 
             <div className="flex justify-between items-center ms-2 gap-1">

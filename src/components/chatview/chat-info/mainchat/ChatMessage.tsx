@@ -12,6 +12,7 @@ import { PhoneOff, Video, Phone, Clock, ImageIcon, Reply } from "lucide-react";
 import { formatTimeHHmm } from "../../../../utilities/TimeUltilities";
 import { ParseMessageLinks } from "../../../common/ParseMessageLinks";
 import React from "react";
+import useDeviceTypeByWidth from "../../../../utilities/DeviceType";
 
 
 
@@ -21,6 +22,7 @@ interface MessageProps {
 	isLastInGroup: boolean;
 	isSingleMessage: boolean;
 	isLastMessageByCurrentUser?: boolean;
+	isNextMessageShowDateSeparator?: boolean;
 	conversationResponse?: ConversationResponse;
 	participants?: ChatParticipants[];
 	onDeleteMessage?: (id: string) => void;
@@ -31,13 +33,16 @@ interface MessageProps {
 
 const ChatMessage: React.FC<MessageProps> = ({
 	message, isFirstInGroup, isLastInGroup, isSingleMessage,
-	isLastMessageByCurrentUser, conversationResponse,
+	isLastMessageByCurrentUser, 
+	isNextMessageShowDateSeparator, 
+	conversationResponse,
 	participants, onDeleteMessage, setDisplayMediaUrl,
 	setIsDisplayMedia, onReply
 }) => {
 
 	const { user } = useAuth();
 	const { isDarkMode } = useTheme();
+    const deviceType = useDeviceTypeByWidth();
 	const [messageReactions, setMessageReactions] = useState<MessageEmojiReaction[]>([]);
 
 	const [activeEmojiPicker, setActiveEmojiPicker] = useState<number | null>(null);
@@ -171,7 +176,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 			${message.replyTo ? (message.publicIds != null && message.publicIds != "") ? 'mt-24' : 'mt-16' : ''}
 			`}>
 			{/* Hiển thị ảnh đại diện nếu là tin nhắn cuối của nhóm tin nhắn */}
-			{message.senderId !== user?.user.id && isLastInGroup && conversationResponse?.avatarUrls && (
+			{message.senderId !== user?.user.id && (isLastInGroup || isNextMessageShowDateSeparator) && conversationResponse?.avatarUrls && (
 				<img
 					src={isMatchingSender(message.senderId)?.avatarUrl || '/images/user_default.avif'}
 					className="border border-sky-600 rounded-[100%] h-8 w-8 object-cover"
@@ -240,7 +245,8 @@ const ChatMessage: React.FC<MessageProps> = ({
 			</div>
 
 			{message.replyTo && (
-				<div className={`absolute right-0 transition-all duration-200 hover:scale-[1.01] max-w-[70%] z-0
+				<div className={`absolute transition-all duration-200 hover:scale-[1.01] max-w-[70%] z-0
+					${message.senderId == user?.user.id ? 'right-0' : 'left-10'}
 					${(message.publicIds != null && message.publicIds != "") ? '-top-20' : '-top-14'}`}>
 					<div className={`relative overflow-hidden rounded-lg shadow-lg backdrop-blur-sm ${isDarkMode
 						? 'bg-gradient-to-r from-gray-800/45 to-gray-700/45 border border-gray-600/50'
@@ -349,7 +355,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 								<div key={index} >
 									{part.type === 'text' && (
 										<span className="inline-flex">
-											{splitLongWords(part.content)}
+											{part.content}
 										</span>
 									)}
 

@@ -36,7 +36,6 @@ const MainChat: React.FC<MainChatProps> = ({
 
     const { 
         sendMessage: sendWebSocketMessage, 
-        subscribeToConversation, 
         currentNewMessage,
         isConnected
     } = useChatContext();
@@ -170,7 +169,7 @@ const MainChat: React.FC<MainChatProps> = ({
                         toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                         conversationResponse={conversationResponse}
                     />
-                    <div className={`relative flex flex-col items-center justify-start w-full 
+                    <div className={`relative flex flex-col items-center justify-between w-full 
                         ${deviceType == 'Mobile' ? 'max-h-[91dvh] min-h-[91dvh] ' : 'max-h-[87dvh] min-h-[87dvh] '}`}>
                         <ChatBody
                             messages={messages}

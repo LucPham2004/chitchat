@@ -14,7 +14,7 @@ type LastMessage = {
 };
 
 // Type payloads tương ứng backend
-type CallRequest = { from: string; fromName: string; fromAvatar: string; to: string; toName: string; callType: string; };
+type CallRequest = { from: string; fromName: string; fromAvatar: string; to: string; toName: string; callType: CallType; };
 type OfferAnswer = { from: string; to: string; sdp: string, callType: string };
 type IceCandidateMsg = { from: string; to: string; candidate: string };
 type CallAction = { from: string; to: string; }; // Dùng cho HANGUP, REJECTED
@@ -22,9 +22,10 @@ type CallAccepted = { from: string; to: string; toAvatar: string; callType: stri
 
 // Thêm các trạng thái cuộc gọi
 export type CallState = "IDLE" | "OUTGOING" | "INCOMING" | "CONNECTED";
+export type CallType = "audio" | "video";
 
 interface AccessTokenResponse {
-  access_token: string;
+    access_token: string;
 }
 
 type ChatContextType = {
@@ -47,21 +48,23 @@ type ChatContextType = {
     currentNewMessage: ChatResponse | null;
     clearGlobalMessages: () => void;
 
-    // Conversation-specific subscriptions (cho MainChat)
-    subscribeToConversation: (conversationId: string, callback: (message: ChatResponse) => void) => () => void;
-
     // Call functions
     callState: CallState;
+    callType: CallType;
     incomingCallData: CallRequest | null;
     localVideoRef: any | null;
     localStreamRef: any | null;
 
     remoteVideoRef: any | null;
     remoteAudioRef: any | null;
+    remoteStreamRef: any | null;
+    localStreamReady: boolean;
     targetRef: any | null;
+    // Debug helper to dump peer connection info and stats
+    dumpPeerInfo: () => Promise<void>;
 
     setCallState: (callState: CallState) => void;
-    callUser: (targetId: string, toName: string, callType: string) => void;
+    callUser: (targetId: string, toName: string, callType: CallType) => void;
     handleIncomingCall: (req: CallRequest) => void;
 
     acceptCall: () => void;
@@ -82,15 +85,18 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [globalMessages, setGlobalMessages] = useState<ChatResponse[]>([]);
     const [currentNewMessage, setCurrentNewMessage] = useState<ChatResponse | null>(null);
 
-    const [callType, setCallType] = useState<string>("audio");
+    const [callType, setCallType] = useState<CallType>("audio");
     const [callState, setCallState] = useState<CallState>("IDLE");
     const [incomingCallData, setIncomingCallData] = useState<CallRequest | null>(null);
 
+    const [incomingCallAccepted, setIncomingCallAccepted] = useState<boolean | null>(null);
+    const [callAccepted, setCallAccepted] = useState<boolean | null>(null);
+
     const [callStartTime, setCallStartTime] = useState<number | null>(null);
+    const [localStreamReady, setLocalStreamReady] = useState(false);
 
     // Refs
     const stompClientRef = useRef<any>(null);
-    const conversationSubscriptionsRef = useRef<Map<string, any>>(new Map());
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const reconnectAttempts = useRef(0);
 
@@ -104,6 +110,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const targetRef = useRef<string | null>(null);
 
     const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
+    const remoteStreamRef = useRef<MediaStream | null>(null);
+    
+    // State to trigger effect when remote stream is ready
+    const [remoteStreamReady, setRemoteStreamReady] = useState(false);
 
     const updateLastMessage = useCallback((conversationId: string, senderId: string, content: string, timestamp: string) => {
         setLastMessages((prev) => ({
@@ -140,6 +150,23 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
         }
     }, [user, updateLastMessage]);
+
+    // Send message function
+    const sendMessage = useCallback((message: any): boolean => {
+        if (!stompClientRef.current?.connected) {
+            console.error("WebSocket not connected");
+            return false;
+        }
+
+        try {
+            message.type = 'message';
+            stompClientRef.current.send("/app/chat.sendMessage", {}, JSON.stringify(message));
+            return true;
+        } catch (error) {
+            console.error("Failed to send message:", error);
+            return false;
+        }
+    }, []);
 
     // WebSocket connection function
     const connectWebSocket = useCallback(async () => {
@@ -241,57 +268,6 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     }, [user, handleGlobalMessage]);
 
-    // Send message function
-    const sendMessage = useCallback((message: any): boolean => {
-        if (!stompClientRef.current?.connected) {
-            console.error("WebSocket not connected");
-            return false;
-        }
-
-        try {
-            message.type = 'message';
-            stompClientRef.current.send("/app/chat.sendMessage", {}, JSON.stringify(message));
-            return true;
-        } catch (error) {
-            console.error("Failed to send message:", error);
-            return false;
-        }
-    }, []);
-
-    // Conversation-specific subscription (dành cho MainChat component)
-    const subscribeToConversation = useCallback((userId: string, callback: (message: ChatResponse) => void) => {
-        if (!stompClientRef.current?.connected) {
-            console.warn("WebSocket not connected, cannot subscribe to conversation");
-            return () => { };
-        }
-
-        const subscriptionKey = `conversation-${userId}`;
-
-        // Unsubscribe existing subscription
-        if (conversationSubscriptionsRef.current.has(subscriptionKey)) {
-            conversationSubscriptionsRef.current.get(subscriptionKey).unsubscribe();
-        }
-
-        // Subscribe to specific conversation
-        const subscription = stompClientRef.current.subscribe(
-            `/topic/user/${userId}`,
-            (message: any) => {
-                const receivedMessage: ChatResponse = JSON.parse(message.body);
-                callback(receivedMessage);
-            }
-        );
-        console.log("connected to conversation")
-
-        conversationSubscriptionsRef.current.set(subscriptionKey, subscription);
-
-        return () => {
-            if (conversationSubscriptionsRef.current.has(subscriptionKey)) {
-                conversationSubscriptionsRef.current.get(subscriptionKey).unsubscribe();
-                conversationSubscriptionsRef.current.delete(subscriptionKey);
-            }
-        };
-    }, []);
-
     // ===== Helper: Tạo và cấu hình RTCPeerConnection =====
     const createPeerConnection = async (callType: string) => {
         if (pcRef.current) {
@@ -300,7 +276,26 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         const pc = new RTCPeerConnection({
-            iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: 'stun:stun1.l.google.com:19302' },
+
+                // {
+                //     urls: 'turn:chitchat.pro.vn:3478',
+                //     username: 'user',
+                //     credential: 'pass'
+                // },
+                {
+                    urls: 'turn:chitchat.pro.vn:5349?transport=tcp',
+                    username: 'user',
+                    credential: 'pass'
+                },
+                {
+                    urls: 'turn:chitchat.pro.vn:3478?transport=udp',
+                    username: 'user',
+                    credential: 'pass'
+                }
+            ]
         });
 
         pc.onicecandidate = (event) => {
@@ -315,16 +310,35 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         };
 
         pc.ontrack = (event) => {
-            console.log("Remote track received");
-            if (event.streams[0]) {
-                if (event.streams[0].getVideoTracks().length > 0 && remoteVideoRef.current) {
-                    remoteVideoRef.current.srcObject = event.streams[0];
-                }
-                if (event.streams[0].getAudioTracks().length > 0 && remoteAudioRef.current) {
-                    remoteAudioRef.current.srcObject = event.streams[0];
-                }
+            console.log("Remote track received, kind:", event.track.kind, "readyState:", event.track.readyState);
+
+            // Create or reuse a single persistent MediaStream for all remote tracks
+            if (!remoteStreamRef.current) {
+                remoteStreamRef.current = new MediaStream();
+                console.log("Created new remoteStream");
+                // Signal that the stream is ready (will trigger effect in CallView)
+                setRemoteStreamReady(true);
             }
+
+            const remoteStream = remoteStreamRef.current;
+
+            // Add the incoming track to the persistent stream
+            try {
+                remoteStream.addTrack(event.track);
+                console.log("Added track to remoteStream. Stream now has audio:", remoteStream.getAudioTracks().length, "video:", remoteStream.getVideoTracks().length);
+            } catch (e) {
+                console.error("Failed to add track to remoteStream:", e);
+                return;
+            }
+
+            // Let CallView effect handle the attachment to avoid duplicate attaches that trigger emptied events
+            // (Previously attaching here + in effect caused emptied cascade)
+            console.log("ontrack: deferring attachment to CallView effect");
         };
+
+        // When we obtain local stream, log details for debugging
+        // (This log will also help verify that audio/video tracks are present)
+        const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
 
         pc.onconnectionstatechange = () => {
             console.log("Connection state:", pc.connectionState);
@@ -334,10 +348,21 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             if (pc.connectionState === "disconnected" || pc.connectionState === "failed" || pc.connectionState === "closed") {
                 // Dọn dẹp nếu kết nối bị ngắt đột ngột
-                hangup();
-                // cleanupCall();
+                // hangup();
+                setIncomingCallAccepted(null);
+                setCallAccepted(null);
+                cleanupCall();
             }
         };
+
+        // Add extra debug info about senders/receivers during lifecycle
+        pc.addEventListener('signalingstatechange', () => {
+            try {
+                console.log('Signaling state changed:', pc.signalingState);
+                console.log('Senders:', pc.getSenders().map(s => ({id: s.track?.id, kind: s.track?.kind, enabled: s.track?.enabled})));
+                console.log('Receivers:', pc.getReceivers().map(r => ({id: r.track?.id, kind: r.track?.kind, readyState: r.track?.readyState})));
+            } catch (e) { console.warn('Error logging pc state:', e); }
+        });
 
         // Lấy stream của người dùng
         try {
@@ -346,15 +371,27 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 video: callType === "video"
             });
             localStreamRef.current = localStream;
+            setLocalStreamReady(true);
+
+            // Log what tracks we actually obtained
+            try {
+                console.log('Local stream obtained -> audioTracks:', localStream.getAudioTracks().map(t => ({id: t.id, enabled: t.enabled, muted: (t as any).muted})),
+                    'videoTracks:', localStream.getVideoTracks().map(t => ({id: t.id, enabled: t.enabled})));
+            } catch (e) { console.warn('Failed to inspect localStream tracks', e); }
 
             localStream.getTracks().forEach(track => {
+                console.log('Adding local track to pc:', track.kind, track.id, 'enabled=', track.enabled);
                 pc.addTrack(track, localStream);
             });
 
-            if (localVideoRef.current) {
+            try {
+                console.log('After addTrack, pc.getSenders():', pc.getSenders().map(s => ({trackId: s.track?.id, kind: s.track?.kind, enabled: s.track?.enabled})));
+            } catch (e) { console.warn('Failed to log pc senders', e); }
+
+            if (localVideoRef.current && localStream.getVideoTracks().length > 0) {
                 localVideoRef.current.srcObject = localStream;
                 localVideoRef.current.muted = true;
-                localVideoRef.current.play().catch(() => {});
+                localVideoRef.current.play().catch(() => { });
             }
         } catch (err) {
             console.error("Không thể truy cập camera/microphone:", err);
@@ -368,7 +405,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 
     // ===== 1. Caller: Bắt đầu một cuộc gọi =====
-    const callUser = (targetId: string, toName: string, callType: string) => {
+    const callUser = (targetId: string, toName: string, callType: CallType) => {
         if (!user) return;
         targetRef.current = targetId;
         setCallState("OUTGOING");
@@ -388,7 +425,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     // ===== 2. Callee: Xử lý khi có cuộc gọi đến =====
-    const handleIncomingCall = (req: CallRequest) => {
+    const handleIncomingCall = async (req: CallRequest) => {
         if (callState !== 'IDLE' && user?.user.id) {
             // Đang bận, tự động từ chối
             const rejectPayload: CallAction = { from: user.user.id, to: req.from };
@@ -398,23 +435,44 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setIncomingCallData(req);
         targetRef.current = req.from;
         setCallState("INCOMING");
+        setCallType(req.callType);
+
+        await createPeerConnection(req.callType);
     };
 
     // ===== 3a. Callee: Chấp nhận cuộc gọi =====
     const acceptCall = async () => {
         if (!incomingCallData || !user?.user.id) return;
 
-        // Gửi tín hiệu chấp nhận
-        const payload: CallAccepted = {
-            from: user.user.id,
-            to: incomingCallData.from,
-            toAvatar: user.user.avatarUrl,
-            callType: incomingCallData.callType
-        };
-        stompClientRef.current?.send("/app/call/accept", {}, JSON.stringify(payload));
+        setIncomingCallAccepted(true);
 
-        // Bây giờ mới tạo PeerConnection để sẵn sàng nhận Offer
-        await createPeerConnection(incomingCallData.callType);
+        // QUAN TRỌNG: Chỉ chấp nhận và tạo PC nếu đang ở trạng thái INCOMING 
+        // và PC chưa được tạo.
+        if (callState !== "INCOMING" || pcRef.current) {
+            console.warn("Đã chấp nhận hoặc PC đã tồn tại. Bỏ qua.");
+
+            // Gửi tín hiệu chấp nhận
+            const payload: CallAccepted = {
+                from: user.user.id,
+                to: incomingCallData.from,
+                toAvatar: user.user.avatarUrl,
+                callType: incomingCallData.callType
+            };
+            stompClientRef.current?.send("/app/call/accept", {}, JSON.stringify(payload));
+        } else {
+
+            // Gửi tín hiệu chấp nhận
+            const payload: CallAccepted = {
+                from: user.user.id,
+                to: incomingCallData.from,
+                toAvatar: user.user.avatarUrl,
+                callType: incomingCallData.callType
+            };
+            stompClientRef.current?.send("/app/call/accept", {}, JSON.stringify(payload));
+
+            // Bây giờ mới tạo PeerConnection để sẵn sàng nhận Offer
+            // await createPeerConnection(incomingCallData.callType);
+        }
 
         // setIncomingCallData(null);
         console.log("Call accepted, waiting for offer...");
@@ -434,6 +492,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // Reset trạng thái
         setCallState("IDLE");
+        setIncomingCallAccepted(null);
         setIncomingCallData(null);
         setCallStartTime(null)
         targetRef.current = null;
@@ -442,29 +501,45 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // ===== 4. Caller: Xử lý khi callee đã chấp nhận =====
     const handleCallAccepted = async (msg: CallAccepted) => {
         console.log("Call accepted by", msg.from);
-        // Callee đã đồng ý, bây giờ caller tạo PC và gửi Offer
-        const pc = await createPeerConnection(msg.callType);
+
+        setCallAccepted(true);
+
+        let pc;
+
+        if (pcRef.current) {
+            console.warn("PC đã tồn tại. Bỏ qua tin nhắn CALL_ACCEPTED trùng lặp.");
+            pc = pcRef.current;
+        } else {
+            // Callee đã đồng ý, bây giờ caller tạo PC và gửi Offer
+            pc = await createPeerConnection(msg.callType);
+        }
+
         if (!pc || !user?.user.id) {
             // Xử lý lỗi không tạo được PC
             hangup();
             return;
         }
 
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
+        if (!pc.remoteDescription) {
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
 
-        const payload: OfferAnswer = {
-            from: user.user.id,
-            to: msg.from,
-            sdp: JSON.stringify(pc.localDescription),
-            callType: msg.callType
-        };
-        stompClientRef.current?.send("/app/call/offer", {}, JSON.stringify(payload));
-        console.log("Offer sent");
+            const payload: OfferAnswer = {
+                from: user.user.id,
+                to: msg.from,
+                sdp: JSON.stringify(pc.localDescription),
+                callType: msg.callType
+            };
+            stompClientRef.current?.send("/app/call/offer", {}, JSON.stringify(payload));
+            console.log("Offer sent");
+        }
     };
 
     // ===== 5. Caller: Xử lý khi callee từ chối =====
     const handleCallRejected = () => {
+
+        setCallAccepted(null);
+
         setCallStartTime(null);
         cleanupCall();
     };
@@ -526,9 +601,23 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // ===== Kết thúc cuộc gọi (chủ động) =====
     const hangup = () => {
-        if (targetRef.current && user?.user.id) {
-            const durationSec =
-                callStartTime ? Math.floor((Date.now() - callStartTime) / 1000) : 0;
+        const durationSec =
+            callStartTime ? Math.floor((Date.now() - callStartTime) / 1000) : 0;
+
+        if (incomingCallData) {
+
+            // Gửi payload lưu lịch sử
+            const payload = {
+                from: incomingCallData.from,
+                to: user?.user.id,
+                duration: durationSec,
+                callType: callType,
+                status: incomingCallAccepted == true ? "COMPLETED" : "MISSED",
+            };
+            console.log(payload);
+
+            stompClientRef.current?.send("/app/call/hangup", {}, JSON.stringify(payload));
+        } else if (user?.user.id) {
 
             // Gửi payload lưu lịch sử
             const payload = {
@@ -536,12 +625,11 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 to: targetRef.current,
                 duration: durationSec,
                 callType: callType,
-                status: durationSec > 0 ? "COMPLETED" : "MISSED",
+                status: callAccepted == true ? "COMPLETED" : "MISSED",
             };
+            console.log(payload);
             stompClientRef.current?.send("/app/call/hangup", {}, JSON.stringify(payload));
         }
-        setCallState("IDLE");
-        setCallStartTime(null);
         cleanupCall();
     };
 
@@ -557,24 +645,78 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
         pcRef.current?.close();
         pcRef.current = null;
 
+        targetRef.current = null;
+        pendingCandidates.current = [];
+        setIncomingCallData(null);
+        setIncomingCallAccepted(null);
+        setCallAccepted(null);
+        setCallStartTime(null);
+        setCallState("IDLE");
+        setRemoteStreamReady(false);
+
         // Dừng các track media
         localStreamRef.current?.getTracks().forEach(track => track.stop());
         localStreamRef.current = null;
+
+        // Clear remote stream
+        remoteStreamRef.current = null;
 
         // Reset các ref và state
         if (localVideoRef.current) localVideoRef.current.srcObject = null;
         if (remoteVideoRef.current) remoteVideoRef.current.srcObject = null;
         if (remoteAudioRef.current) remoteAudioRef.current.srcObject = null;
-        targetRef.current = null;
-        pendingCandidates.current = [];
-        setIncomingCallData(null);
-        setCallState("IDLE");
     };
 
     // Clear global messages
     const clearGlobalMessages = useCallback(() => {
         setGlobalMessages([]);
     }, []);
+
+    // Debug helper: dump peer connection info and stats
+    const dumpPeerInfo = async () => {
+        const pc = pcRef.current;
+        if (!pc) {
+            console.warn('dumpPeerInfo: no RTCPeerConnection available');
+            return;
+        }
+
+        try {
+            console.log('--- dumpPeerInfo START ---');
+            try {
+                console.log('Transceivers:', pc.getTransceivers().map(t => ({mid: (t as any).mid, direction: t.direction, senderTrack: t.sender?.track?.id, receiverTrack: t.receiver?.track?.id})));
+            } catch (e) { console.warn('Error logging transceivers', e); }
+
+            try {
+                console.log('Senders:', pc.getSenders().map(s => ({trackId: s.track?.id, kind: s.track?.kind, enabled: s.track?.enabled})));
+                console.log('Receivers:', pc.getReceivers().map(r => ({trackId: r.track?.id, kind: r.track?.kind, readyState: r.track?.readyState})));
+            } catch (e) { console.warn('Error logging senders/receivers', e); }
+
+            console.log('localDescription', pc.localDescription);
+            console.log('remoteDescription', pc.remoteDescription);
+
+            try {
+                const stats = await pc.getStats();
+                stats.forEach((report: any) => {
+                    if (report.type === 'inbound-rtp') {
+                        // Try to detect video inbound-rtp
+                        const maybeKind = report.mediaType || report.kind || report.mimeType;
+                        if (maybeKind && String(maybeKind).toLowerCase().includes('video')) {
+                            console.log('inbound-rtp (video):', report);
+                        }
+                    }
+                    if (report.type === 'track' && report.kind === 'video') {
+                        console.log('track report (video):', report);
+                    }
+                });
+            } catch (e) {
+                console.warn('Error getting pc.getStats()', e);
+            }
+
+            console.log('--- dumpPeerInfo END ---');
+        } catch (e) {
+            console.error('dumpPeerInfo unexpected error', e);
+        }
+    };
 
     // Main effect - khởi tạo WebSocket khi user login
     useEffect(() => {
@@ -593,16 +735,21 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 clearTimeout(reconnectTimeoutRef.current);
             }
 
-            conversationSubscriptionsRef.current.forEach(subscription => {
-                subscription.unsubscribe();
-            });
-            conversationSubscriptionsRef.current.clear();
-
             if (stompClientRef.current?.connected) {
                 stompClientRef.current.disconnect();
             }
         };
     }, [user, connectWebSocket]);
+
+    // Effect to attach remote stream to audio/video elements when they are mounted
+    useEffect(() => {
+        if (remoteStreamReady && remoteStreamRef.current) {
+            const remoteStream = remoteStreamRef.current;
+            console.log("💬 Remote stream ready in context. Audio tracks:", remoteStream.getAudioTracks().length, "Video tracks:", remoteStream.getVideoTracks().length);
+            
+            // Just log - CallView will handle attachment
+        }
+    }, [remoteStreamReady]);
 
     return (
         <ChatContext.Provider value={{
@@ -618,17 +765,20 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             globalMessages,
             currentNewMessage,
             clearGlobalMessages,
-            subscribeToConversation,
 
             callState,
+            callType,
             incomingCallData,
 
             localVideoRef,
             localStreamRef,
+            localStreamReady,
 
             remoteVideoRef,
             remoteAudioRef,
+            remoteStreamRef,
             targetRef,
+            dumpPeerInfo,
 
             setCallState,
             callUser,
