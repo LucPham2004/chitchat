@@ -268,6 +268,37 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     }, [user, handleGlobalMessage]);
 
+    // ===== Helper: Reorder video codecs in SDP to prioritize VP8/VP9 =====
+    const reorderVideoCodecs = (sdp: string): string => {
+        const lines = sdp.split('\n');
+        let videoMLineIdx = -1;
+        let videoPayloads: string[] = [];
+        
+        // Find m=video line
+        for (let i = 0; i < lines.length; i++) {
+            if (lines[i].startsWith('m=video')) {
+                videoMLineIdx = i;
+                const parts = lines[i].split(' ');
+                videoPayloads = parts.slice(3); // Get codec payload numbers
+                break;
+            }
+        }
+        
+        if (videoMLineIdx === -1) return sdp; // No video line
+        
+        // Find codec preferences (VP8=96, VP9=98, H264=103)
+        const codecOrder = ['96', '98', '103', '104', '107', '108', '109']; // VP8, VP9, then H264 variants
+        const reordered = videoPayloads.sort((a, b) => {
+            const aIdx = codecOrder.indexOf(a);
+            const bIdx = codecOrder.indexOf(b);
+            return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+        });
+        
+        lines[videoMLineIdx] = 'm=video ' + lines[videoMLineIdx].split(' ').slice(1, 3).join(' ') + ' ' + reordered.join(' ');
+        console.log('✓ Video codecs reordered: VP8/VP9 prioritized');
+        return lines.join('\n');
+    };
+
     // ===== Helper: Tạo và cấu hình RTCPeerConnection =====
     const createPeerConnection = async (callType: string) => {
         if (pcRef.current) {
@@ -364,11 +395,19 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             } catch (e) { console.warn('Error logging pc state:', e); }
         });
 
-        // Lấy stream của người dùng
+        // Lấy stream của người dùng với constraints tối ưu hóa chất lượng
         try {
             const localStream = await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: callType === "video"
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true
+                },
+                video: callType === "video" ? {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    frameRate: { ideal: 30 }
+                } : false
             });
             localStreamRef.current = localStream;
             setLocalStreamReady(true);
@@ -387,6 +426,21 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             try {
                 console.log('After addTrack, pc.getSenders():', pc.getSenders().map(s => ({trackId: s.track?.id, kind: s.track?.kind, enabled: s.track?.enabled})));
             } catch (e) { console.warn('Failed to log pc senders', e); }
+
+            // Optimize video sender bitrate limits (2.5 Mbps for quality)
+            try {
+                const videoSender = pc.getSenders().find(s => s.track?.kind === 'video');
+                if (videoSender) {
+                    const params = videoSender.getParameters();
+                    if (params.encodings && params.encodings[0]) {
+                        params.encodings[0].maxBitrate = 2500000; // 2.5 Mbps
+                    }
+                    await videoSender.setParameters(params);
+                    console.log('✓ Video bitrate optimized: max 2.5M bps');
+                }
+            } catch (e) {
+                console.warn('Failed to set video bitrate:', e);
+            }
 
             if (localVideoRef.current && localStream.getVideoTracks().length > 0) {
                 localVideoRef.current.srcObject = localStream;
@@ -524,14 +578,18 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const offer = await pc.createOffer();
             await pc.setLocalDescription(offer);
 
+            // Reorder video codecs to prioritize VP8/VP9
+            let sdpStr = pc.localDescription?.sdp || '';
+            sdpStr = reorderVideoCodecs(sdpStr);
+
             const payload: OfferAnswer = {
                 from: user.user.id,
                 to: msg.from,
-                sdp: JSON.stringify(pc.localDescription),
+                sdp: JSON.stringify({type: 'offer', sdp: sdpStr}),
                 callType: msg.callType
             };
             stompClientRef.current?.send("/app/call/offer", {}, JSON.stringify(payload));
-            console.log("Offer sent");
+            console.log("Offer sent with optimized codecs");
         }
     };
 
@@ -563,14 +621,19 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (sdpObj.type === "offer" && user?.user.id) {
                 const answer = await pc.createAnswer();
                 await pc.setLocalDescription(answer);
+
+                // Reorder video codecs to prioritize VP8/VP9
+                let sdpStr = pc.localDescription?.sdp || '';
+                sdpStr = reorderVideoCodecs(sdpStr);
+
                 const payload: OfferAnswer = {
                     from: user.user.id,
                     to: msg.from,
-                    sdp: JSON.stringify(pc.localDescription),
+                    sdp: JSON.stringify({type: 'answer', sdp: sdpStr}),
                     callType: msg.callType
                 };
                 stompClientRef.current?.send("/app/call/answer", {}, JSON.stringify(payload));
-                console.log("Answer sent");
+                console.log("Answer sent with optimized codecs");
             }
 
             // Áp dụng các ICE candidate đang chờ
