@@ -16,6 +16,7 @@ interface AccordionProps {
     toggleChangeConversationNameModalOpen: () => void;
     toggleChangeConversationEmojiModalOpen: () => void;
     handleTabChange: (tab: string) => void;
+    handleBlockUser: () => void;
     selectedParticipantId: string | null;
     toggleUserMenu: (id: string) => void;
     isGroup?: boolean | undefined;
@@ -34,6 +35,7 @@ const Accordion: React.FC<AccordionProps> = ({
     toggleChangeConversationNameModalOpen,
     toggleChangeConversationEmojiModalOpen,
     handleTabChange,
+    handleBlockUser,
     selectedParticipantId,
     toggleUserMenu,
     isGroup,
@@ -93,7 +95,7 @@ const Accordion: React.FC<AccordionProps> = ({
                     rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
                         onClick={toggleChangeConversationEmojiModalOpen}>
                         <div className={`rounded-full p-1.5 text- ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
-                            {emoji}
+                            {emoji ?? "👍"}
                         </div>
                         <p>Thay đổi biểu tượng cảm xúc</p>
                     </button>
@@ -211,7 +213,8 @@ const Accordion: React.FC<AccordionProps> = ({
             content: (
                 <div>
                     <button className={`flex items-center gap-2 w-full p-2 text-left text-md font-medium 
-                        rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}>
+                        rounded-lg ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-800 hover:bg-gray-100'}`}
+                        onClick={handleBlockUser}>
                         <div className={`rounded-full p-2 text-lg ${isDarkMode ? 'bg-[#3A3A3A]' : 'bg-gray-200'}`}>
                             <ImBlocked />
                         </div>
@@ -225,6 +228,9 @@ const Accordion: React.FC<AccordionProps> = ({
 
     return (
         <div className="rounded-lg overflow-hidden">
+            {isGroup && (
+                <hr className="w-[100%] mt-2 mb-2 border-gray-600"></hr>
+            )}
             {sections.map((section, index) => (
                 <AccordionItem key={index}
                     title={section.title}
@@ -233,6 +239,7 @@ const Accordion: React.FC<AccordionProps> = ({
                     index={index}
                     openIndices={openIndices}
                     hidden={section.hidden}
+                    isGroup={isGroup}
                 >
                 </AccordionItem>
             ))}

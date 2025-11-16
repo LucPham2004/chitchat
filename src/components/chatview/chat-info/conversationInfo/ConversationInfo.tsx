@@ -18,6 +18,7 @@ import { ChatResponse } from "../../../../types/Message";
 import Avatar from "../../../common/Avatar";
 import SearchBar from "../../../common/SearchBar";
 import { ROUTES } from "../../../../utilities/Constants";
+import { blockUser } from "../../../../services/FriendshipService";
 
 
 export interface ConversationInfoProps {
@@ -80,6 +81,33 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
             }
         }
     };
+
+    const handleBlockUser = async () => {
+        if (!user) return;
+
+        const targetParticipant = participants?.find(
+            participant => participant.id !== user.user.id
+        );
+
+        if (!targetParticipant) return;
+
+        const isConfirm = window.confirm(
+            `Bạn có chắc muốn chặn ${targetParticipant.fullName || "người này"} không?`
+        );
+
+        if (!isConfirm) return;
+
+        try {
+            const data = await blockUser(user.user.id, targetParticipant.id);
+            if (data?.code == 1000) {
+                console.log("User blocked:", data.result);
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error("Error blocking user:", error);
+        }
+    };
+
 
     const handleClearSearch = () => {
         setSearchedMessages(null);
@@ -151,7 +179,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                         {searchedMessages !== null && searchedMessages.length > 0 ? (
                             <ul className="w-full">
                                 {searchedMessages.map((message) => (
-                                    <Link to={``} key={message.id} 
+                                    <Link to={``} key={message.id}
                                     // onClick={handleClearSearch}
                                     >
                                         <li className={`flex items-center gap-3 p-2 rounded-lg cursor-pointer
@@ -265,8 +293,8 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                             <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []}
                                 width={24} height={24}></ConversationAvatar>
                             <div className="flex flex-col items-center gap-2">
-                            <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
-                            <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p>
+                                <h3 className={`text-xl font-semibold ${isDarkMode ? 'text-gray-300' : 'text-black'}`}>{conversationResponse?.name}</h3>
+                                {/* <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-black'}`}>Đang hoạt động</p> */}
                             </div>
                         </div>
 
@@ -325,6 +353,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 toggleChangeConversationNameModalOpen={toggleChangeConversationNameModalOpen}
                                 togglePinnedMessageModalOpen={togglePinnedMessageModalOpen}
                                 handleTabChange={handleTabChange}
+                                handleBlockUser={handleBlockUser}
                                 selectedParticipantId={selectedParticipantId}
                                 toggleUserMenu={toggleUserMenu}
                                 isGroup={conversationResponse?.group}
@@ -424,7 +453,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                     <div className="px-2">
                         <SearchBar placeholder="Tìm kiếm tin nhắn..." onSearch={handleMessageSearch} onClear={handleClearSearch} />
                     </div>
-                    
+
                     <div className="flex justify-center">
 
                         {loading ? (

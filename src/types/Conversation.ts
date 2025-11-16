@@ -28,6 +28,7 @@ export interface ConversationResponse {
 		updatedAt: string;
 	}
 	ownerId: string;
+	blockerId: string;
 	participantIds: string[];
 
 	group?: boolean;
@@ -36,7 +37,7 @@ export interface ConversationResponse {
 	isPinned?: boolean;
 	isArchived?: boolean;
 	isDeleted?: boolean;
-	isBlocked?: boolean;
+	blocked?: boolean;
 	isReported?: boolean;
 	isSpam?: boolean;
 	isMarkedAsUnread?: boolean;

@@ -12,6 +12,7 @@ import { ChatParticipants } from "../../../../types/User";
 import dayjs from "dayjs";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import "dayjs/locale/vi";
+import TypingIndicator from "../../../common/TypingIndicator";
 
 dayjs.extend(localizedFormat);
 dayjs.locale("vi");
@@ -33,8 +34,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
 
-    const { setIsDisplayMedia } = useChatContext();
-    const { setDisplayMediaUrl } = useChatContext();
+    const { setIsDisplayMedia, setDisplayMediaUrl, getTypingStatus } = useChatContext();
 
     const chatEndRef = useRef<HTMLDivElement>(null);
     const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -164,6 +164,19 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
         }
     }, [messages]);
 
+    // Tự động cuộn khi typing indicator xuất hiện
+    useEffect(() => {
+        if (isAtBottom && conversationResponse?.participantIds) {
+            const hasTyping = conversationResponse.participantIds.some(participantId => {
+                if (participantId === user?.user.id) return false;
+                return getTypingStatus(participantId)?.isTyping;
+            });
+            if (hasTyping) {
+                setTimeout(() => chatEndRef.current?.scrollIntoView({ behavior: "smooth" }), 10);
+            }
+        }
+    }, [conversationResponse?.participantIds, getTypingStatus, isAtBottom, user?.user.id]);
+
     if (!user) return
 
     // ${files && files?.length > 0 ? replyTo ? 'mb-52' : 'mb-40' : replyTo ? 'mb-32' : 'mb-12'}
@@ -247,6 +260,20 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                     </div>
                 )
             })}
+            {/* Typing Indicator */}
+            {conversationResponse?.participantIds && (
+                conversationResponse.participantIds.map((participantId) => {
+                    if (participantId === user?.user.id) return null;
+                    const typingStatus = getTypingStatus(participantId);
+                    const participantName = participants?.find(p => p.id === participantId)?.fullName || "Someone";
+                    console.log(`🔥 Checking typing for ${participantId}:`, typingStatus);
+                    return typingStatus?.isTyping ? (
+                        <div key={`typing-${participantId}`} className="mb-2">
+                            <TypingIndicator userName={participantName} show={true} />
+                        </div>
+                    ) : null;
+                })
+            )}
             <div ref={chatEndRef} className={``} />
         </div>
 

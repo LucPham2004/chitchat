@@ -10,6 +10,9 @@ import { ChatResponse } from '../../../../types/Message';
 import { ChatParticipants } from '../../../../types/User';
 import { useAuth } from '../../../../utilities/AuthContext';
 import { P } from 'framer-motion/dist/types.d-BJcRxCew';
+import { useChatContext } from '../../../../utilities/ChatContext';
+import { useParams } from 'react-router-dom';
+import { ConversationResponse } from '../../../../types/Conversation';
 
 interface ChatInputProps {
 	setMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -21,13 +24,21 @@ interface ChatInputProps {
 	participants?: ChatParticipants[];
 	replyTo: ChatResponse | null;
 	setReplyTo: React.Dispatch<React.SetStateAction<ChatResponse | null>>;
+	conversationResponse?: ConversationResponse;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message, files, setFiles, emoji, participants, replyTo, setReplyTo }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ 
+	setMessage, sendMessage, message, files, setFiles, 
+	emoji, participants, replyTo, setReplyTo,
+	conversationResponse, 
+}) => {
 	const { user } = useAuth();
 	const { isDarkMode } = useTheme();
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const scrollRef = useRef<HTMLDivElement>(null);
+	const { sendTypingStatus } = useChatContext();
+	const { conv_id } = useParams();
+	const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
 	const handleWheel = (e: React.WheelEvent) => {
 		if (scrollRef.current) {
@@ -61,6 +72,35 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 	const handleSendEmoji = () => {
 		if (emoji) {
 			setMessage(emoji);
+		}
+	};
+
+	const handleMessageChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		const newMessage = e.target.value;
+		setMessage(newMessage);
+
+		// Send typing status when user types
+		if (conv_id && newMessage.length > 0) {
+			console.log('🔥🔥🔥 Sending typing: true for conversation:', conv_id);
+			sendTypingStatus(conv_id, true);
+
+			// Clear previous timeout
+			if (typingTimeoutRef.current) {
+				clearTimeout(typingTimeoutRef.current);
+			}
+
+			// Send typing stopped after 1 second of inactivity
+			typingTimeoutRef.current = setTimeout(() => {
+				console.log('🔥🔥🔥 Timeout: Sending typing: false for conversation:', conv_id);
+				sendTypingStatus(conv_id, false);
+			}, 1000);
+		} else if (newMessage.length === 0 && conv_id) {
+			// Send typing stopped when message is empty
+			console.log('🔥🔥🔥 Message empty: Sending typing: false for conversation:', conv_id);
+			sendTypingStatus(conv_id, false);
+			if (typingTimeoutRef.current) {
+				clearTimeout(typingTimeoutRef.current);
+			}
 		}
 	};
 
@@ -200,7 +240,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 						autoFocus
 						style={{ lineHeight: '1.5', maxHeight: 'calc(1.5em * 6.5 + 0.5rem)', minHeight: '1.5em' }}
 						onChange={(e) => {
-							setMessage(e.target.value);
+							handleMessageChange(e);
 
 							e.target.style.height = 'auto';
 							e.target.style.height = `${Math.min(e.target.scrollHeight, parseFloat(getComputedStyle(e.target).lineHeight) * 6.5)}px`;
@@ -214,6 +254,14 @@ const ChatInput: React.FC<ChatInputProps> = ({ setMessage, sendMessage, message,
 								setFiles([])
 								e.currentTarget.style.height = 'auto';
 								setShowEmojiPicker(false);
+								
+								// Send typing stopped when message is sent
+								if (conv_id) {
+									sendTypingStatus(conv_id, false);
+									if (typingTimeoutRef.current) {
+										clearTimeout(typingTimeoutRef.current);
+									}
+								}
 							}
 						}}
 						onPaste={(e) => {

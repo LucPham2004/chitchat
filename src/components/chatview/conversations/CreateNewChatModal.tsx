@@ -66,10 +66,9 @@ const CreateNewChatModal = ({ isOpen, onClose }: Props) => {
                 const res = await createConversation(request);
                 console.log("Tạo thành công:", res.result);
 
-                if(res.code == 200 && res.result) {
+                if(res.code == 1000 && res.result) {
                     // Redirect to the new chat
-                    window.location.href = `${ROUTES.DESKTOP.PROFILE(res.result.id)}`;
-
+                    window.location.href = `${ROUTES.DESKTOP.CONVERSATION(res.result.id)}`;
                 }
 
                 onClose();

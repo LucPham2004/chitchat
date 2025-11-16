@@ -67,7 +67,7 @@ const ChatHeader: React.FC<MainChatProps> = ({
                     <div className={`p-1 rounded-lg cursor-pointer`}>
                         <ConversationAvatar avatarUrls={conversationResponse?.avatarUrls != undefined ? conversationResponse?.avatarUrls : []}
                             width={10} height={10}></ConversationAvatar>
-                        <img className="w-4 h-4 absolute top-8 left-8" src="/images/onlineIcon.png" alt="online icon" />
+                        {/* <img className="w-4 h-4 absolute top-8 left-8" src="/images/onlineIcon.png" alt="online icon" /> */}
                     </div>
                     <div className='flex flex-col justify-center items-left'>
                         <h3 className={`${isDarkMode ? 'text-gray-100' : 'text-gray-900'} font-semibold`}>{conversationResponse?.name}</h3>
@@ -78,16 +78,20 @@ const ChatHeader: React.FC<MainChatProps> = ({
             </div>
 
             <div className="flex me-4 gap-2">
+                {!conversationResponse?.group && (
                 <button className={`self-end rounded-full p-2 text-center text-xl font-semibold
                     ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-700 hover:bg-gray-200'}`}
                     onClick={handleCallAudio}>
                     <IoCall />
                 </button>
+                )}
+                {!conversationResponse?.group && (
                 <button className={`self-end rounded-full p-2 text-center text-xl font-semibold
                     ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-700 hover:bg-gray-200'}`}
                     onClick={handleCallVideo}>
                     <IoVideocam />
                 </button>
+                )}
                 <button className={`self-end rounded-full p-2 text-center text-xl font-semibold
                     ${isDarkMode ? 'text-gray-300 hover:bg-[#5A5A5A]' : 'text-gray-700 hover:bg-gray-200'}`}
                     onClick={toggleChangeWidth}>

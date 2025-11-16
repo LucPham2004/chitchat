@@ -23,3 +23,15 @@ export const editFriendshipStatus = async (senderId: string, recipientId: string
     return (await instance.put<ApiResponse<FriendshipResponse>>('/friendships/update', null, 
         { params: { senderId, recipientId, status } })).data;
 };
+
+// Block User
+export const blockUser = async (blockerId: string, blockedUserId: string) => {
+    return (await instance.put<ApiResponse<FriendshipResponse>>('/friendships/block', null, 
+        { params: { blockerId, blockedUserId } })).data;
+};
+
+// Unblock User
+export const unblockUser = async (blockerId: string, blockedUserId: string) => {
+    return (await instance.put<ApiResponse<FriendshipResponse>>('/friendships/unblock', null, 
+        { params: { blockerId, blockedUserId } })).data;
+};

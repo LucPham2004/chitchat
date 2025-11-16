@@ -143,7 +143,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
             </div>
 
             {/* Pinned Messages Modal */}
-            <Modal isOpen={isPinnedMessageModalOpen} onClose={() => setIsPinnedMessageModalOpen(false)}>
+            {/* <Modal isOpen={isPinnedMessageModalOpen} onClose={() => setIsPinnedMessageModalOpen(false)}>
                 <h2 className="text-lg font-bold mb-3">Tin nhắn đã ghim</h2>
                 {pinnedMessages.length > 0 ? (
                     <div className="flex flex-col items-start justify-start w-full overflow-y-auto">
@@ -177,7 +177,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                         <p className="text-base font-semibold">Chưa ghim tin nhắn nào</p>
                         <p className="text-gray-400 text-sm">Các tin nhắn được ghim trong đoạn chat này sẽ hiển thị ở đây</p>
                     </div>)}
-            </Modal>
+            </Modal> */}
 
             {/* Change Conversation Name Modal */}
             <Modal isOpen={isChangeConversationNameModalOpen} onClose={() => {

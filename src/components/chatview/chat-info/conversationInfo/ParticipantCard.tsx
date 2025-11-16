@@ -19,7 +19,7 @@ const ParticipantCard: React.FC<Participant> = ({ id, avatar, name, toggleUserMe
     return (
         <div className="relative flex flex-row justify-between p-2">
             <div className="flex items-center gap-2">
-                <img src={avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
+                <img src={avatar ?? '/images/user_default.avif'} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
                 <div className={`font-semibold ${isDarkMode ? 'text-gray-200' : 'text-black'}`}>
                     <a href={`${ROUTES.DESKTOP.PROFILE(id)}`}>{name}</a>
                 </div>

@@ -204,10 +204,10 @@ const ConversationList: React.FC = () => {
                                 </div>
                                 {/* Menu */}
                                 {openMenuId === conv.id && (
-                                    <div className={`absolute top-10 right-0 mt-2 shadow-lg rounded-xl w-40 z-10
-                                        ${isDarkMode ? 'bg-[#161618]' : 'bg-[#ffffff]'}`}>
+                                    <div className={`absolute top-10 right-0 mt-2 shadow-lg rounded-xl w-52 z-10 border
+                                        ${isDarkMode ? 'bg-[#161618] border-gray-500' : 'bg-[#ffffff] border-gray-500'}`}>
                                         <button
-                                            className={`w-max text-left px-4 py-3 
+                                            className={`w-full text-left px-4 py-3 
                                                 ${isDarkMode ? 'hover:bg-[#242424]' : 'hover:bg-gray-100'}
                                                 ${conv.group == true ? 'rounded-t-xl' : 'rounded-xl'}
                                             `}
@@ -223,7 +223,8 @@ const ConversationList: React.FC = () => {
                                         </button>
                                         {conv.group && (
                                             <button
-                                                className="w-full text-left px-4 py-3 rounded-b-xl hover:bg-gray-100 dark:hover:bg-[#242424]"
+                                                className={`w-full text-left px-4 py-3 rounded-b-xl 
+                                                    ${isDarkMode ? 'hover:bg-[#242424]' : 'hover:bg-gray-100'}`}
                                                 onClick={async () => {
                                                     if (user?.user.id && conv.participantIds) {
                                                         const confirmDelete = window.confirm("Bạn có chắc chắn muốn rời khỏi đoạn chat này?");

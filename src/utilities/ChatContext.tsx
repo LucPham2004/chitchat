@@ -5,6 +5,11 @@ import { ChatResponse } from "../types/Message";
 import { useParams } from "react-router-dom";
 import instance from "../services/Axios-customize";
 import { ApiResponse } from "../types/backend";
+import { UserTypingStatus } from "../types/UserStatus";
+type UserTypingDisplay = {
+    userId: string;
+    isTyping: boolean;
+};
 
 type LastMessage = {
     conversationId: string;
@@ -47,6 +52,11 @@ type ChatContextType = {
     globalMessages: ChatResponse[];
     currentNewMessage: ChatResponse | null;
     clearGlobalMessages: () => void;
+
+    // Typing only
+    typingMap: Record<string, UserTypingDisplay>;
+    sendTypingStatus: (conversationId: string, isTyping: boolean) => void;
+    getTypingStatus: (userId: string) => UserTypingDisplay | undefined;
 
     // Call functions
     callState: CallState;
@@ -95,6 +105,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [callStartTime, setCallStartTime] = useState<number | null>(null);
     const [localStreamReady, setLocalStreamReady] = useState(false);
 
+    // Typing only
+    const [typingMap, setTypingMap] = useState<Record<string, UserTypingDisplay>>({});
+    const typingTimeoutRef = useRef<Record<string, NodeJS.Timeout>>({});
+
     // Refs
     const stompClientRef = useRef<any>(null);
     const reconnectTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -121,6 +135,28 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             [conversationId]: { conversationId, senderId, content, timestamp },
         }));
     }, []);
+
+    // Send typing status to WebSocket
+    const sendTypingStatus = useCallback((conversationId: string, isTyping: boolean) => {
+        if (!stompClientRef.current?.connected || !user) return;
+
+        try {
+            const typingMsg: UserTypingStatus = {
+                userId: user.user.id,
+                conversationId: conversationId,
+                typing: isTyping,
+                timestamp: new Date().toISOString()
+            };
+            stompClientRef.current.send("/app/user/typing", {}, JSON.stringify(typingMsg));
+        } catch (error) {
+            console.error("Failed to send typing status:", error);
+        }
+    }, [user]);
+
+    // Get typing status from map
+    const getTypingStatus = useCallback((userId: string): UserTypingDisplay | undefined => {
+        return typingMap[userId];
+    }, [typingMap]);
 
     // Global message handler - xử lý tin nhắn nhận được ở bất kỳ trang nào
     const handleGlobalMessage = useCallback((message: ChatResponse) => {
@@ -202,11 +238,43 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     setCurrentNewMessage(receivedMessage);
                 });
 
-                // Optional: Subscribe to user status updates
-                client.subscribe(`/topic/user/${user.user.id}/status`, (message: any) => {
-                    const statusUpdate = JSON.parse(message.body);
-                    console.log('User status update:', statusUpdate);
-                    // Handle user status changes (online/offline, typing, etc.)
+                // Subscribe to typing status
+                client.subscribe(`/topic/user/${user.user.id}/typing`, (message: any) => {
+                    const data: any = JSON.parse(message.body);
+                    const typingStatus: UserTypingStatus = {
+                        userId: data.userId,
+                        conversationId: data.conversationId,
+                        typing: data.typing ?? false,
+                        timestamp: data.timestamp
+                    };
+                    console.log('🔥 Typing status received:', typingStatus);
+                    setTypingMap(prev => {
+                        const updated = {
+                            ...prev,
+                            [typingStatus.userId]: {
+                                userId: typingStatus.userId,
+                                isTyping: typingStatus.typing
+                            }
+                        };
+                        console.log('🔥 Updated typing map:', updated);
+                        return updated;
+                    });
+                    // Auto-clear typing status after 3 seconds of inactivity
+                    if (typingTimeoutRef.current[typingStatus.userId]) {
+                        clearTimeout(typingTimeoutRef.current[typingStatus.userId]);
+                    }
+                    if (typingStatus.typing) {
+                        typingTimeoutRef.current[typingStatus.userId] = setTimeout(() => {
+                            console.log('🔥 Auto-clearing typing for:', typingStatus.userId);
+                            setTypingMap(prev => ({
+                                ...prev,
+                                [typingStatus.userId]: {
+                                    ...prev[typingStatus.userId],
+                                    isTyping: false
+                                }
+                            }));
+                        }, 3000);
+                    }
                 });
 
                 // subscribe to this user's private topic
@@ -828,6 +896,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
             globalMessages,
             currentNewMessage,
             clearGlobalMessages,
+
+            typingMap,
+            sendTypingStatus,
+            getTypingStatus,
 
             callState,
             callType,
