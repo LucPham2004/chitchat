@@ -44,7 +44,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
 				</span>
 			</button>
 			<div
-				className={`transition-[max-height] duration-300 ease-in-out overflow-hidden mt-2 max-h-80 
+				className={`transition-[max-height] duration-300 ease-in-out overflow-hidden mt-2
 				${openIndices.includes(index) ? 'max-h-80' : 'max-h-0'}`}>
 				<div className={``}>{content}</div>
 			</div>

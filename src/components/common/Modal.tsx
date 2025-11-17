@@ -19,7 +19,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
 			onClick={onClose}>
 			<div className={`relative min-h-[30dvh] max-h-[80dvh] flex flex-col items-center justify-start 
 				 rounded-xl shadow-lg 
-				${deviceType == 'Mobile' ? 'max-w-[90%] p-4' : 'min-w-[30%] max-w-[40%] p-6'}
+				${deviceType == 'Mobile' ? 'max-w-[90%] p-4' : 'min-w-[30%] max-w-[50%] p-6'}
 				${isDarkMode ? 'text-white bg-[#2E2E2E]' : 'text-black bg-white'}
 				`}
 				onClick={(e) => e.stopPropagation()}>

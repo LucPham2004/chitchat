@@ -47,6 +47,12 @@ export const searchUsers = async (userId: string, name: string, pageNum: number 
         { params: { userId, name, pageNum } })).data;
 };
 
+// Search friends
+export const searchFriends = async (userId: string, name: string, pageNum: number = 0) => {
+    return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/search/friends', 
+        { params: { userId, name, pageNum } })).data;
+};
+
 // Get User's Friends
 export const getUserFriends = async (userId: string, pageNum: number = 0) => {
     return (await instance.get<ApiResponse<Page<UserDTO>>>('/users/get/friends', { params: { userId, pageNum } })).data;

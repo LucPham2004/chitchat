@@ -81,7 +81,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
 		// Send typing status when user types
 		if (conv_id && newMessage.length > 0) {
-			console.log('🔥🔥🔥 Sending typing: true for conversation:', conv_id);
+			// console.log('Sending typing: true for conversation:', conv_id);
 			sendTypingStatus(conv_id, true);
 
 			// Clear previous timeout
@@ -91,12 +91,12 @@ const ChatInput: React.FC<ChatInputProps> = ({
 
 			// Send typing stopped after 1 second of inactivity
 			typingTimeoutRef.current = setTimeout(() => {
-				console.log('🔥🔥🔥 Timeout: Sending typing: false for conversation:', conv_id);
+				// console.log('Timeout: Sending typing: false for conversation:', conv_id);
 				sendTypingStatus(conv_id, false);
 			}, 1000);
 		} else if (newMessage.length === 0 && conv_id) {
 			// Send typing stopped when message is empty
-			console.log('🔥🔥🔥 Message empty: Sending typing: false for conversation:', conv_id);
+			// console.log('Message empty: Sending typing: false for conversation:', conv_id);
 			sendTypingStatus(conv_id, false);
 			if (typingTimeoutRef.current) {
 				clearTimeout(typingTimeoutRef.current);

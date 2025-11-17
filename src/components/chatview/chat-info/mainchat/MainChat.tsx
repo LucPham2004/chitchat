@@ -22,13 +22,15 @@ export interface MainChatProps {
     isChangeWidth: boolean;
     conversationResponse?: ConversationResponse;
     participants?: ChatParticipants[];
+    showToast: (content: string, status: string) => void;
 }
 
 const MainChat: React.FC<MainChatProps> = ({
     toggleChangeWidth, isChangeWidth,
     toggleShowConversationMembersModalOpen,
     conversationResponse,
-    participants
+    participants,
+    showToast,
 }) => {
 
     const { user } = useAuth();
@@ -213,6 +215,7 @@ const MainChat: React.FC<MainChatProps> = ({
                         isChangeWidth={isChangeWidth}
                         toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                         conversationResponse={conversationResponse}
+                        showToast={showToast}
                     />
                     <div className={`relative flex flex-col items-center justify-between w-full 
                         ${deviceType == 'Mobile' ? 'max-h-[91dvh] min-h-[91dvh] ' : 'max-h-[87dvh] min-h-[87dvh] '}`}>
@@ -225,6 +228,7 @@ const MainChat: React.FC<MainChatProps> = ({
                             onDeleteMessage={handleDeleteMessage}
                             replyTo={replyTo}
                             onReply={setReplyTo}
+                            showToast={showToast}
                         />
                         {conversationResponse.blocked ? (
                             <div className={`absolute inset-x-0 bottom-0 border-t backdrop-blur-sm transition-all duration-300 rounded-b-xl

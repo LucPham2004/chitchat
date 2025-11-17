@@ -9,6 +9,7 @@ import { ChatParticipants } from "../../../../types/User";
 import { useAuth } from "../../../../utilities/AuthContext";
 import { updateConversation } from "../../../../services/ConversationService";
 import { ImBlocked } from "react-icons/im";
+import { ConversationResponse } from "../../../../types/Conversation";
 
 
 interface AccordionProps {
@@ -22,6 +23,7 @@ interface AccordionProps {
     isGroup?: boolean | undefined;
     emoji?: string;
     participants?: ChatParticipants[];
+    conversationResponse?: ConversationResponse;
 }
 
 interface AccordionItem {
@@ -40,7 +42,8 @@ const Accordion: React.FC<AccordionProps> = ({
     toggleUserMenu,
     isGroup,
     emoji,
-    participants
+    participants,
+    conversationResponse
 }) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
@@ -222,7 +225,7 @@ const Accordion: React.FC<AccordionProps> = ({
                     </button>
                 </div>
             ),
-            hidden: isGroup
+            hidden: isGroup || conversationResponse?.blocked
         }
     ];
 

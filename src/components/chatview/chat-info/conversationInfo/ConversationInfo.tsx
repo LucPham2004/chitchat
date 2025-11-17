@@ -359,6 +359,7 @@ const ConversationInfo: React.FC<ConversationInfoProps> = ({
                                 isGroup={conversationResponse?.group}
                                 emoji={conversationResponse?.emoji}
                                 participants={participants}
+                                conversationResponse={conversationResponse}
                             ></Accordion>
 
                         </div>

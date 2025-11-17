@@ -103,13 +103,11 @@ export default function ChitChatWelcome() {
                 Bắt đầu ngay
               </a>
             </button>
-            <button className="px-8 py-4 bg-white text-gray-700 rounded-xl text-lg font-medium hover:shadow-xl transition duration-300 border border-gray-200">
-              Tìm hiểu thêm
-            </button>
+            
           </div>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+        <div className="absolute bottom-10 animate-bounce">
           <div className="w-6 h-10 border-2 border-gray-400 rounded-full flex items-start justify-center p-2">
             <div className="w-1 h-2 bg-gray-400 rounded-full"></div>
           </div>
@@ -269,9 +267,7 @@ export default function ChitChatWelcome() {
               Tạo tài khoản miễn phí
               </a>
             </button>
-            <button className="px-8 py-4 bg-transparent border-2 border-white text-white rounded-xl text-lg font-medium hover:bg-white/10 transition duration-300">
-              Xem demo
-            </button>
+            
           </div>
         </div>
       </section>
@@ -293,27 +289,27 @@ export default function ChitChatWelcome() {
             <div>
               <h4 className="font-semibold text-white mb-4">Sản phẩm</h4>
               <ul className="space-y-2 text-sm">
-                {/* <li><a href="#" className="hover:text-blue-400 transition">Tính năng</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Tính năng</a></li>
                 <li><a href="#" className="hover:text-blue-400 transition">Bảng giá</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">Tải ứng dụng</a></li> */}
+                <li><a href="#" className="hover:text-blue-400 transition">Tải ứng dụng</a></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Công ty</h4>
               <ul className="space-y-2 text-sm">
-                {/* <li><a href="#" className="hover:text-blue-400 transition">Về chúng tôi</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Về chúng tôi</a></li>
                 <li><a href="#" className="hover:text-blue-400 transition">Liên hệ</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">Tuyển dụng</a></li> */}
+                <li><a href="#" className="hover:text-blue-400 transition">Tuyển dụng</a></li>
               </ul>
             </div>
 
             <div>
               <h4 className="font-semibold text-white mb-4">Hỗ trợ</h4>
               <ul className="space-y-2 text-sm">
-                {/* <li><a href="#" className="hover:text-blue-400 transition">Trung tâm trợ giúp</a></li>
+                <li><a href="#" className="hover:text-blue-400 transition">Trung tâm trợ giúp</a></li>
                 <li><a href="#" className="hover:text-blue-400 transition">Điều khoản</a></li>
-                <li><a href="#" className="hover:text-blue-400 transition">Bảo mật</a></li> */}
+                <li><a href="#" className="hover:text-blue-400 transition">Bảo mật</a></li>
               </ul>
             </div>
           </div>

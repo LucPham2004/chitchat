@@ -97,6 +97,13 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
         }
     };
 
+    const showToast = (content: string, status: string) => {
+        if(status == 'success') {
+            toast.success(content);
+        } else {
+            toast.error(content);
+        }
+    }
 
     return (
         <div className={`${deviceType !== 'Mobile' ? 'max-h-[96dvh] min-h-[96dvh] rounded-xl' : 'h-full'} relative w-full flex flex-row items-center 
@@ -124,6 +131,7 @@ const ChatAndInfo: React.FC<ChangeWidthProps> = ({ toggleChangeWidth, isChangeWi
                         toggleShowConversationMembersModalOpen={toggleShowConversationMembersModalOpen}
                         conversationResponse={Conversation}
                         participants={Participants}
+                        showToast={showToast}
                     />
                 </div>
             )}

@@ -60,10 +60,6 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(
     (res) => res,
     async (error) => {
-        if (!error.response) {
-            console.error("Network error or CORS issue", error);
-            window.location.href = ROUTES.AUTH.LOGIN;
-        }
 
         const originalRequest = error.config;
 

@@ -6,9 +6,11 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { IoClose } from "react-icons/io5";
 import { useTheme } from "../../../utilities/ThemeContext";
 import { useAuth } from "../../../utilities/AuthContext";
-import { deleteFriendship, editFriendshipStatus } from "../../../services/FriendshipService";
+import { deleteFriendship, editFriendshipStatus, getFriendStatus } from "../../../services/FriendshipService";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../../utilities/Constants";
+import { useEffect, useState } from "react";
+import { FriendshipResponse } from "../../../types/Friendship";
 
 
 
@@ -16,6 +18,8 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
     const deviceType = useDeviceTypeByWidth();
     const { isDarkMode } = useTheme();
     const { user } = useAuth();
+
+    const [friendship, setFriendship] = useState<FriendshipResponse>();
 
     const handleAccept = async () => {
         try {
@@ -46,6 +50,21 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
         }
     };
 
+    useEffect(() => {
+        const fetchFriendship = async () => {
+            try {
+                if (user?.user.id) {
+                    const response = await getFriendStatus(user?.user.id, friend.id);
+                    const content = response.result;
+                    setFriendship(content);
+                }
+            } catch (err) {
+                console.error("Lỗi lấy danh sách bạn bè:", err);
+            }
+        };
+
+        fetchFriendship();
+    }, []);
 
     return (
         <div className={` flex items-center justify-between gap-4 p-2 border border-gray-100 rounded-lg shadow-sm
@@ -70,7 +89,18 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
                 </div>
             </div>
             <div className="flex items-center justify-center gap-2">
-
+                {friendship?.requesterId == user?.user.id ? (
+                    <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit border-2 
+                    rounded-full shadow-md transition duration-200
+                    ${isDarkMode
+                        ? 'border-blue-400 text-gray-200 bg-[#161618] hover:text-blue-300'
+                        : 'border-blue-400 text-blue-700 bg-white hover:bg-gradient-to-r from-blue-500 to-blue-400 hover:text-white '}
+                    `}
+                    onClick={handleReject}>
+                    <IoClose />
+                    <p className="text-sm font-semibold">Huỷ lời mời</p>
+                </button>
+                ) : (
                 <button className={`flex items-center gap-2 py-2 px-4 h-fit w-fit border-2 
                     rounded-full shadow-md transition duration-200
                     ${isDarkMode
@@ -87,7 +117,9 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
                         )
                         : <FaCircleCheck />}
                 </button>
+                )}
 
+                {friendship?.requesterId != user?.user.id && (
                 <button className={`rounded-full border-2 py-2 px-3 text-center text-sm font-semibold 
                     ${isDarkMode
                         ? 'border-gray-400 text-gray-300 bg-[#161618] hover:text-gray-200 hover:bg-[#5A5A5A]'
@@ -96,6 +128,7 @@ const FriendRequestCard: React.FC<FriendCardProps> = ({ friend, isOpen, toggleFr
                     onClick={handleReject}>
                     {deviceType == 'PC' ? (<div>Xoá</div>) : <IoClose />}
                 </button>
+                )}
 
                 <button className={`rounded-full p-2 text-center text-2xl font-semibold border
                     ${isOpen ? 'bg-[#474747]' : ''}

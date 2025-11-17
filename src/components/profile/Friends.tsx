@@ -9,9 +9,10 @@ import { useTheme } from "../../utilities/ThemeContext";
 import { useAuth } from "../../utilities/AuthContext";
 import FriendItemWithModal from "./friends/FriendItemWithModal";
 import { UserDTO } from "../../types/User";
-import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends, searchUsers } from "../../services/UserService";
+import { getMutualFriends, getSuggestedFriends, getUserFriendRequests, getUserFriends, searchFriends, searchUsers } from "../../services/UserService";
 import useDeviceTypeByWidth from "../../utilities/DeviceType";
 import toast, { Toaster } from "react-hot-toast";
+import { ROUTES } from "../../utilities/Constants";
 
 
 
@@ -41,7 +42,9 @@ const Friends = () => {
     const navigate = useNavigate();
 
     const goBack = () => {
-        navigate(-1);
+        deviceType == 'Mobile'
+        ? navigate(ROUTES.MOBILE.PROFILE(user?.user.id))
+        : navigate(ROUTES.DESKTOP.PROFILE(user?.user.id));
     };
 
     const showToast = (content: string, status: string) => {
@@ -75,6 +78,30 @@ const Friends = () => {
                             setFriendSuggests(prev => (0 === 0 ? data : [...prev, ...data]));
                             break;
                         case 'mutualFriends':
+                            setFriends(prev => (0 === 0 ? data : [...prev, ...data]));
+                            break;
+                    }
+                    setPageInfoMap(prev => ({ ...prev, [activeTab]: 0 }));
+                    console.log("Users found:", data);
+                }
+            } catch (error) {
+                console.error("Error searching conversations:", error);
+            }
+        }
+    };
+    
+    const handleFriendSearch = async (keyword: string) => {
+        if (user?.user.id) {
+            if (keyword.trim() === "") {
+                fetchFriendsData("allFriends", 0);
+            }
+            try {
+                const res = await searchFriends(user?.user.id, keyword, 0);
+                if (res?.result?.content) {
+                    
+                const data = res?.result?.content ?? [];
+                    switch (activeTab) {
+                        case 'allFriends':
                             setFriends(prev => (0 === 0 ? data : [...prev, ...data]));
                             break;
                     }
@@ -352,10 +379,18 @@ const Friends = () => {
             >
                 <div className="w-full flex items-center justify-start gap-4 flex-wrap p-4">
 
-                    {((friends.length > 0 && activeTab != 'friendRequests') || activeTab == 'findFriends') && (
+                    {(((friends.length > 0 && activeTab != 'friendRequests') || activeTab == 'findFriends') && activeTab != 'allFriends') && (
                         <div className="w-full">
                             <div className="flex justify-end">
                                 <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleUserSearch} onClear={handleClearSearch} />
+                            </div>
+                        </div>
+                    )}
+                    
+                    {activeTab == 'allFriends' && (
+                        <div className="w-full">
+                            <div className="flex justify-end">
+                                <SearchBar placeholder="Tìm kiếm bạn bè..." onSearch={handleFriendSearch} onClear={handleClearSearch} />
                             </div>
                         </div>
                     )}
@@ -377,7 +412,7 @@ const Friends = () => {
                             <div className="flex flex-col justify-center items-center w-full border-gray-400 ">
                                 <p className={`text-center text-md font-semibold py-4 px-10
                                                 ${isDarkMode ? 'text-gray-200' : 'text-gray-800'}`}>
-                                    Bạn hiện chưa có bạn bè. Hãy tìm kiếm và bắt đầu các cuộc trò chuyện
+                                    Không tìm thấy bạn bè. Hãy tìm kiếm và bắt đầu các cuộc trò chuyện
                                 </p>
                             </div>
                         ))}

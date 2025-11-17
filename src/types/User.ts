@@ -47,7 +47,8 @@ export interface UserUpdateLinksRequest {
 
 export interface UserDTO {
     id: string;
-    firstName: string;
+    fullName?: string;
+    firstName?: string;
     lastName?: string;
     location?: string;
     isFriend?: boolean;

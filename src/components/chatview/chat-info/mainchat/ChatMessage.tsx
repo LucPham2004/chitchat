@@ -29,6 +29,7 @@ interface MessageProps {
 	setDisplayMediaUrl: (url: string) => void;
 	setIsDisplayMedia: (open: boolean) => void;
 	onReply: React.Dispatch<React.SetStateAction<ChatResponse | null>>;
+    showToast: (content: string, status: string) => void;
 }
 
 const ChatMessage: React.FC<MessageProps> = ({
@@ -37,7 +38,7 @@ const ChatMessage: React.FC<MessageProps> = ({
 	isNextMessageShowDateSeparator, 
 	conversationResponse,
 	participants, onDeleteMessage, setDisplayMediaUrl,
-	setIsDisplayMedia, onReply
+	setIsDisplayMedia, onReply, showToast,
 }) => {
 
 	const { user } = useAuth();
@@ -132,9 +133,11 @@ const ChatMessage: React.FC<MessageProps> = ({
 				await deleteMessage(message.id);
 				console.log("Tin nhắn đã bị xoá:", message.id);
 				onDeleteMessage?.(message.id);
+				showToast("Xoá tin nhắn thành công", "success");
 			}
 		} catch (error) {
 			console.error("Lỗi khi xoá tin nhắn:", error);
+			showToast("Lỗi khi xoá tin nhắn", "error");
 		}
 	};
 

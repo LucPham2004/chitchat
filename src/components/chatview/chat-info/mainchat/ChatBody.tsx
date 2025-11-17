@@ -27,9 +27,13 @@ interface MessagesProps {
     onDeleteMessage: (id: string) => void;
 	replyTo: ChatResponse | null;
     onReply: React.Dispatch<React.SetStateAction<ChatResponse | null>>;
+    showToast: (content: string, status: string) => void;
 }
 
-const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversationResponse, participants, files, onDeleteMessage, replyTo, onReply }) => {
+const ChatBody: React.FC<MessagesProps> = ({ 
+    messages, setMessages, conversationResponse, participants
+    , onDeleteMessage, onReply, showToast 
+}) => {
     const { user } = useAuth();
     const { isDarkMode } = useTheme();
     const deviceType = useDeviceTypeByWidth();
@@ -256,6 +260,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                             setDisplayMediaUrl={setDisplayMediaUrl}
                             setIsDisplayMedia={setIsDisplayMedia}
                             onReply={onReply}
+                            showToast={showToast}
                         />
                     </div>
                 )
@@ -266,7 +271,7 @@ const ChatBody: React.FC<MessagesProps> = ({ messages, setMessages, conversation
                     if (participantId === user?.user.id) return null;
                     const typingStatus = getTypingStatus(participantId);
                     const participantName = participants?.find(p => p.id === participantId)?.fullName || "Someone";
-                    console.log(`🔥 Checking typing for ${participantId}:`, typingStatus);
+                    // console.log(`🔥 Checking typing for ${participantId}:`, typingStatus);
                     return typingStatus?.isTyping ? (
                         <div key={`typing-${participantId}`} className="mb-2">
                             <TypingIndicator userName={participantName} show={true} />
